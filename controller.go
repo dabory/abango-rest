@@ -96,6 +96,8 @@ func (c *Controller) GetAbangoAccessAndDb() error {
 
 func (c *Controller) GetAccessAuth() error {
 
+	DBConnStringkkk := XConfig["DbHost"]
+	e.OkLog(DBConnStringkkk)
 	c.Access.UserId = 10
 	c.Access.DbType = "mysql"
 	// c.Access.DbConnStr = "ssohost_db:Qw3AnH4fSSO@tcp(13.124.2.254:3306)/ssohost_db?charset=utf8"
