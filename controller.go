@@ -60,7 +60,7 @@ func (c *Controller) AnswerJson() {
 
 func (c *Controller) GetAbangoAccessAndDb() error {
 
-	e.OkLog("aaaaaa")
+	e.OkLog("kkkkkkk")
 
 	if err := c.GetAccessAuth(); err == nil {
 		var err2 error
