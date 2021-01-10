@@ -3,8 +3,11 @@ package abango
 import (
 	"encoding/json"
 	"os"
+	"strings"
+	"time"
 
-	e "github.com/dabory/abango/etc"
+	e "github.com/dabory/abango-rest/etc"
+	"github.com/go-xorm/xorm"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -64,6 +67,34 @@ func GetXConfig(params ...string) error { // Kafka, gRpc, REST 통합 업그레�
 		e.Tp("==" + "Config file prefix: " + run.ConfSelect + "== REST Connection: " + XConfig["RestConnect"] + "==")
 	}
 	return nil
+}
+
+func MyLinkXDB() { //   항상 연결될 수 있는 MySQL  DB 사전 연결
+
+	dbtype := XConfig["DbType"]
+	connstr := XConfig["DbUser"] + ":" + XConfig["DbPassword"] + "@tcp(" + XConfig["DbHost"] + ":" + XConfig["DbPort"] + ")/" + XConfig["DbName"] + "?charset=utf8"
+
+	var err error
+	XDB, err = xorm.NewEngine(dbtype, connstr)
+
+	strArr := strings.Split(connstr, "@tcp")
+	if len(strArr) == 2 {
+		e.OkLog("XDB:" + strArr[1])
+	} else {
+		e.MyErr(strArr[1], err, true)
+		return
+	}
+
+	XDB.ShowSQL(false)
+	XDB.SetMaxOpenConns(100)
+	XDB.SetMaxIdleConns(20)
+	XDB.SetConnMaxLifetime(60 * time.Second)
+	if _, err := XDB.IsTableExist("aaa"); err != nil { //Connect Check
+		e.MyErr("DATABASE DISCONNECTED", err, true)
+	} else {
+		e.OkLog("DATABASE CONNECTED")
+	}
+
 }
 
 // func GetServerVarsInEnd(askname string, unique_id string) (string, error) { // Kafka, gRpc, REST 통합 업그레이드

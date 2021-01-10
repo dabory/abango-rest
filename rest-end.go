@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 
-	e "github.com/dabory/abango/etc"
+	e "github.com/dabory/abango-rest/etc"
 )
 
 //////////// Kafka EndPoint /////////////

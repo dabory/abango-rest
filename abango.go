@@ -10,7 +10,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-	e "github.com/dabory/abango/etc"
+	e "github.com/dabory/abango-rest/etc"
 )
 
 type EnvConf struct { //Kangan only
@@ -41,6 +41,7 @@ type RunConf struct {
 
 func init() {
 	// e.OkLog("Abango Initialized")
+
 }
 
 func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
@@ -50,6 +51,7 @@ func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
 
 	e.AokLog("Abango Clustered Framework Started !")
 	if err := GetXConfig(); err == nil {
+
 		if XConfig["KafkaOn"] == "Yes" {
 			// wg.Add(1)
 			// go func() {
@@ -67,6 +69,7 @@ func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
 		}
 		if XConfig["RestOn"] == "Yes" {
 			// e.AokLog("RESTful API StandBy !")
+
 			wg.Add(1)
 			go func() {
 				RestSvcStandBy(RestHandler)
@@ -187,6 +190,7 @@ func RunRequest(MsgHandler func(v *AbangoAsk) (string, string, error), params *s
 	}
 }
 
+///쓰이고 있지 않음.
 func GetEnvConf() error { // Kangan only
 
 	conf := "conf/"

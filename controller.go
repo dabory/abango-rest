@@ -4,8 +4,7 @@ import (
 	"strings"
 	"time"
 
-	e "github.com/dabory/abango/etc"
-
+	e "github.com/dabory/abango-rest/etc"
 	"github.com/go-xorm/xorm"
 )
 
@@ -60,20 +59,18 @@ func (c *Controller) AnswerJson() {
 
 func (c *Controller) GetAbangoAccessAndDb() error {
 
-	e.OkLog("kkkkkkk")
-
 	if err := c.GetAccessAuth(); err == nil {
 		var err2 error
 		if c.Db, err2 = xorm.NewEngine(c.Access.DbType, c.Access.DbConnStr); err2 == nil {
 			// db, err := xorm.NewEngine(XEnc.DbType, "root:root@tcp(127.0.0.1:3306)/kangan?charset=utf8&parseTime=True")
 
 			strArr := strings.Split(c.Access.DbConnStr, "@tcp")
-			// if len(strArr) == 2 {
-			// 	e.OkLog(strArr[1])
-			// } else {
-			// 	e.MyErr(strArr[1], err2, true)
-			// 	return err2
-			// }
+			if len(strArr) == 2 {
+				e.OkLog(strArr[1])
+			} else {
+				e.MyErr(strArr[1], err2, true)
+				return err2
+			}
 
 			c.Db.ShowSQL(false)
 			c.Db.SetMaxOpenConns(100)
@@ -96,12 +93,13 @@ func (c *Controller) GetAbangoAccessAndDb() error {
 
 func (c *Controller) GetAccessAuth() error {
 
-	DBConnStringkkk := XConfig["DbHost"]
-	e.OkLog(DBConnStringkkk)
 	c.Access.UserId = 10
-	c.Access.DbType = "mysql"
+	c.Access.DbType = XConfig["DbType"]
 	// c.Access.DbConnStr = "ssohost_db:Qw3AnH4fSSO@tcp(13.124.2.254:3306)/ssohost_db?charset=utf8"
-	c.Access.DbConnStr = "root:root@tcp(mysql57-c:3306)/ssohost_db?charset=utf8"
+	c.Access.DbConnStr = XConfig["DbUser"] + ":" + XConfig["DbPassword"] + "@tcp(" + XConfig["DbHost"] + ":" + XConfig["DbPort"] + ")/" + XConfig["DbName"] + "?charset=utf8"
+	// e.OkLog(c.Access.DbConnStr)
+
+	// c.Access.DbConnStr = "root:root@tcp(mysql57-c:3306)/ssohost_db?charset=utf8"
 
 	return nil
 }
