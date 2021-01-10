@@ -6,7 +6,7 @@ import (
 
 func RestSvcStandBy(RouterHandler func(*AbangoAsk)) {
 
-	MyLinkXDB()
+	// MyLinkXDB()
 	var v AbangoAsk
 	RouterHandler(&v)
 }
