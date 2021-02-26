@@ -90,6 +90,29 @@ func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
 	wg.Wait()
 }
 
+func RunRouterPostNormal(askuri string, body string) (string, string, string) {
+
+	if err := GetXConfig(); err == nil {
+
+		e.InitLog(XConfig["LogFilePath"], XConfig["ShowLogStdout"])
+		log.Print("============ RunEndRequest Begins ==============")
+
+		// fmt.Println(body)
+		apiMethod := "POST"
+		askBytes := []byte(body)
+		restUri := XConfig["RestConnect"] + askuri
+		if retstr, retsta, err := e.GetHttpResponse(apiMethod, restUri, askBytes); err == nil {
+			return string(retstr), string(retsta), ""
+		} else {
+			return "", "", ""
+		}
+
+	} else {
+		return "", "", e.MyErr("XCVZDSFGQWERDZ-Unable to get GetXConfig()", nil, true).Error()
+	}
+	return "", "", "asfklsjljfad-Reached to end of RunEndRequest !"
+}
+
 func RunEndRequest(params string, body string) string {
 
 	if err := GetXConfig(); err == nil {

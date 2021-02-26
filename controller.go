@@ -23,6 +23,14 @@ func (c *Controller) Init(ask AbangoAsk) {
 	c.GetAbangoAccessAndDb()
 }
 
+func (c *Controller) InitNormal() {
+	c.ServerVars = make(map[string]string) // 반드시 할당해줘야 함.
+	c.Data = make(map[interface{}]interface{})
+	//c.Ctx.ReturnTopic = "ljsldjfalsdfja" // 여기서 메모리 할당이 한됨'
+
+	c.GetAbangoAccessAndDb()
+}
+
 // func (c *Controller) KafkaAnswer(body string) {
 
 // 	// c.Ctx.Answer.Body = []byte(body) // 쓸데없는 것 같은데 나중에 지
