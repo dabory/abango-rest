@@ -36,20 +36,61 @@ func InitLog(path string, showstdout string) error {
 	return nil
 }
 
-func OkLog(s string) {
+func RecRead(index string, recname string) string {
+	return LogStr(index + "@Read " + recname)
+}
+
+func RecNotFound(index string, recname string) string {
+	return LogStr(index + "@Not Found " + recname)
+}
+
+func RecTechErr(index string, recname string) string {
+	return LogStr(index + "@Tech Error in Reading " + recname)
+}
+
+func OkLog(s string) error {
 	// log.Logger
 	log.Println("[OK]: " + s)
+	return nil
+}
+
+func LogStr(s string) string { // nㅣl 아님 경우만 처리(!!중요)
+	str := "[Cnd]: " + s
+	log.Println(str)
+
+	i := strings.Index(s, "@")
+	return s[i+1:]
+}
+
+func LogErr(s string, err error) error { // nㅣl 아님 경우만 처리(!!중요)
+	var errStr string
+	if err != nil {
+		errStr = err.Error()
+	} else {
+		log.Println("========= Fatal: error is nil ==========")
+	}
+	str := s + " * " + errStr
+	log.Println("[Cnd]: " + str)
+	i := strings.Index(str, "@")
+	return errors.New(str[i+1:])
 }
 
 func AokLog(s string) {
 	log.Println("[Abango-OK]: " + s)
 }
 
-func ErrLog(point string, err error) {
-	log.Println("[ERROR]: " + point)
+func ErrLog(s string, err error) error { // // nㅣl처리 아주 중요함
+	var errStr string
 	if err != nil {
-		fmt.Println("[err.Error()]:", err)
+		errStr = err.Error()
+	} else {
+		log.Println("========= Fatal: error is nil ==========")
 	}
+
+	str := "[Error]: " + s + " * " + errStr
+	log.Println(str)
+	return errors.New(str)
+
 }
 
 func ChkLog(point string, x ...interface{}) {

@@ -1,15 +1,18 @@
 package abango
 
-import "github.com/go-xorm/xorm"
+import (
+	"github.com/go-xorm/xorm"
+	"github.com/tidwall/buntdb"
+)
 
 var (
 	XConfig   map[string]string
 	FrontVars map[string]string //Fronrt End Server Variables
 )
 var (
-	XEnv *EnvConf     //Kangan only
-	XDB  *xorm.Engine //Kangan only
-
+	XEnv *EnvConf
+	XDB  *xorm.Engine
+	MDB  *buntdb.DB
 )
 
 // 1. Receivers /////////////////////////////////////////////////////////////////
@@ -23,6 +26,7 @@ type Controller struct {
 	Ctx            Context
 	controllerName string
 	actionName     string
+	GateToken      string
 	ConnString     string
 	ServerVars     map[string]string //Fronrt End Server Variables
 	GlobalVars     map[string]string //Fronrt End Global Variables

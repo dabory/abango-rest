@@ -14,6 +14,10 @@ import (
 	"strings"
 )
 
+func RandBytes(i int) []byte {
+	return []byte(RandString(i))
+}
+
 func RandString(i int) string {
 	b := make([]byte, i)
 	rand.Read(b)
@@ -81,7 +85,6 @@ func ParentDir(params ...string) string {
 	return parentdir
 }
 
-// snake string, XxYy to xx_yy , XxYY to xx_yy
 func TableName(m interface{}) string {
 	s := reflect.TypeOf(m).Name()
 	return SnakeString(s)

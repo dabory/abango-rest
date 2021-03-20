@@ -41,6 +41,10 @@ type RunConf struct {
 	ConfPostFix string
 }
 
+type BaseReceiver struct {
+	GateToken string
+}
+
 func init() {
 	// e.OkLog("Abango Initialized")
 
@@ -56,6 +60,7 @@ func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
 
 		if XConfig["XDBOn"] == "Yes" {
 			MyLinkXDB()
+			// GetDB()
 		}
 
 		if XConfig["KafkaOn"] == "Yes" {
@@ -101,6 +106,7 @@ func RunRouterPostNormal(askuri string, body string) (string, string, string) {
 		apiMethod := "POST"
 		askBytes := []byte(body)
 		restUri := XConfig["RestConnect"] + askuri
+		// fmt.Println(restUri)
 		if retstr, retsta, err := e.GetHttpResponse(apiMethod, restUri, askBytes); err == nil {
 			return string(retstr), string(retsta), ""
 		} else {
@@ -268,9 +274,7 @@ func MyLinkXDB() { //   항상 연결될 수 있는 MySQL  DB 사전 연결
 	XDB, err = xorm.NewEngine(dbtype, connstr)
 
 	strArr := strings.Split(connstr, "@tcp")
-	if len(strArr) == 2 {
-		e.OkLog("XDB:" + strArr[1])
-	} else {
+	if len(strArr) != 2 {
 		e.MyErr(strArr[1], err, true)
 		return
 	}
@@ -280,9 +284,9 @@ func MyLinkXDB() { //   항상 연결될 수 있는 MySQL  DB 사전 연결
 	XDB.SetMaxIdleConns(20)
 	XDB.SetConnMaxLifetime(60 * time.Second)
 	if _, err := XDB.IsTableExist("aaa"); err != nil { //Connect Check
-		e.MyErr("DATABASE DISCONNECTED11", err, true)
+		e.MyErr("ASDFAERAFE-DATABASE DISCONNECTED", err, true)
 	} else {
-		e.OkLog("DATABASE CONNECTED")
+		e.OkLog("XDB CONNECTED :" + strArr[1])
 	}
 
 }
