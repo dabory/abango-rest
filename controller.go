@@ -20,12 +20,12 @@ func (c *Controller) GetYDB() (int, string) {
 		c.ConnString = XConfig["TestYDBConnString"]
 	} else {
 		if c.ConnString, err = MdbView(c.GateToken); err != nil {
-			return 505, e.LogStr("GateToken Not Found: " + c.GateToken)
+			return 505, e.LogStr("QWFAECAFVD", "GateToken Not Found: "+c.GateToken)
 		}
 	}
 
 	if c.Db, err = xorm.NewEngine(XConfig["DbType"], c.ConnString); err != nil {
-		return 609, e.LogStr("ADASEF-DBEngine Open Error")
+		return 609, e.LogStr("ADASEF", "DBEngine Open Error")
 	}
 
 	var connHint string
