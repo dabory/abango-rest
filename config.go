@@ -24,12 +24,11 @@ func GetXConfig(params ...string) error { // Kafka, gRpc, REST 통합 업그레�
 	}{}
 
 	if file, err := os.Open(RunFilename); err != nil {
-		e.MyErr("WERQRRQERQWERFD", nil, true)
+		e.LogFatal("WERQRRQERQW", file+"  File NOT exist", err)
 		return err
 	} else {
 		decoder := json.NewDecoder(file)
-		if err = decoder.Decode(&run); err != nil {
-			e.MyErr("ERTFDFDAFA", err, true)
+			e.LogFatal("ERTFDFDAFA", file+"Not Decoded", err)
 			return err
 		}
 	}
