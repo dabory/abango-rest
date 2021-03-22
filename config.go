@@ -33,7 +33,7 @@ func GetXConfig(params ...string) error { // Kafka, gRpc, REST 통합 업그레�
 		}
 	}
 
-	XConfig = make(map[string]string) // Just like malloc
+	XConfig	= make(map[string]string) // Just like malloc
 	config := []Param{}
 
 	// var varMap []map[string]interface{}
