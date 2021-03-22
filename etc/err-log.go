@@ -37,42 +37,77 @@ func InitLog(path string, showstdout string) error {
 }
 
 func RecRead(index string, recname string) string {
-	return LogStr(index + "@Read " + recname)
+	return LogStr(index, "@Read "+recname)
 }
 
 func RecNotFound(index string, recname string) string {
-	return LogStr(index + "@Not Found " + recname)
+	return LogStr(index, "@Not Found "+recname)
 }
 
 func RecTechErr(index string, recname string) string {
-	return LogStr(index + "@Tech Error in Reading " + recname)
+	return LogStr(index, "@Tech Error in Reading "+recname)
 }
 
-func OkLog(s string) error {
-	// log.Logger
-	log.Println("[OK]: " + s)
-	return nil
+func LogStr(index string, s string) string { // nㅣl 아님 경우만 처리(!!중요)
+	msg := s
+	str := index + " @ " + msg
+	log.Println("[Cnd]: " + str)
+
+	return msg
 }
 
-func LogStr(s string) string { // nㅣl 아님 경우만 처리(!!중요)
-	str := "[Cnd]: " + s
-	log.Println(str)
-
-	i := strings.Index(s, "@")
-	return s[i+1:]
-}
-
-func LogErr(s string, err error) error { // nㅣl 아님 경우만 처리(!!중요)
+func LogErr(index string, s string, err error) error { // nㅣl 아님 경우만 처리(!!중요)
 	var errStr string
 	if err != nil {
 		errStr = err.Error()
 	} else {
 		log.Println("========= Fatal: error is nil ==========")
 	}
-	str := s + " * " + errStr
+	msg := s + " * " + errStr
+	str := index + " @ " + msg
 	log.Println("[Cnd]: " + str)
-	i := strings.Index(str, "@")
-	return errors.New(str[i+1:])
+	return errors.New(msg)
+}
+
+func LogCritical(index string, s string, err error) { //에러 ㄱ계를 추적
+	var errStr string
+	if err != nil {
+		errStr = err.Error()
+	} else {
+		log.Println("========= Fatal: error is nil ==========")
+	}
+	str := index + " @ " + s + " * " + errStr
+	log.Println("[Fatal]: " + str)
+
+	whereami(2)
+	whereami(3)
+	whereami(4)
+	fmt.Println(strings.Repeat("=", 80))
+
+}
+
+func LogFatal(index string, s string, err error) { //Critical 동일하지만 프로세스 중단
+	var errStr string
+	if err != nil {
+		errStr = err.Error()
+	} else {
+		log.Println("========= Fatal: error is nil ==========")
+	}
+	str := index + " @ " + s + " * " + errStr
+	log.Println("[Fatal]: " + str)
+	단
+	whereami(2)
+	whereami(3)
+	whereami(4)
+	fmt.Println(strings.Repeat("=", 80))
+
+	os.Exit(100)
+}
+
+func OkLog(s string) error {
+	// log.Logger
+	log.Println("[OK]: " + s)
+	return nil
 }
 
 func AokLog(s string) {

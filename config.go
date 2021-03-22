@@ -40,7 +40,8 @@ func GetXConfig(params ...string) error { // Kafka, gRpc, REST 통합 업그레�
 	// var varMap []map[string]interface{}
 	filename := conf + run.ConfSelect + run.ConfPostFix
 	if file, err := os.Open(filename); err != nil {
-		e.MyErr("QERTRRTRRW", err, true)
+		LogFatal(s string, err error)
+		e.MyErr("QERTRRT@XConfig File NOT exist", err, true)
 		return err
 	} else {
 		decoder := json.NewDecoder(file)
@@ -49,7 +50,7 @@ func GetXConfig(params ...string) error { // Kafka, gRpc, REST 통합 업그레�
 				XConfig[p.Key] = p.Value
 			}
 		} else {
-			e.MyErr("LAAFDFERHWERYTY", err, true)
+			e.MyErr("QWERCQQGE#Y@"+file+" Not Decoded", err, true)
 			return err
 		}
 	}
