@@ -41,9 +41,9 @@ func (c *Controller) GetYDB() (int, string) {
 	c.Db.SetMaxIdleConns(20)
 	c.Db.SetConnMaxLifetime(60 * time.Second)
 	if _, err := c.Db.IsTableExist("aaa"); err == nil {
-		return 200, e.LogStr("YDB connection in " + connHint)
+		return 200, e.LogStr("ASDFASFQFE", "YDB connection in "+connHint)
 	} else {
-		return 609, e.LogStr("PUBGVD-YDB connection Fail in " + connHint)
+		return 609, e.LogStr("PUBGVD-", "YDB connection Fail in "+connHint)
 	}
 }
 
