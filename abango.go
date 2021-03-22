@@ -56,7 +56,7 @@ func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
 
 	var wg sync.WaitGroup
 
-	e.AokLog("Abango Clustered Framework Started KKKK!")
+	e.AokLog("Abango Clustered Framework Started !")
 	fmt.Println("1")
 	if err := GetXConfig(); err == nil {
 
