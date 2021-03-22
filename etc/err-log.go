@@ -95,7 +95,7 @@ func LogFatal(index string, s string, err error) { //Critical 동일하지만 �
 	}
 	str := index + " @ " + s + " * " + errStr
 	log.Println("[Fatal]: " + str)
-	단
+
 	whereami(2)
 	whereami(3)
 	whereami(4)
