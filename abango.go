@@ -2,6 +2,7 @@ package abango
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -56,8 +57,10 @@ func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
 	var wg sync.WaitGroup
 
 	e.AokLog("Abango Clustered Framework Started KKKK!")
+	fmt.Println("1")
 	if err := GetXConfig(); err == nil {
 
+		fmt.Println("2")
 		if XConfig["XDBOn"] == "Yes" {
 			MyLinkXDB()
 			// GetDB()
