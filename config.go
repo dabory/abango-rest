@@ -24,16 +24,18 @@ func GetXConfig(params ...string) error { // Kafka, gRpc, REST 통합 업그레�
 	}{}
 
 	if file, err := os.Open(RunFilename); err != nil {
-		e.LogFatal("WERQRRQERQW", file+"  File NOT exist", err)
+		e.LogFatal("WERQRRQERQW", RunFilename+"  File NOT exist", err)
 		return err
 	} else {
 		decoder := json.NewDecoder(file)
-			e.LogFatal("ERTFDFDAFA", file+"Not Decoded", err)
+		if err = decoder.Decode(&run); err != nil {
+			e.LogFatal("ERTFDFDAFA", RunFilename+"Not Decoded", err)
 			return err
 		}
 	}
 
-	XConfig	= make(map[string]string) // Just like malloc
+	XConfig = make(map[string]string) // Just like malloc
+	// XConfig	= make(map[string]string) // Just like malloc
 	config := []Param{}
 
 	// var varMap []map[string]interface{}
@@ -48,7 +50,7 @@ func GetXConfig(params ...string) error { // Kafka, gRpc, REST 통합 업그레�
 				XConfig[p.Key] = p.Value
 			}
 		} else {
-			e.LogFatal("QWERCQQGE", file+"Not Decoded", err)
+			e.LogFatal("QWERCQQGE", filename+"Not Decoded", err)
 		}
 	}
 

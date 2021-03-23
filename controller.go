@@ -33,7 +33,7 @@ func (c *Controller) GetYDB() (int, string) {
 	if len(strArr) == 2 {
 		connHint = strArr[1]
 	} else {
-		return 507, e.LogStr("ASDFQEWFA-connString format mismatch: " + strArr[1])
+		return 507, e.LogStr("ASDFQEWFA", "connString format mismatch: "+strArr[1])
 	}
 
 	c.Db.ShowSQL(false)
