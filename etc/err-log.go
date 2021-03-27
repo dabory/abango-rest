@@ -36,16 +36,64 @@ func InitLog(path string, showstdout string) error {
 	return nil
 }
 
+func PageCntErr(index string, recname string) string {
+	return LogStr(index, "Count Query Error "+recname)
+}
+
+func PageRead(index string, recname string) string {
+	return LogStr(index, "Page Read "+recname)
+}
+
+func PageQryErr(index string, recname string) string {
+	return LogStr(index, "Page Query Error "+recname)
+}
+
 func RecRead(index string, recname string) string {
-	return LogStr(index, "@Read "+recname)
+	return LogStr(index, "Read "+recname)
 }
 
 func RecNotFound(index string, recname string) string {
-	return LogStr(index, "@Not Found "+recname)
+	return LogStr(index, "Not Found "+recname)
 }
 
-func RecTechErr(index string, recname string) string {
-	return LogStr(index, "@Tech Error in Reading "+recname)
+func RecReadErr(index string, recname string) string {
+	return LogStr(index, "Tech Error in Reading "+recname)
+}
+
+func RecAdded(index string, recname string) string {
+	return LogStr(index, "Add "+recname)
+}
+
+func RecNotAdded(index string, recname string) string {
+	return LogStr(index, "Not Added "+recname)
+}
+
+func RecAddErr(index string, recname string) string {
+	return LogStr(index, "Tech Error in Adding "+recname)
+}
+
+func RecEdited(index string, recname string) string {
+	return LogStr(index, "Edtit "+recname)
+}
+
+func RecNotEdited(index string, recname string) string {
+	return LogStr(index, "Not Edited-'Same Contents Update' is NOT necessary"+recname)
+}
+
+func RecEditErr(index string, recname string) string {
+	return LogStr(index, "Tech Error in Editing "+recname)
+}
+
+func RecDeleted(index string, recname string) string {
+	return LogStr(index, "Delete "+recname)
+}
+
+func RecNotDeleted(index string, recname string) string {
+	return LogStr(index, "Not Deleted "+recname)
+}
+
+func RecDelErr(index string, recname string) string {
+	return LogStr(index, "Tech Error in Deleting "+recname)
 }
 
 func LogStr(index string, s string) string { // nㅣl 아님 경우만 처리(!!중요)

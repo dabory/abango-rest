@@ -1,6 +1,7 @@
 package abango
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -57,7 +58,6 @@ func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
 	var wg sync.WaitGroup
 
 	e.AokLog("Abango Clustered Framework Started !")
-	fmt.Println("1")
 	if err := GetXConfig(); err == nil {
 
 		fmt.Println("2")
@@ -99,23 +99,24 @@ func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
 }
 
 func RunRouterPostNormal(askuri string, body string) (string, string, string) {
-
 	if err := GetXConfig(); err == nil {
-
 		e.InitLog(XConfig["LogFilePath"], XConfig["ShowLogStdout"])
 		log.Print("============ RunEndRequest Begins ==============")
 
-		// fmt.Println(body)
 		apiMethod := "POST"
 		askBytes := []byte(body)
 		restUri := XConfig["RestConnect"] + askuri
-		// fmt.Println(restUri)
-		if retstr, retsta, err := e.GetHttpResponse(apiMethod, restUri, askBytes); err == nil {
-			return string(retstr), string(retsta), ""
+		if retBytes, retstaBytes, err := e.GetHttpResponse(apiMethod, restUri, askBytes); err == nil {
+			var out bytes.Buffer
+			err := json.Indent(&out, retBytes, "", "  ")
+			if err == nil {
+				return out.String(), string(retstaBytes), ""
+			} else {
+				return string(retBytes), string(retstaBytes), ""
+			}
 		} else {
 			return "", "", ""
 		}
-
 	} else {
 		return "", "", e.MyErr("XCVZDSFGQWERDZ-Unable to get GetXConfig()", nil, true).Error()
 	}
