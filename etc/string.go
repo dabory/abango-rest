@@ -31,7 +31,7 @@ func GetAskName() string {
 		MyErr("ZMXCDKDALKSJD", errors.New("command arguments are less then 2"), true)
 	} else {
 
-		return os.Args[i-1]
+		return os.Args[i-1] // 맨뒤의 Arg 를 json 화일명으로 간주
 	}
 	return ""
 }

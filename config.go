@@ -2,7 +2,6 @@ package abango
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 
 	e "github.com/dabory/abango-rest/etc"
@@ -35,7 +34,6 @@ func GetXConfig(params ...string) error { // Kafka, gRpc, REST 통합 업그레�
 		}
 	}
 
-	fmt.Println("lksjldjasdfj")
 	XConfig = make(map[string]string) // Just like malloc
 	// XConfig	= make(map[string]string) // Just like malloc
 	config := []Param{}

@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"runtime"
 	"strconv"
 	"strings"
@@ -36,6 +37,14 @@ func GetHttpResponse(method string, apiurl string, jsBytes []byte) ([]byte, []by
 	req.Header.Add("Endpoint-Agent", "abango-rest-api-v1.0")
 	req.Header.Add("Accept-Language", "en-US")
 	req.Header.Add("User-Agent", runtime.GOOS+"-"+runtime.Version()) // for checking OS Type in Server
+
+	i := len(os.Args)
+	if i != 1 { // 1일 경우는 go function call 의 경우 이므로  memory fault 가 난다.
+		gateToken := os.Args[i-2]
+		if len(gateToken) == 20 { // Argument 뒤에서 2번째 Arg가 20자리이면 GateToken 이라고 간주
+			req.Header.Add("GateToken", gateToken)
+		}
+	}
 
 	req.Body = ioutil.NopCloser(bytes.NewReader(jsBytes))
 
