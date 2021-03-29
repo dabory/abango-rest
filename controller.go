@@ -16,8 +16,8 @@ func (c *Controller) Init() (int, string) {
 func (c *Controller) GetYDB() (int, string) {
 
 	var err error
-	if XConfig["TestYDB"] == "Yes" {
-		c.ConnString = XConfig["TestYDBConnString"]
+	if XConfig["DevMode"] == "Yes" {
+		c.ConnString = XConfig["DevYDBConnString"]
 	} else {
 		if c.ConnString, err = MdbView(c.GateToken); err != nil {
 			return 505, e.LogStr("QWFAECAFVD", "GateToken Not Found: "+c.GateToken)

@@ -24,16 +24,17 @@ type Param struct {
 type Controller struct {
 	// Ctx            *context.Context
 	Ctx            Context
-	controllerName string
 	actionName     string
-	GateToken      string
-	ConnString     string
+	controllerName string
 	ServerVars     map[string]string //Fronrt End Server Variables
 	GlobalVars     map[string]string //Fronrt End Global Variables
 	Data           map[interface{}]interface{}
+	Access         AbangoAccess
 
-	Access AbangoAccess
-	Db     *xorm.Engine
+	GateToken  string
+	ConnString string
+	Db         *xorm.Engine
+	V          interface{}
 }
 
 type Context struct {
