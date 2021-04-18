@@ -51,6 +51,7 @@ func NumToDecimal(num interface{}, precision string) string {
 }
 
 func NumToStr(num interface{}) string {
+	numType := reflect.TypeOf(num).String()
 	switch reflect.TypeOf(num).String() {
 	case "int":
 		return fmt.Sprintf("%d", num)
@@ -63,6 +64,6 @@ func NumToStr(num interface{}) string {
 	case "float64":
 		return fmt.Sprintf("%f", num)
 	default:
-		return "Out of Range"
+		return numType + " is Out of Range"
 	}
 }
