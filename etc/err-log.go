@@ -36,16 +36,16 @@ func InitLog(path string, showstdout string) error {
 	return nil
 }
 
-func PageCntErr(index string, recname string) string {
-	return LogStr(index, "Count Query Error "+recname)
+func PageCntErr(index string, tablename string) string {
+	return LogStr(index, "Count Query Error "+tablename+" ")
 }
 
-func PageRead(index string, recname string) string {
-	return LogStr(index, "Page Read "+recname)
+func PageRead(index string, tablename string) string {
+	return LogStr(index, "Page Read from "+tablename+" ")
 }
 
-func PageQryErr(index string, recname string) string {
-	return LogStr(index, "Page Query Error "+recname)
+func PageQryErr(index string, tablename string) string {
+	return LogStr(index, "Page Query Error "+tablename+" ")
 }
 
 func RecRead(index string, recname string) string {
