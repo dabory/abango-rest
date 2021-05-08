@@ -122,8 +122,10 @@ func CurrFuncName() string { // nㅣl 아님 경우만 처리(!!중요)
 	n := runtime.Callers(2, pc)
 	frames := runtime.CallersFrames(pc[:n])
 	frame, _ := frames.Next()
-	fmt.Printf("%s:%d %s\n", frame.File, frame.Line, frame.Function)
-	return frame.Function
+	s := frame.Function
+	// fmt.Println(s[strings.LastIndex(s, "/")+1:])
+	// fmt.Printf("%s:%d %s\n", frame.File, frame.Line, frame.Function)
+	return s[strings.LastIndex(s, "/")+1:]
 }
 
 func LogCritical(index string, s string, err error) { //에러 ㄱ계를 추적
