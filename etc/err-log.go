@@ -117,6 +117,15 @@ func LogErr(index string, s string, err error) error { // nㅣl 아님 경우만
 	return errors.New(msg)
 }
 
+func CurrFuncName() string { // nㅣl 아님 경우만 처리(!!중요)
+	pc := make([]uintptr, 15)
+	n := runtime.Callers(2, pc)
+	frames := runtime.CallersFrames(pc[:n])
+	frame, _ := frames.Next()
+	fmt.Printf("%s:%d %s\n", frame.File, frame.Line, frame.Function)
+	return frame.Function
+}
+
 func LogCritical(index string, s string, err error) { //에러 ㄱ계를 추적
 	var errStr string
 	if err != nil {
