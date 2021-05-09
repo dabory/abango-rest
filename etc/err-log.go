@@ -96,6 +96,14 @@ func RecDelErr(index string, recname string) string {
 	return LogStr(index, "Tech Error in Deleting "+recname)
 }
 
+func FuncRun(index string, funcname string) string {
+	return LogStr(index, "Function Run from "+funcname+" ")
+}
+
+func FuncRunErr(index string, funcname string) string {
+	return LogStr(index, "Function Run Error in "+funcname+" ")
+}
+
 func LogStr(index string, s string) string { // nㅣl 아님 경우만 처리(!!중요)
 	msg := s
 	str := index + " @ " + msg
@@ -125,7 +133,7 @@ func CurrFuncName() string { // nㅣl 아님 경우만 처리(!!중요)
 	s := frame.Function
 	// fmt.Println(s[strings.LastIndex(s, "/")+1:])
 	// fmt.Printf("%s:%d %s\n", frame.File, frame.Line, frame.Function)
-	return s[strings.LastIndex(s, "/")+1:]
+	return s[strings.LastIndex(s, "/")+1:] + " "
 }
 
 func LogCritical(index string, s string, err error) { //에러 ㄱ계를 추적
