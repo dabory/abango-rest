@@ -107,7 +107,7 @@ func FuncRunErr(index string, funcname string) string {
 func LogStr(index string, s string) string { // nㅣl 아님 경우만 처리(!!중요)
 	msg := s
 	str := index + " @ " + msg
-	log.Println("[Cnd]: " + str)
+	log.Println("[Log]: " + str)
 
 	return msg
 }
