@@ -48,52 +48,52 @@ func PageQryErr(index string, tablename string) string {
 	return LogStr(index, "Page Query Error "+tablename+" ")
 }
 
-func RecRead(index string, recname string) string {
-	return LogStr(index, "Read "+recname)
+func RecRead(index string, msgString string) string {
+	return LogStr(index, "Read "+msgString)
 }
 
-func RecNotFound(index string, recname string) string {
-	return LogStr(index, "Not Found "+recname)
+func RecNotFound(index string, msgString string) string {
+	return LogStr(index, "Not Found "+msgString)
 }
 
-func RecReadErr(index string, recname string) string {
-	return LogStr(index, "Tech Error in Reading "+recname)
+func RecReadErr(index string, msgString string) string {
+	return LogStr(index, "DB error in Reading "+msgString)
 }
 
-func RecAdded(index string, recname string) string {
-	return LogStr(index, "Add "+recname)
+func RecAdded(index string, msgString string) string {
+	return LogStr(index, "Add "+msgString)
 }
 
-func RecNotAdded(index string, recname string) string {
-	return LogStr(index, "Not Added "+recname)
+func RecNotAdded(index string, msgString string) string {
+	return LogStr(index, "Not Added "+msgString)
 }
 
-func RecAddErr(index string, recname string) string {
-	return LogStr(index, "Tech Error in Adding "+recname)
+func RecAddErr(index string, msgString string) string {
+	return LogStr(index, "DB error in Adding "+msgString)
 }
 
-func RecEdited(index string, recname string) string {
-	return LogStr(index, "Edtit "+recname)
+func RecEdited(index string, msgString string) string {
+	return LogStr(index, "Editet "+msgString)
 }
 
-func RecNotEdited(index string, recname string) string {
-	return LogStr(index, "Not Edited-'Same Contents Update' is NOT necessary"+recname)
+func RecNotEdited(index string, msgString string) string {
+	return LogStr(index, "Not Edited-'Same Contents Update' is NOT necessary"+msgString)
 }
 
-func RecEditErr(index string, recname string) string {
-	return LogStr(index, "Tech Error in Editing "+recname)
+func RecEditErr(index string, msgString string) string {
+	return LogStr(index, "DB error in Editing "+msgString)
 }
 
-func RecDeleted(index string, recname string) string {
-	return LogStr(index, "Delete "+recname)
+func RecDeleted(index string, msgString string) string {
+	return LogStr(index, "Delete "+msgString)
 }
 
-func RecNotDeleted(index string, recname string) string {
-	return LogStr(index, "Not Deleted "+recname)
+func RecNotDeleted(index string, msgString string) string {
+	return LogStr(index, "Not Deleted "+msgString)
 }
 
-func RecDelErr(index string, recname string) string {
-	return LogStr(index, "Tech Error in Deleting "+recname)
+func RecDelErr(index string, msgString string) string {
+	return LogStr(index, "DB error in Deleting "+msgString)
 }
 
 func FuncRun(index string, funcname string) string {
