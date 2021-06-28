@@ -77,7 +77,7 @@ func RecEdited(index string, msgString string) string {
 }
 
 func RecNotEdited(index string, msgString string) string {
-	return LogStr(index, "Not Edited-'Same Contents Update' is NOT necessary"+msgString)
+	return LogStr(index, "Not Edited-'Same Contents Update' is NOT necessary with "+msgString)
 }
 
 func RecEditErr(index string, msgString string) string {
