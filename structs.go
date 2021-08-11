@@ -65,3 +65,19 @@ type AbangoAccess struct {
 	DbType    string
 	DbConnStr string
 }
+
+type GateTokenBase struct {
+	ConnString    string
+	UserId        string
+	StorageId     string
+	BranchId      string
+	SalesQtyPoint string
+	SalesPrcPoint string
+	SalesAmtPoint string
+	PurchQtyPoint string
+	PurchPrcPoint string
+	PurchAmtPoint string
+	StockQtyPoint string
+	StockPrcPoint string
+	StockAmtPoint string
+}

@@ -43,9 +43,9 @@ type RunConf struct {
 	ConfPostFix string
 }
 
-type BaseReceiver struct {
-	GateToken string
-}
+// type BaseReceiver struct {
+// 	GateToken string
+// }
 
 func init() {
 	// e.OkLog("Abango Initialized")
