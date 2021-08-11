@@ -1,6 +1,7 @@
 package abango
 
 import (
+	"encoding/json"
 	"strings"
 	"time"
 
@@ -15,21 +16,58 @@ func (c *Controller) Init() (int, string) {
 
 func (c *Controller) GetYDB() (int, string) {
 
+	gtb := &struct {
+		GateTokenBase
+	}{}
+
+	var gtbStr string
 	var err error
 	if XConfig["IsYDBFixed"] == "Yes" {
-		c.ConnString = XConfig["YDBConnString"]
+		c.Gtb.ConnString = XConfig["YDBConnString"]
+		c.Gtb.UserId = 5
+		c.Gtb.StorageId = 1
+		c.Gtb.BranchId = 1
+		c.Gtb.SalesQtyPoint = "0"
+		c.Gtb.SalesPrcPoint = "0"
+		c.Gtb.SalesAmtPoint = "0"
+		c.Gtb.PurchQtyPoint = "0"
+		c.Gtb.PurchPrcPoint = "0"
+		c.Gtb.PurchAmtPoint = "0"
+		c.Gtb.StockQtyPoint = "0"
+		c.Gtb.StockPrcPoint = "0"
+		c.Gtb.StockAmtPoint = "0"
+
 	} else {
-		if c.ConnString, err = MdbView(c.GateToken); err != nil {
+		if gtbStr, err = MdbView(c.GateToken); err != nil {
+			// if c.ConnString, err = MdbView(c.GateToken); err != nil {
 			return 505, e.LogStr("QWFAECAFVD", "GateToken Not Found: "+c.GateToken)
+		}
+
+		if err := json.Unmarshal([]byte(gtbStr), gtb); err != nil {
+			return 505, e.LogStr("QWFAECAFVDS", "AfterBase64Content Format mismatch: "+c.GateToken)
+		} else {
+			c.Gtb.ConnString = gtb.ConnString
+			c.Gtb.UserId = gtb.UserId
+			c.Gtb.StorageId = gtb.StorageId
+			c.Gtb.BranchId = gtb.BranchId
+			c.Gtb.SalesQtyPoint = gtb.SalesQtyPoint
+			c.Gtb.SalesPrcPoint = gtb.SalesPrcPoint
+			c.Gtb.SalesAmtPoint = gtb.SalesAmtPoint
+			c.Gtb.SalesAmtPoint = gtb.SalesAmtPoint
+			c.Gtb.PurchPrcPoint = gtb.PurchPrcPoint
+			c.Gtb.PurchAmtPoint = gtb.PurchAmtPoint
+			c.Gtb.StockQtyPoint = gtb.StockQtyPoint
+			c.Gtb.StockPrcPoint = gtb.StockPrcPoint
+			c.Gtb.StockAmtPoint = gtb.StockAmtPoint
 		}
 	}
 
-	if c.Db, err = xorm.NewEngine(XConfig["DbType"], c.ConnString); err != nil {
+	if c.Db, err = xorm.NewEngine(XConfig["DbType"], c.Gtb.ConnString); err != nil {
 		return 609, e.LogStr("ADASEF", "DBEngine Open Error")
 	}
 
 	var connHint string
-	strArr := strings.Split(c.ConnString, "@tcp")
+	strArr := strings.Split(c.Gtb.ConnString, "@tcp")
 	if len(strArr) == 2 {
 		connHint = strArr[1]
 	} else {
