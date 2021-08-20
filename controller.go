@@ -36,6 +36,7 @@ func (c *Controller) GetYDB() (int, string) {
 		c.Gtb.StockQtyPoint = "0"
 		c.Gtb.StockPrcPoint = "0"
 		c.Gtb.StockAmtPoint = "0"
+		c.Gtb.AccAmtPoint = "0"
 
 	} else {
 		if gtbStr, err = MdbView(c.GateToken); err != nil {
@@ -59,6 +60,7 @@ func (c *Controller) GetYDB() (int, string) {
 			c.Gtb.StockQtyPoint = gtb.StockQtyPoint
 			c.Gtb.StockPrcPoint = gtb.StockPrcPoint
 			c.Gtb.StockAmtPoint = gtb.StockAmtPoint
+			c.Gtb.AccAmtPoint = gtb.AccAmtPoint
 		}
 	}
 

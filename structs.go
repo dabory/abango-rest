@@ -81,4 +81,5 @@ type GateTokenBase struct {
 	StockQtyPoint string
 	StockPrcPoint string
 	StockAmtPoint string
+	AccAmtPoint   string
 }
