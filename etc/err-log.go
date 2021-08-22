@@ -104,6 +104,10 @@ func FuncRunErr(index string, funcname string) string {
 	return LogStr(index, "Function Run Error in "+funcname+" ")
 }
 
+func JsonFormatErr(index string, structname string) string {
+	return LogStr(index, "Json Format mismatches in "+structname+" ")
+}
+
 func LogStr(index string, s string) string { // nㅣl 아님 경우만 처리(!!중요)
 	msg := s
 	str := index + " @ " + msg
