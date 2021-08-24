@@ -41,67 +41,71 @@ func PageCntErr(index string, tablename string) string {
 }
 
 func PageRead(index string, tablename string) string {
-	return LogStr(index, " Page Read from "+tablename+" ")
+	return LogStr(index, "Page Read from "+tablename+" ")
 }
 
 func PageQryErr(index string, tablename string) string {
-	return LogStr(index, " Page Query Error "+tablename+" ")
+	return LogStr(index, "Page Query Error "+tablename+" ")
 }
 
 func RecRead(index string, msgString string) string {
-	return LogStr(index, " Read "+msgString)
+	return LogStr(index, "Read "+msgString)
 }
 
 func RecNotFound(index string, msgString string) string {
-	return LogStr(index, " Not Found "+msgString)
+	return LogStr(index, "Not Found "+msgString)
 }
 
 func RecReadErr(index string, msgString string) string {
-	return LogStr(index, " DB error in Reading "+msgString)
+	return LogStr(index, "DB error in Reading "+msgString)
 }
 
 func RecAdded(index string, msgString string) string {
-	return LogStr(index, " Add "+msgString)
+	return LogStr(index, "Add "+msgString)
 }
 
 func RecNotAdded(index string, msgString string) string {
-	return LogStr(index, " Not Added "+msgString)
+	return LogStr(index, "Not Added "+msgString)
 }
 
 func RecAddErr(index string, msgString string) string {
-	return LogStr(index, " DB error in Adding "+msgString)
+	return LogStr(index, "DB error in Adding "+msgString)
 }
 
 func RecEdited(index string, msgString string) string {
-	return LogStr(index, " Edited "+msgString)
+	return LogStr(index, "Editet "+msgString)
 }
 
 func RecNotEdited(index string, msgString string) string {
-	return LogStr(index, " Not Edited-'Same Contents Update' is NOT necessary with "+msgString)
+	return LogStr(index, "Not Edited-'Same Contents Update' is NOT necessary with "+msgString)
 }
 
 func RecEditErr(index string, msgString string) string {
-	return LogStr(index, " DB error in Editing "+msgString)
+	return LogStr(index, "DB error in Editing "+msgString)
 }
 
 func RecDeleted(index string, msgString string) string {
-	return LogStr(index, " Delete "+msgString)
+	return LogStr(index, "Delete "+msgString)
 }
 
 func RecNotDeleted(index string, msgString string) string {
-	return LogStr(index, " DB error in Deleting "+msgString)
+	return LogStr(index, "Not Deleted "+msgString)
+}
+
+func RecDelErr(index string, msgString string) string {
+	return LogStr(index, "DB error in Deleting "+msgString)
 }
 
 func FuncRun(index string, funcname string) string {
-	return LogStr(index, " Function Run from "+funcname+" ")
+	return LogStr(index, "Function Run from "+funcname+" ")
 }
 
 func FuncRunErr(index string, funcname string) string {
-	return LogStr(index, " Function Run Error in "+funcname+" ")
+	return LogStr(index, "Function Run Error in "+funcname+" ")
 }
 
 func JsonFormatErr(index string, structname string) string {
-	return LogStr(index, " Json Format mismatches in "+structname+" ")
+	return LogStr(index, "Json Format mismatches in "+structname+" ")
 }
 
 func LogStr(index string, s string) string { // nㅣl 아님 경우만 처리(!!중요)
@@ -205,13 +209,13 @@ func ChkLog(point string, x ...interface{}) {
 // }
 
 func MyErr(s string, e error, eout bool) error {
-	fmt.Println(" [MyErr] Position -> ", s, strings.Repeat("=", 40))
+	fmt.Println("[MyErr] Position -> ", s, strings.Repeat("=", 40))
 
 	emsg := ""
 	if e != nil {
-		emsg = " Error: " + e.Error()
+		emsg = "Error: " + e.Error()
 	} else {
-		emsg = " ERROR is Nil: Wrong Error Check: Check err != OR err == is correct !  "
+		emsg = "ERROR is Nil: Wrong Error Check: Check err != OR err == is correct !  "
 	}
 	fmt.Println(emsg, "\n")
 	whereami(2)
@@ -220,7 +224,7 @@ func MyErr(s string, e error, eout bool) error {
 	fmt.Println(strings.Repeat("=", 80))
 
 	if e != nil && eout == true { // quit running if it is FATAL ERROR
-		log.Println(" [FATAL-ERROR] : EXIT 100 ")
+		log.Println("[FATAL-ERROR] : EXIT 100")
 		os.Exit(100)
 	}
 	return errors.New(emsg)
