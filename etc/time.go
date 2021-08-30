@@ -23,3 +23,7 @@ func GetNowUnix(sec ...int) int64 {
 	}
 	return ret
 }
+
+func GetNowYYMMDD() string {
+	return time.Now().Format("060102")
+}
