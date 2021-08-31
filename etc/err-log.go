@@ -45,7 +45,7 @@ func PageRead(index string, tablename string) string {
 }
 
 func PageQryErr(index string, tablename string) string {
-	return LogStr(index, " "+tablename+" Page Query Error ")
+	return LogStr(index, " Page Query Error "+tablename+" ")
 }
 
 func RecRead(index string, msgString string) string {
