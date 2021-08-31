@@ -101,7 +101,7 @@ func FuncRun(index string, funcname string) string {
 }
 
 func FuncRunErr(index string, funcname string) string {
-	return LogStr(index, " Function Run Error in "+funcname+" ")
+	return LogStr(index, " Function Run Error in "+funcname)
 }
 
 func JsonFormatErr(index string, structname string) string {
