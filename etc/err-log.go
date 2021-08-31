@@ -89,11 +89,11 @@ func RecDeleted(index string, msgString string) string {
 }
 
 func RecNotDeleted(index string, msgString string) string {
-	return LogStr(index, " Not Deleted "+msgString+" "
+	return LogStr(index, " Not Deleted "+msgString+" ")
 }
 
 func RecDelErr(index string, msgString string) string {
-	return LogStr(index, " DB error in Deleting "+msgString+" "
+	return LogStr(index, " DB error in Deleting "+msgString+" ")
 }
 
 func FuncRun(index string, funcname string) string {
@@ -101,7 +101,7 @@ func FuncRun(index string, funcname string) string {
 }
 
 func FuncRunErr(index string, funcname string) string {
-	return LogStr(index, " Function Run Error in "+funcname)
+	return LogStr(index, " Function Run Error in "+funcname+" ")
 }
 
 func JsonFormatErr(index string, structname string) string {
