@@ -45,55 +45,55 @@ func PageRead(index string, tablename string) string {
 }
 
 func PageQryErr(index string, tablename string) string {
-	return LogStr(index, " Page Query Error "+tablename+" ")
+	return LogStr(index, " "+tablename+" Page Query Error ")
 }
 
 func RecRead(index string, msgString string) string {
-	return LogStr(index, " Read "+msgString)
+	return LogStr(index, " Read "+msgString+" ")
 }
 
 func RecNotFound(index string, msgString string) string {
-	return LogStr(index, " Not Found "+msgString)
+	return LogStr(index, " Not Found "+msgString+" ")
 }
 
 func RecReadErr(index string, msgString string) string {
-	return LogStr(index, " B error in Reading "+msgString)
+	return LogStr(index, " B error in Reading "+msgString+" ")
 }
 
 func RecAdded(index string, msgString string) string {
-	return LogStr(index, " Add "+msgString)
+	return LogStr(index, " Add "+msgString+" ")
 }
 
 func RecNotAdded(index string, msgString string) string {
-	return LogStr(index, " Not Added "+msgString)
+	return LogStr(index, " Not Added "+msgString+" ")
 }
 
 func RecAddErr(index string, msgString string) string {
-	return LogStr(index, " DB error in Adding "+msgString)
+	return LogStr(index, " DB error in Adding "+msgString+" ")
 }
 
 func RecEdited(index string, msgString string) string {
-	return LogStr(index, " Edited "+msgString)
+	return LogStr(index, " Edited "+msgString+" ")
 }
 
 func RecNotEdited(index string, msgString string) string {
-	return LogStr(index, " Not Edited-'Same Contents Update' is NOT necessary with "+msgString)
+	return LogStr(index, " Not Edited-'Same Contents Update' is NOT necessary with "+msgString+" ")
 }
 
 func RecEditErr(index string, msgString string) string {
-	return LogStr(index, " DB error in Editing "+msgString)
+	return LogStr(index, " DB error in Editing "+msgString+" ")
 }
 
 func RecDeleted(index string, msgString string) string {
-	return LogStr(index, " Delete "+msgString)
+	return LogStr(index, " Delete "+msgString+" ")
 }
 
 func RecNotDeleted(index string, msgString string) string {
-	return LogStr(index, " Not Deleted "+msgString)
+	return LogStr(index, " Not Deleted "+msgString+" "
 }
 
 func RecDelErr(index string, msgString string) string {
-	return LogStr(index, " DB error in Deleting "+msgString)
+	return LogStr(index, " DB error in Deleting "+msgString+" "
 }
 
 func FuncRun(index string, funcname string) string {
