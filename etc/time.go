@@ -24,6 +24,12 @@ func GetNowUnix(sec ...int) int64 {
 	return ret
 }
 
-func GetNowYYMMDD() string {
-	return time.Now().Format("060102")
+func GetNowDate(i int) string {
+	format := "060102"
+	if i == 8 {
+		format = "20060102"
+	} else if i == 6 {
+		format = "060102"
+	}
+	return time.Now().Format(format)
 }
