@@ -193,7 +193,7 @@ func ErrLog(s string, err error) error { // // nㅣl처리 아주 중요함
 		log.Println("========= Fatal: error is nil ==========")
 	}
 
-	str := "[Error]: " + s + " : " + errStr
+	str := "[Error]: " + s + " (Err): " + errStr
 	log.Println(str)
 	return errors.New(str)
 
