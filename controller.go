@@ -27,16 +27,16 @@ func (c *Controller) GetYDB() (int, string) {
 		c.Gtb.UserId = 5
 		c.Gtb.StorageId = 1
 		c.Gtb.BranchId = 1
-		c.Gtb.SalesQtyPoint = "0"
-		c.Gtb.SalesPrcPoint = "0"
-		c.Gtb.SalesAmtPoint = "0"
-		c.Gtb.PurchQtyPoint = "0"
-		c.Gtb.PurchPrcPoint = "0"
-		c.Gtb.PurchAmtPoint = "0"
-		c.Gtb.StockQtyPoint = "0"
-		c.Gtb.StockPrcPoint = "0"
-		c.Gtb.StockAmtPoint = "0"
-		c.Gtb.AccAmtPoint = "0"
+		c.Gtb.SalesQtyPoint = 0
+		c.Gtb.SalesPrcPoint = 0
+		c.Gtb.SalesAmtPoint = 0
+		c.Gtb.PurchQtyPoint = 0
+		c.Gtb.PurchPrcPoint = 0
+		c.Gtb.PurchAmtPoint = 0
+		c.Gtb.StockQtyPoint = 0
+		c.Gtb.StockPrcPoint = 0
+		c.Gtb.StockAmtPoint = 0
+		c.Gtb.AccAmtPoint = 0
 
 	} else {
 		if gtbStr, err = MdbView(c.GateToken); err != nil {
