@@ -72,14 +72,14 @@ type GateTokenBase struct {
 	UserId        int
 	StorageId     int
 	BranchId      int
-	SalesQtyPoint string
-	SalesPrcPoint string
-	SalesAmtPoint string
-	PurchQtyPoint string
-	PurchPrcPoint string
-	PurchAmtPoint string
-	StockQtyPoint string
-	StockPrcPoint string
-	StockAmtPoint string
-	AccAmtPoint   string
+	SalesQtyPoint int
+	SalesPrcPoint int
+	SalesAmtPoint int
+	PurchQtyPoint int
+	PurchPrcPoint int
+	PurchAmtPoint int
+	StockQtyPoint int
+	StockPrcPoint int
+	StockAmtPoint int
+	AccAmtPoint   int
 }
