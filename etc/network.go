@@ -2,6 +2,7 @@ package etc
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -88,6 +89,7 @@ func GetHttpResponseOLd(method string, apiurl string, jsBytes []byte) ([]byte, [
 	req.Header.Add("User-Agent", runtime.GOOS+"-"+runtime.Version()) // for checking OS Type in Server
 	req.Header.Add("RequestHost", "kkkk")                            // Request Host 반드시  넣는다.
 
+	fmt.Println("asldkasdldfalk")
 	req.Body = ioutil.NopCloser(bytes.NewReader(jsBytes))
 
 	// Client객체에서 Request 실행
