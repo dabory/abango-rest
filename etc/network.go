@@ -37,7 +37,7 @@ func GetHttpResponse(method string, apiurl string, jsBytes []byte) ([]byte, []by
 	req.Header.Add("Endpoint-Agent", "abango-rest-api-v1.0")
 	req.Header.Add("Accept-Language", "en-US")
 	req.Header.Add("User-Agent", runtime.GOOS+"-"+runtime.Version()) // for checking OS Type in Server
-	// Go mod 로 안먹어서 임시로 이렇게 기록해놓음.
+	// 들어가지 않으면 Request Reject 됨.
 	req.Header.Add("FrontendHost", req.Host)
 
 	i := len(os.Args)
