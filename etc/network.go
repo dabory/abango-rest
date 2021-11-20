@@ -2,7 +2,6 @@ package etc
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -38,11 +37,9 @@ func GetHttpResponse(method string, apiurl string, jsBytes []byte) ([]byte, []by
 	req.Header.Add("Endpoint-Agent", "abango-rest-api-v1.0")
 	req.Header.Add("Accept-Language", "en-US")
 	req.Header.Add("User-Agent", runtime.GOOS+"-"+runtime.Version()) // for checking OS Type in Server
-	req.Header.Add("RequestHost", "kkkk")                            // Request Host 반드시  넣는다.
+	// Go mod 로 안먹어서 임시로 이렇게 기록해놓음.
+	req.Header.Add("FrontendHost", req.Host)
 
-	fmt.Println("aaaaaaaa")
-	fmt.Println("aaaaaaaa")
-	fmt.Println("aaaaaaaa")
 	i := len(os.Args)
 	if i != 1 { // 1일 경우는 go function call 의 경우 이므로  memory fault 가 난다.
 		gateToken := os.Args[i-2]
