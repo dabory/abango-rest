@@ -86,6 +86,7 @@ func GetHttpResponseOLd(method string, apiurl string, jsBytes []byte) ([]byte, [
 	req.Header.Add("Endpoint-Agent", "abango-rest-api-v1.0")
 	req.Header.Add("Accept-Language", "en-US")
 	req.Header.Add("User-Agent", runtime.GOOS+"-"+runtime.Version()) // for checking OS Type in Server
+	req.Header.Add("RequestHost", "kkkk")                            // Request Host 반드시  넣는다.
 
 	req.Body = ioutil.NopCloser(bytes.NewReader(jsBytes))
 
