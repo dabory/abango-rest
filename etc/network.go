@@ -37,8 +37,8 @@ func GetHttpResponse(method string, apiurl string, jsBytes []byte) ([]byte, []by
 	req.Header.Add("Endpoint-Agent", "abango-rest-api-v1.0")
 	req.Header.Add("Accept-Language", "en-US")
 	req.Header.Add("User-Agent", runtime.GOOS+"-"+runtime.Version()) // for checking OS Type in Server
-	// 들어가지 않으면 Request Reject 됨.
-	req.Header.Add("FrontendHost", req.Host)
+	// 들어가지 않으면 Request Reject 됨.  //Go 에서는 SERVER_NAME 을 구할 방법이 없다. 아직까지는
+	req.Header.Add("FrontendHost", "localhost:normal-test")
 
 	i := len(os.Args)
 	if i != 1 { // 1일 경우는 go function call 의 경우 이므로  memory fault 가 난다.
