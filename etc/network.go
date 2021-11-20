@@ -46,6 +46,7 @@ func GetHttpResponse(method string, apiurl string, jsBytes []byte) ([]byte, []by
 		}
 	}
 
+	req.Header.Add("RequestHost", req.Host) // Request Host 반드시  넣는다.
 	req.Body = ioutil.NopCloser(bytes.NewReader(jsBytes))
 
 	// Client객체에서 Request 실행
