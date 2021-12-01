@@ -70,6 +70,7 @@ type AbangoAccess struct {
 type GateTokenBase struct {
 	ConnString    string
 	UserId        int
+	MemberId      int
 	StorageId     int
 	BranchId      int
 	SalesQtyPoint int

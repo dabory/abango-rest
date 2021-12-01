@@ -25,6 +25,7 @@ func (c *Controller) GetYDB() (int, string) {
 	if XConfig["IsYDBFixed"] == "Yes" {
 		c.Gtb.ConnString = XConfig["YDBConnString"]
 		c.Gtb.UserId = 5
+		c.Gtb.MemberId = 5
 		c.Gtb.StorageId = 1
 		c.Gtb.BranchId = 1
 		c.Gtb.SalesQtyPoint = 0
@@ -49,6 +50,7 @@ func (c *Controller) GetYDB() (int, string) {
 		} else {
 			c.Gtb.ConnString = gtb.ConnString
 			c.Gtb.UserId = gtb.UserId
+			c.Gtb.MemberId = gtb.MemberId
 			c.Gtb.StorageId = gtb.StorageId
 			c.Gtb.BranchId = gtb.BranchId
 			c.Gtb.SalesQtyPoint = gtb.SalesQtyPoint
