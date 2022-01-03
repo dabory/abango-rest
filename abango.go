@@ -109,6 +109,7 @@ func RunRouterPostNormal(askuri string, body string) (string, string, string) {
 		restUri := XConfig["RestConnect"] + askuri
 		fmt.Println(askuri)
 		if askuri == "upload-file" {
+			fmt.Println("KKKK")
 			if retBytes, retstaBytes, err := e.UploadFileResponse(apiMethod, restUri, askBytes); err == nil {
 				var out bytes.Buffer
 				err := json.Indent(&out, retBytes, "", "  ")
