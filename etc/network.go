@@ -74,6 +74,7 @@ func GetHttpResponse(method string, apiurl string, jsBytes []byte) ([]byte, []by
 
 func UploadFileResponse(method string, apiurl string, jsBytes []byte) ([]byte, []byte, error) {
 
+	fmt.Println("QQQQ")
 	// uploadurl := "http://localhost:1333/upload"
 	path := "aaa.jpg"
 	paramName := "file"
