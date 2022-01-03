@@ -31,6 +31,7 @@ import (
 
 func GetHttpResponse(method string, apiurl string, jsBytes []byte) ([]byte, []byte, error) {
 
+	fmt.Println(apiurl)
 	reader := bytes.NewBuffer(jsBytes)
 	req, err := http.NewRequest(method, apiurl, reader)
 	if err != nil {
