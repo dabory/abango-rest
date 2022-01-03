@@ -100,7 +100,6 @@ func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
 
 func RunRouterPostNormal(askuri string, body string) (string, string, string) {
 
-	fmt.Println("This is here")
 	if err := GetXConfig(); err == nil {
 		e.InitLog(XConfig["LogFilePath"], XConfig["ShowLogStdout"])
 		log.Print("============ RunEndRequest Begins ==============")
@@ -108,16 +107,31 @@ func RunRouterPostNormal(askuri string, body string) (string, string, string) {
 		apiMethod := "POST"
 		askBytes := []byte(body)
 		restUri := XConfig["RestConnect"] + askuri
-		if retBytes, retstaBytes, err := e.GetHttpResponse(apiMethod, restUri, askBytes); err == nil {
-			var out bytes.Buffer
-			err := json.Indent(&out, retBytes, "", "  ")
-			if err == nil {
-				return out.String(), string(retstaBytes), ""
+		fmt.Println(askuri)
+		if askuri != "upload-file" {
+			if retBytes, retstaBytes, err := e.GetHttpResponse(apiMethod, restUri, askBytes); err == nil {
+				var out bytes.Buffer
+				err := json.Indent(&out, retBytes, "", "  ")
+				if err == nil {
+					return out.String(), string(retstaBytes), ""
+				} else {
+					return string(retBytes), string(retstaBytes), ""
+				}
 			} else {
-				return string(retBytes), string(retstaBytes), ""
+				return "", "", ""
 			}
 		} else {
-			return "", "", ""
+			if retBytes, retstaBytes, err := e.FileUploadResponse(apiMethod, restUri, askBytes); err == nil {
+				var out bytes.Buffer
+				err := json.Indent(&out, retBytes, "", "  ")
+				if err == nil {
+					return out.String(), string(retstaBytes), ""
+				} else {
+					return string(retBytes), string(retstaBytes), ""
+				}
+			} else {
+				return "", "", ""
+			}
 		}
 	} else {
 		return "", "", e.MyErr("XCVZDSFGQWERDZ-Unable to get GetXConfig()", nil, true).Error()
