@@ -99,6 +99,8 @@ func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
 }
 
 func RunRouterPostNormal(askuri string, body string) (string, string, string) {
+
+	fmt.Println("This is here")
 	if err := GetXConfig(); err == nil {
 		e.InitLog(XConfig["LogFilePath"], XConfig["ShowLogStdout"])
 		log.Print("============ RunEndRequest Begins ==============")
