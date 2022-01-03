@@ -72,7 +72,7 @@ func GetHttpResponse(method string, apiurl string, jsBytes []byte) ([]byte, []by
 
 }
 
-func FileUploadResponse(method string, apiurl string, jsBytes []byte) ([]byte, []byte, error) {
+func UploadFileResponse(method string, apiurl string, jsBytes []byte) ([]byte, []byte, error) {
 
 	// uploadurl := "http://localhost:1333/upload"
 	path := "aaa.jpg"

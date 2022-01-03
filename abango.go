@@ -108,8 +108,8 @@ func RunRouterPostNormal(askuri string, body string) (string, string, string) {
 		askBytes := []byte(body)
 		restUri := XConfig["RestConnect"] + askuri
 		fmt.Println(askuri)
-		if askuri != "upload-file" {
-			if retBytes, retstaBytes, err := e.GetHttpResponse(apiMethod, restUri, askBytes); err == nil {
+		if askuri == "upload-file" {
+			if retBytes, retstaBytes, err := e.UploadFileResponse(apiMethod, restUri, askBytes); err == nil {
 				var out bytes.Buffer
 				err := json.Indent(&out, retBytes, "", "  ")
 				if err == nil {
@@ -121,7 +121,7 @@ func RunRouterPostNormal(askuri string, body string) (string, string, string) {
 				return "", "", ""
 			}
 		} else {
-			if retBytes, retstaBytes, err := e.FileUploadResponse(apiMethod, restUri, askBytes); err == nil {
+			if retBytes, retstaBytes, err := e.GetHttpResponse(apiMethod, restUri, askBytes); err == nil {
 				var out bytes.Buffer
 				err := json.Indent(&out, retBytes, "", "  ")
 				if err == nil {
@@ -132,6 +132,7 @@ func RunRouterPostNormal(askuri string, body string) (string, string, string) {
 			} else {
 				return "", "", ""
 			}
+
 		}
 	} else {
 		return "", "", e.MyErr("XCVZDSFGQWERDZ-Unable to get GetXConfig()", nil, true).Error()
