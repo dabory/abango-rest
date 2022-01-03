@@ -86,6 +86,7 @@ func UploadFileResponse(method string, apiurl string, jsBytes []byte) ([]byte, [
 		return nil, []byte("500"), errors.New("os.Open, " + path + err.Error())
 	}
 	defer file.Close()
+	fmt.Println("DDDD")
 
 	part, err := writer.CreateFormFile(paramName, filepath.Base(path))
 	if err != nil {
