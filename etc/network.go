@@ -2,6 +2,7 @@ package etc
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -74,35 +75,41 @@ func GetHttpResponse(method string, apiurl string, jsBytes []byte) ([]byte, []by
 
 func UploadFileResponse(method string, apiurl string, jsBytes []byte) ([]byte, []byte, error) {
 
-	fmt.Println("QQQQ")
-	// uploadurl := "http://localhost:1333/upload"
-	path := "aaa.jpg"
-	paramName := "file"
+	paramFile := "file"
+	uploader := struct {
+		FilePath string `json:"FilePath"`
+	}{}
+
+	var params map[string]interface{}
+	if err := json.Unmarshal(jsBytes, &uploader); err == nil {
+		params, _ = StructToMap(uploader, "json")
+	}
 
 	reqBd := &bytes.Buffer{}
 	writer := multipart.NewWriter(reqBd)
-
+	//  추가할 폼필드는  writer.WriteField("key", "Value") 이렇게 작업 한다.
+	path := fmt.Sprint(params["FilePath"])
 	file, err := os.Open(path)
 	if err != nil {
-		return nil, []byte("500"), errors.New("os.Open, " + path + err.Error())
+		return nil, []byte("804"), errors.New("OLKMBVF-os.Open file, " + path + " " + err.Error())
 	}
 	defer file.Close()
-	fmt.Println("DDDD")
 
-	part, err := writer.CreateFormFile(paramName, filepath.Base(path))
+	part, err := writer.CreateFormFile(paramFile, filepath.Base(path))
 	if err != nil {
-		return nil, []byte("500"), errors.New("CreateFormFile, " + path + err.Error())
+		return nil, []byte("804"), errors.New("WER%^TGCDS-CreateFormFile, " + path + err.Error())
 	}
 	_, err = io.Copy(part, file)
 
 	if err = writer.Close(); err != nil {
-		return nil, []byte("500"), errors.New("writer.Close" + err.Error())
+		return nil, []byte("804"), errors.New("YUHGTYGHK-writer.Close" + err.Error())
 	}
 
-	reader := bytes.NewBuffer(jsBytes)
-	req, err := http.NewRequest(method, apiurl, reader)
+	req, err := http.NewRequest(method, apiurl, reqBd)
+	// reader := bytes.NewBuffer(jsBytes)
+	// req, err := http.NewRequest(method, apiurl, reader)
 	if err != nil {
-		return nil, []byte("909"), MyErr("WERZDSVADFZ-http.NewRequest", err, false)
+		return nil, []byte("804"), MyErr("WERZDSVADFZ-http.NewRequest", err, false)
 	}
 
 	req.Header.Add("Content-Type", "application/json")
@@ -123,7 +130,7 @@ func UploadFileResponse(method string, apiurl string, jsBytes []byte) ([]byte, [
 		}
 	}
 
-	fmt.Println(writer.FormDataContentType())
+	// fmt.Println(writer.FormDataContentType())
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 	// req.Body = ioutil.NopCloser(bytes.NewReader(jsBytes))
 
@@ -135,7 +142,7 @@ func UploadFileResponse(method string, apiurl string, jsBytes []byte) ([]byte, [
 	// fmt.Println(reflect.TypeOf(respo))
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, []byte("909"), MyErr("ERTYUIJBVFBHK-client.Do "+apiurl, err, false)
+		return nil, []byte("804"), MyErr("ERTYUIJBVFBHK-client.Do "+apiurl, err, false)
 	}
 	defer resp.Body.Close()
 

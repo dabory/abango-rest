@@ -9,6 +9,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"os"
 	"reflect"
 	"strings"
@@ -126,4 +127,29 @@ func CamelString(s string) string {
 		data = append(data, d)
 	}
 	return string(data[:])
+}
+
+func StructToMap(in interface{}, tag string) (map[string]interface{}, error) {
+	out := make(map[string]interface{})
+
+	v := reflect.ValueOf(in)
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+
+	// we only accept structs
+	if v.Kind() != reflect.Struct {
+		fmt.Errorf("ToMap only accepts structs; got %T", v)
+		return nil, MyErr("HJKMNHGYUH-only accepts structs:", nil, false)
+	}
+
+	typ := v.Type()
+	for i := 0; i < v.NumField(); i++ {
+		// gets us a StructField
+		fi := typ.Field(i)
+		if tagv := fi.Tag.Get(tag); tagv != "" {
+			out[tagv] = v.Field(i).Interface()
+		}
+	}
+	return out, nil
 }

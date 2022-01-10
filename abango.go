@@ -107,9 +107,7 @@ func RunRouterPostNormal(askuri string, body string) (string, string, string) {
 		apiMethod := "POST"
 		askBytes := []byte(body)
 		restUri := XConfig["RestConnect"] + askuri
-		fmt.Println(askuri)
 		if askuri == "upload-file" {
-			fmt.Println("KKKK")
 			if retBytes, retstaBytes, err := e.UploadFileResponse(apiMethod, restUri, askBytes); err == nil {
 				var out bytes.Buffer
 				err := json.Indent(&out, retBytes, "", "  ")
@@ -119,7 +117,7 @@ func RunRouterPostNormal(askuri string, body string) (string, string, string) {
 					return string(retBytes), string(retstaBytes), ""
 				}
 			} else {
-				return "", "", ""
+				return err.Error(), string(retstaBytes), ""
 			}
 		} else {
 			if retBytes, retstaBytes, err := e.GetHttpResponse(apiMethod, restUri, askBytes); err == nil {
@@ -131,14 +129,13 @@ func RunRouterPostNormal(askuri string, body string) (string, string, string) {
 					return string(retBytes), string(retstaBytes), ""
 				}
 			} else {
-				return "", "", ""
+				return err.Error(), string(retstaBytes), ""
 			}
-
 		}
 	} else {
 		return "", "", e.MyErr("XCVZDSFGQWERDZ-Unable to get GetXConfig()", nil, true).Error()
 	}
-	return "", "", "asfklsjljfad-Reached to end of RunEndRequest !"
+	// return "", "", "asfklsjljfad-Reached to end of RunEndRequest !"
 }
 
 func RunEndRequest(params string, body string) string {

@@ -2,6 +2,7 @@ package abango
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 	"time"
 
@@ -66,6 +67,7 @@ func (c *Controller) GetYDB() (int, string) {
 		}
 	}
 
+	fmt.Println("Indi-DB:", c.Gtb.ConnString)
 	if c.Db, err = xorm.NewEngine(XConfig["DbType"], c.Gtb.ConnString); err != nil {
 		return 609, e.LogStr("ADASEF", "DBEngine Open Error")
 	}
