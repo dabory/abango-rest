@@ -23,6 +23,7 @@ func (c *Controller) GetYDB() (int, string) {
 
 	var gtbStr string
 	var err error
+	fmt.Println("IsYDBFixed:", XConfig["IsYDBFixed"])
 	if XConfig["IsYDBFixed"] == "Yes" {
 		c.Gtb.ConnString = XConfig["YDBConnString"]
 		c.Gtb.UserId = 5
@@ -46,9 +47,8 @@ func (c *Controller) GetYDB() (int, string) {
 			return 505, e.LogStr("QWFAECAFVD", "GateToken Not Found: "+c.GateToken)
 		}
 
-		if err := json.Unmarshal([]byte(gtbStr), gtb); err != nil {
-			return 505, e.LogStr("QWFAECAFVDS", "AfterBase64Content Format mismatch: "+c.GateToken)
-		} else {
+		fmt.Println("gtbStr:", gtbStr)
+		if err := json.Unmarshal([]byte(gtbStr), gtb); err == nil {
 			c.Gtb.ConnString = gtb.ConnString
 			c.Gtb.UserId = gtb.UserId
 			c.Gtb.MemberId = gtb.MemberId
@@ -64,6 +64,8 @@ func (c *Controller) GetYDB() (int, string) {
 			c.Gtb.StockPrcPoint = gtb.StockPrcPoint
 			c.Gtb.StockAmtPoint = gtb.StockAmtPoint
 			c.Gtb.AccAmtPoint = gtb.AccAmtPoint
+		} else {
+			return 505, e.LogStr("QWFAECAFVDS", "AfterBase64Content Format mismatch: "+c.GateToken)
 		}
 	}
 
