@@ -2,7 +2,6 @@ package abango
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 	"time"
 
@@ -23,7 +22,6 @@ func (c *Controller) GetYDB() (int, string) {
 
 	var gtbStr string
 	var err error
-	fmt.Println("IsYDBFixed:", XConfig["IsYDBFixed"])
 	if XConfig["IsYDBFixed"] == "Yes" {
 		c.Gtb.ConnString = XConfig["YDBConnString"]
 		c.Gtb.UserId = 5
@@ -47,7 +45,6 @@ func (c *Controller) GetYDB() (int, string) {
 			return 505, e.LogStr("QWFAECAFVD", "GateToken Not Found: "+c.GateToken)
 		}
 
-		fmt.Println("gtbStr:", gtbStr)
 		if err := json.Unmarshal([]byte(gtbStr), gtb); err == nil {
 			c.Gtb.ConnString = gtb.ConnString
 			c.Gtb.UserId = gtb.UserId
@@ -69,7 +66,6 @@ func (c *Controller) GetYDB() (int, string) {
 		}
 	}
 
-	fmt.Println("Indi-DB:", c.Gtb.ConnString)
 	if c.Db, err = xorm.NewEngine(XConfig["DbType"], c.Gtb.ConnString); err != nil {
 		return 609, e.LogStr("ADASEF", "DBEngine Open Error")
 	}

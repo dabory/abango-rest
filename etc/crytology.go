@@ -51,7 +51,6 @@ func RsaSignature(prKey []byte, msg []byte) ([]byte, error) { // msg 245=(256-11
 
 	block, _ := pem.Decode(prKey)
 	if block == nil {
-		// fmt.Println("Error: pem.Decode in MySignature")
 		return nil, MyErr("QROPBDHCF-pem.Decode", nil, false)
 	}
 	priv, err := x509.ParsePKCS1PrivateKey(block.Bytes)
