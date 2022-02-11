@@ -47,7 +47,7 @@ func (c *Controller) GetYDB() (int, string) {
 		}
 
 		if err := json.Unmarshal([]byte(gtbStr), gtb); err == nil {
-			c.Gtb.ConnString = gtb.ConnString
+			c.Gtb.ConnString = gtb.ConnString + connOptions
 			c.Gtb.UserId = gtb.UserId
 			c.Gtb.MemberId = gtb.MemberId
 			c.Gtb.StorageId = gtb.StorageId
@@ -67,7 +67,7 @@ func (c *Controller) GetYDB() (int, string) {
 		}
 	}
 
-	if c.Db, err = xorm.NewEngine(XConfig["DbType"], c.Gtb.ConnString+connOptions); err != nil {
+	if c.Db, err = xorm.NewEngine(XConfig["DbType"], c.Gtb.ConnString); err != nil {
 		return 609, e.LogStr("ADASEF", "DBEngine Open Error")
 	}
 
