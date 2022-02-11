@@ -62,11 +62,11 @@ func (c *Controller) GetYDB() (int, string) {
 			c.Gtb.StockAmtPoint = gtb.StockAmtPoint
 			c.Gtb.AccAmtPoint = gtb.AccAmtPoint
 		} else {
-			return 505, e.LogStr("QWFAECAFVDS", "AfterBase64Content Format mismatch: "+c.GateToken)
+			return 505, e.LogStr("QWFAEC1AFVDS", "AfterBase64Content Format mismatch: "+c.GateToken)
 		}
 	}
 
-	if c.Db, err = xorm.NewEngine(XConfig["DbType"], c.Gtb.ConnString); err != nil {
+	if c.Db, err = xorm.NewEngine(XConfig["DbType"], c.Gtb.ConnString+"?charset=utf8&multiStatements=true"); err != nil {
 		return 609, e.LogStr("ADASEF", "DBEngine Open Error")
 	}
 
