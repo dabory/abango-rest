@@ -2,7 +2,6 @@ package abango
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 	"time"
 
@@ -17,15 +16,15 @@ func (c *Controller) Init() (int, string) {
 
 func (c *Controller) GetYDB() (int, string) {
 
+	connOptions := "?charset=utf8&multiStatements=true"
 	gtb := &struct {
 		GateTokenBase
 	}{}
 
 	var gtbStr string
 	var err error
-	fmt.Println("QQQQQQQQQQQQQQQ")
 	if XConfig["IsYDBFixed"] == "Yes" {
-		c.Gtb.ConnString = XConfig["YDBConnString"]
+		c.Gtb.ConnString = XConfig["YDBConnString"] + connOptions
 		c.Gtb.UserId = 5
 		c.Gtb.MemberId = 5
 		c.Gtb.StorageId = 1
@@ -67,9 +66,8 @@ func (c *Controller) GetYDB() (int, string) {
 			return 505, e.LogStr("QWFAEC1AFVDS", "AfterBase64Content Format mismatch: "+c.GateToken)
 		}
 	}
-	fmt.Println("KKKKKKKKKKKKKKKKK")
-	if c.Db, err = xorm.NewEngine(XConfig["DbType"], c.Gtb.ConnString); 
-	// if c.Db, err = xorm.NewEngine(XConfig["DbType"], c.Gtb.ConnString+"?charset=utf8&multiStatements=true"); err != nil {
+
+	if c.Db, err = xorm.NewEngine(XConfig["DbType"], c.Gtb.ConnString+connOptions); err != nil {
 		return 609, e.LogStr("ADASEF", "DBEngine Open Error")
 	}
 
