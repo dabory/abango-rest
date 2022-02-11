@@ -23,6 +23,7 @@ func (c *Controller) GetYDB() (int, string) {
 
 	var gtbStr string
 	var err error
+	fmt.Println("QQQQQQQQQQQQQQQ")
 	if XConfig["IsYDBFixed"] == "Yes" {
 		c.Gtb.ConnString = XConfig["YDBConnString"]
 		c.Gtb.UserId = 5
@@ -67,7 +68,8 @@ func (c *Controller) GetYDB() (int, string) {
 		}
 	}
 	fmt.Println("KKKKKKKKKKKKKKKKK")
-	if c.Db, err = xorm.NewEngine(XConfig["DbType"], c.Gtb.ConnString+"?charset=utf8&multiStatements=true"); err != nil {
+	if c.Db, err = xorm.NewEngine(XConfig["DbType"], c.Gtb.ConnString); 
+	// if c.Db, err = xorm.NewEngine(XConfig["DbType"], c.Gtb.ConnString+"?charset=utf8&multiStatements=true"); err != nil {
 		return 609, e.LogStr("ADASEF", "DBEngine Open Error")
 	}
 
