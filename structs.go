@@ -32,10 +32,10 @@ type Controller struct {
 	Access         AbangoAccess
 
 	GateToken string
-	// ConnString string
-	Gtb GateTokenBase
-	Db  *xorm.Engine
-	V   interface{}
+	ActList   string
+	Gtb       GateTokenBase
+	Db        *xorm.Engine
+	V         interface{}
 }
 
 type Context struct {
@@ -69,6 +69,7 @@ type AbangoAccess struct {
 
 type GateTokenBase struct {
 	ConnString    string
+	RemoteIp      string
 	UserId        int
 	MemberId      int
 	StorageId     int

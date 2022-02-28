@@ -25,6 +25,7 @@ func (c *Controller) GetYDB() (int, string) {
 	var err error
 	if XConfig["IsYDBFixed"] == "Yes" {
 		c.Gtb.ConnString = XConfig["YDBConnString"] + connOptions
+		c.Gtb.RemoteIp = "localhost"
 		c.Gtb.UserId = 5
 		c.Gtb.MemberId = 5
 		c.Gtb.StorageId = 1
