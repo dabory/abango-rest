@@ -81,7 +81,7 @@ func StrToFloat(num string, decimalP int) float64 {
 	if f, err := strconv.ParseFloat(num, decimalP); err == nil {
 		return f
 	} else {
-		ErrLog("PIOUKHBJJCHYT- 'Float' unacceptable", err)
+		ErrLog("UYTIKHKYOUJ- 'Float' unacceptable", err)
 		return 0
 	}
 }
