@@ -17,7 +17,6 @@ func (c *Controller) Init() (int, string) {
 
 func (c *Controller) GetYDB() (int, string) {
 
-	connOptions := "?charset=utf8&multiStatements=true"
 	gtb := &struct {
 		GateTokenBase
 	}{}
@@ -25,7 +24,8 @@ func (c *Controller) GetYDB() (int, string) {
 	var gtbStr string
 	var err error
 	if XConfig["IsYDBFixed"] == "Yes" {
-		c.Gtb.ConnString = XConfig["YDBConnString"] + connOptions
+		c.Gtb.ConnString = XConfig["YDBConnString"]
+		// c.Gtb.ConnString = XConfig["YDBConnString"] + connOptions
 		c.Gtb.RemoteIp = "localhost"
 		c.Gtb.UserId = 5
 		c.Gtb.MemberId = 5
