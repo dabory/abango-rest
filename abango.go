@@ -17,24 +17,24 @@ import (
 	e "github.com/dabory/abango-rest/etc"
 )
 
-type EnvConf struct { //Kangan only
-	AppName      string
-	HttpProtocol string
-	HttpAddr     string
-	HttpPort     string
-	SiteName     string
+// type EnvConf struct { //Kangan only
+// 	AppName      string
+// 	HttpProtocol string
+// 	HttpAddr     string
+// 	HttpPort     string
+// 	SiteName     string
 
-	DbType     string
-	DbHost     string
-	DbUser     string
-	DbPassword string
-	DbPort     string
-	DbName     string
-	DbPrefix   string
-	DbTimezone string
+// 	DbType     string
+// 	DbHost     string
+// 	DbUser     string
+// 	DbPassword string
+// 	DbPort     string
+// 	DbName     string
+// 	DbPrefix   string
+// 	DbTimezone string
 
-	DbStr string
-}
+// 	DbStr string
+// }
 
 type RunConf struct {
 	RunMode     string
@@ -245,49 +245,50 @@ func RunRequest(MsgHandler func(v *AbangoAsk) (string, string, error), params *s
 }
 
 ///쓰이고 있지 않음.
-func GetEnvConf() error { // Kangan only
+// func GetEnvConf() error { // Kangan only
 
-	conf := "conf/"
-	RunFilename := conf + "run_conf.json"
+// 	conf := "conf/"
+// 	RunFilename := conf + "run_conf.json"
 
-	var run RunConf
+// 	var run RunConf
 
-	if file, err := os.Open(RunFilename); err != nil {
-		e.MyErr("SDFLJDSAFJA", nil, true)
-		return err
-	} else {
-		decoder := json.NewDecoder(file)
-		if err = decoder.Decode(&run); err != nil {
-			e.MyErr("LASJLDFJASFJ", err, true)
-			return err
-		}
-	}
+// 	if file, err := os.Open(RunFilename); err != nil {
+// 		e.MyErr("SDFLJDSAFJA", nil, true)
+// 		return err
+// 	} else {
+// 		decoder := json.NewDecoder(file)
+// 		if err = decoder.Decode(&run); err != nil {
+// 			e.MyErr("LASJLDFJASFJ", err, true)
+// 			return err
+// 		}
+// 	}
 
-	filename := conf + run.RunMode + run.ConfPostFix
-	if file, err := os.Open(filename); err != nil {
-		e.MyErr("QERTRRTRRW", err, true)
-		return err
-	} else {
-		decoder := json.NewDecoder(file)
-		if err = decoder.Decode(&XEnv); err != nil {
-			e.MyErr("LAAFDFERHY", err, true)
-			return err
-		}
-	}
+// 	filename := conf + run.RunMode + run.ConfPostFix
+// 	if file, err := os.Open(filename); err != nil {
+// 		e.MyErr("QERTRRTRRW", err, true)
+// 		return err
+// 	} else {
+// 		decoder := json.NewDecoder(file)
+// 		if err = decoder.Decode(&XEnv); err != nil {
+// 			e.MyErr("LAAFDFERHY", err, true)
+// 			return err
+// 		}
+// 	}
 
-	if XEnv.DbType == "mysql" {
-		XEnv.DbStr = XEnv.DbUser + ":" + XEnv.DbPassword + "@tcp(" + XEnv.DbHost + ":" + XEnv.DbPort + ")/" + XEnv.DbPrefix + XEnv.DbName + "?charset=utf8"
-	} else if XEnv.DbType == "mssql" {
-		// Add on more DbStr of Db types
-	}
+// 	if XEnv.DbType == "mysql" {
+// 		XEnv.DbStr = XEnv.DbUser + ":" + XEnv.DbPassword + "@tcp(" + XEnv.DbHost + ":" + XEnv.DbPort + ")/" + XEnv.DbPrefix + XEnv.DbName + "?charset=utf8"
+// 	} else if XEnv.DbType == "mssql" {
+// 		// Add on more DbStr of Db types
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
 
 func MyLinkXDB() { //   항상 연결될 수 있는 MySQL  DB 사전 연결
 
 	dbtype := XConfig["DbType"]
-	connstr := XConfig["DbUser"] + ":" + XConfig["DbPassword"] + "@tcp(" + XConfig["DbHost"] + ":" + XConfig["DbPort"] + ")/" + XConfig["DbName"] + "?charset=utf8"
+	connstr := XConfig["XDBConnString"]
+	// connstr := XConfig["DbUser"] + ":" + XConfig["DbPassword"] + "@tcp(" + XConfig["DbHost"] + ":" + XConfig["DbPort"] + ")/" + XConfig["DbName"] + "?charset=utf8"
 
 	var err error
 	XDB, err = xorm.NewEngine(dbtype, connstr)

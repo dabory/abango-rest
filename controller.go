@@ -48,7 +48,8 @@ func (c *Controller) GetYDB() (int, string) {
 		}
 
 		if err := json.Unmarshal([]byte(gtbStr), gtb); err == nil {
-			c.Gtb.ConnString = gtb.ConnString + connOptions
+			c.Gtb.ConnString = gtb.ConnString
+			// c.Gtb.ConnString = gtb.ConnString + connOptions
 			c.Gtb.UserId = gtb.UserId
 			c.Gtb.MemberId = gtb.MemberId
 			c.Gtb.StorageId = gtb.StorageId
@@ -183,14 +184,6 @@ func (c *Controller) GetAbangoAccessAndDb() error {
 }
 
 func (c *Controller) GetAccessAuth() error {
-
-	// c.Access.UserId = 10
-	// c.Access.DbType = XConfig["DbType"]
-	// // c.Access.DbConnStr = "ssohost_db:Qw3AnH4fSSO@tcp(13.124.2.254:3306)/ssohost_db?charset=utf8"
-	// c.Access.DbConnStr = XConfig["DbUser"] + ":" + XConfig["DbPassword"] + "@tcp(" + XConfig["DbHost"] + ":" + XConfig["DbPort"] + ")/" + XConfig["DbName"] + "?charset=utf8"
-	// e.OkLog(c.Access.DbConnStr)
-
-	// c.Access.DbConnStr = "root:root@tcp(mysql57-c:3306)/ssohost_db?charset=utf8"
 
 	return nil
 }
