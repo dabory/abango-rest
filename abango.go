@@ -287,7 +287,7 @@ func RunRequest(MsgHandler func(v *AbangoAsk) (string, string, error), params *s
 func MyLinkXDB() { //   항상 연결될 수 있는 MySQL  DB 사전 연결
 
 	dbtype := XConfig["DbType"]
-	connstr := XConfig["XDBConnString"]
+	connstr := XConfig["XDBConnString"] + XConfig["XDBConnString"]
 	// connstr := XConfig["DbUser"] + ":" + XConfig["DbPassword"] + "@tcp(" + XConfig["DbHost"] + ":" + XConfig["DbPort"] + ")/" + XConfig["DbName"] + "?charset=utf8"
 
 	var err error
