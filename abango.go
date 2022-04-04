@@ -3,7 +3,6 @@ package abango
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -288,9 +287,9 @@ func MyLinkXDB() { //   항상 연결될 수 있는 MySQL  DB 사전 연결
 	connstr := XConfig["XDBConnString"] + XConfig["DBOptionString"]
 	// connstr := XConfig["DbUser"] + ":" + XConfig["DbPassword"] + "@tcp(" + XConfig["DbHost"] + ":" + XConfig["DbPort"] + ")/" + XConfig["DbName"] + "?charset=utf8"
 
-	fmt.Println("XDB-aaa")
-	fmt.Println(connstr)
-	fmt.Println("XDB-bbb")
+	// fmt.Println("XDB-aaa")
+	// fmt.Println(connstr)
+	// fmt.Println("XDB-bbb")
 	var err error
 	XDB, err = xorm.NewEngine(dbtype, connstr)
 
