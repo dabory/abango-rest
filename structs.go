@@ -71,7 +71,9 @@ type GateTokenBase struct {
 	ConnString    string
 	RemoteIp      string
 	UserId        int
+	UserPermId    int
 	MemberId      int
+	MemberPermId  int
 	StorageId     int
 	BranchId      int
 	SalesQtyPoint int

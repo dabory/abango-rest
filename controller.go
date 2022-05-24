@@ -29,6 +29,8 @@ func (c *Controller) GetYDB() (int, string) {
 		c.Gtb.RemoteIp = "localhost"
 		c.Gtb.UserId = 5
 		c.Gtb.MemberId = 5
+		c.Gtb.UserPermId = 3
+		c.Gtb.MemberPermId = 3
 		c.Gtb.StorageId = 1
 		c.Gtb.BranchId = 1
 		c.Gtb.SalesQtyPoint = 0
@@ -52,7 +54,9 @@ func (c *Controller) GetYDB() (int, string) {
 			c.Gtb.ConnString = gtb.ConnString
 			// c.Gtb.ConnString = gtb.ConnString + connOptions
 			c.Gtb.UserId = gtb.UserId
+			c.Gtb.UserPermId = gtb.UserPermId
 			c.Gtb.MemberId = gtb.MemberId
+			c.Gtb.MemberPermId = gtb.MemberPermId
 			c.Gtb.StorageId = gtb.StorageId
 			c.Gtb.BranchId = gtb.BranchId
 			c.Gtb.SalesQtyPoint = gtb.SalesQtyPoint
