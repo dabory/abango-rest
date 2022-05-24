@@ -70,9 +70,9 @@ func (c *Controller) GetYDB() (int, string) {
 		}
 	}
 
-	fmt.Println("YDB-aaaa")
+	fmt.Println("YDB-kkkk")
 	fmt.Println(c.Gtb.ConnString)
-	fmt.Println("YDB-bbbb")
+	fmt.Println("YDB-qqqq")
 	if c.Db, err = xorm.NewEngine(XConfig["DbType"], c.Gtb.ConnString); err != nil {
 		return 609, e.LogStr("ADASEF", "DBEngine Open Error")
 	}
