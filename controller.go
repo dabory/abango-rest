@@ -32,7 +32,7 @@ func (c *Controller) GetYDB() (int, string) {
 		c.Gtb.MemberPermId = 3
 		c.Gtb.StorageId = 1
 		c.Gtb.BranchId = 1
-		c.Gtb.BuyerId = 1
+		c.Gtb.MemberBuyerId = 1
 		c.Gtb.SalesQtyPoint = 0
 		c.Gtb.SalesPrcPoint = 0
 		c.Gtb.SalesAmtPoint = 0
@@ -59,7 +59,7 @@ func (c *Controller) GetYDB() (int, string) {
 			c.Gtb.MemberPermId = gtb.MemberPermId
 			c.Gtb.StorageId = gtb.StorageId
 			c.Gtb.BranchId = gtb.BranchId
-			c.Gtb.BuyerId = gtb.BuyerId
+			c.Gtb.MemberBuyerId = gtb.MemberBuyerId
 			c.Gtb.SalesQtyPoint = gtb.SalesQtyPoint
 			c.Gtb.SalesPrcPoint = gtb.SalesPrcPoint
 			c.Gtb.SalesAmtPoint = gtb.SalesAmtPoint
