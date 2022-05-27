@@ -2,7 +2,6 @@ package abango
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 	"time"
 
@@ -33,6 +32,7 @@ func (c *Controller) GetYDB() (int, string) {
 		c.Gtb.MemberPermId = 3
 		c.Gtb.StorageId = 1
 		c.Gtb.BranchId = 1
+		c.Gtb.BuyerId = 1
 		c.Gtb.SalesQtyPoint = 0
 		c.Gtb.SalesPrcPoint = 0
 		c.Gtb.SalesAmtPoint = 0
@@ -59,6 +59,7 @@ func (c *Controller) GetYDB() (int, string) {
 			c.Gtb.MemberPermId = gtb.MemberPermId
 			c.Gtb.StorageId = gtb.StorageId
 			c.Gtb.BranchId = gtb.BranchId
+			c.Gtb.BuyerId = gtb.BuyerId
 			c.Gtb.SalesQtyPoint = gtb.SalesQtyPoint
 			c.Gtb.SalesPrcPoint = gtb.SalesPrcPoint
 			c.Gtb.SalesAmtPoint = gtb.SalesAmtPoint
@@ -74,9 +75,9 @@ func (c *Controller) GetYDB() (int, string) {
 		}
 	}
 
-	fmt.Println("YDB-kkkk")
-	fmt.Println(c.Gtb.ConnString)
-	fmt.Println("YDB-qqqq")
+	// fmt.Println("YDB-kkkk")
+	// fmt.Println(c.Gtb.ConnString)
+	// fmt.Println("YDB-qqqq")
 	if c.Db, err = xorm.NewEngine(XConfig["DbType"], c.Gtb.ConnString); err != nil {
 		return 609, e.LogStr("ADASEF", "DBEngine Open Error")
 	}
