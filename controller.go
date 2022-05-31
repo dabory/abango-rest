@@ -98,7 +98,7 @@ func (c *Controller) GetYDB() (int, string) {
 	if _, err := c.Db.IsTableExist("aaa"); err == nil {
 		return 200, e.LogStr("ASDFASFQFE", "YDB connection in "+connHint)
 	} else {
-		return 609, e.LogStr("PUBGVD-", "YDB connection Fail in "+connHint)
+		return 609, e.LogStr("PMUHIUYBUYJM-", "YDB connection Fail in "+connHint)
 	}
 }
 
