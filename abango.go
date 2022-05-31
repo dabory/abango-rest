@@ -57,7 +57,7 @@ func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
 
 	var wg sync.WaitGroup
 
-	e.AokLog("Abango Clustered Framework Started !rrrrr")
+	e.AokLog("Abango Clustered Framework Started !uuuuuu")
 	if err := GetXConfig(); err == nil {
 		if XConfig["XDBOn"] == "Yes" {
 			MyLinkXDB()
