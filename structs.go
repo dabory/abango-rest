@@ -69,6 +69,7 @@ type AbangoAccess struct {
 
 type GateTokenBase struct {
 	ConnString    string
+	SsoSubId      int
 	RemoteIp      string
 	UserId        int
 	UserPermId    int
