@@ -25,7 +25,7 @@ func (c *Controller) GetYDB() (int, string) {
 	var err error
 	if XConfig["IsYDBFixed"] == "Yes" {
 		c.Gtb.ConnString = XConfig["YDBConnString"] + XConfig["DBOptionString"]
-		// c.Gtb.ConnString = XConfig["YDBConnString"] + connOptions
+		c.Gtb.SsoSubId = 0
 		c.Gtb.RemoteIp = "localhost"
 		c.Gtb.UserId = 5
 		c.Gtb.MemberId = 5
@@ -53,7 +53,7 @@ func (c *Controller) GetYDB() (int, string) {
 
 		if err := json.Unmarshal([]byte(gtbStr), gtb); err == nil {
 			c.Gtb.ConnString = gtb.ConnString
-			// c.Gtb.ConnString = gtb.ConnString + connOptions
+			c.Gtb.SsoSubId = gtb.SsoSubId
 			c.Gtb.UserId = gtb.UserId
 			c.Gtb.UserPermId = gtb.UserPermId
 			c.Gtb.MemberId = gtb.MemberId
