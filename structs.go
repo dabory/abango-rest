@@ -11,7 +11,7 @@ var (
 )
 var (
 	// XEnv *EnvConf
-	XDB *xorm.Engine
+	// XDB *xorm.Engine
 	MDB *buntdb.DB
 )
 
