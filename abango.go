@@ -56,10 +56,10 @@ func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
 
 	e.AokLog("Abango Clustered Framework Started !")
 	if err := GetXConfig(); err == nil {
-		if XConfig["XDBOn"] == "Yes" {
-			MyLinkXDB()
-			// GetDB()
-		}
+		// if XConfig["XDBOn"] == "Yes" {
+		// 	MyLinkXDB()
+		// 	// GetDB()
+		// }
 
 		if XConfig["KafkaOn"] == "Yes" {
 			// wg.Add(1)
