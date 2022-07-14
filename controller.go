@@ -52,6 +52,10 @@ func (c *Controller) GetYDB() (int, string) {
 
 		if err := json.Unmarshal([]byte(gtbStr), gtb); err == nil {
 			c.Gtb.ConnString = gtb.ConnString
+			c.Gtb.RemoteIp = gtb.RemoteIp
+			c.Gtb.FrontIp = gtb.FrontIp
+			c.Gtb.FrontHost = gtb.FrontHost
+			c.Gtb.Referer = gtb.Referer
 			c.Gtb.SsoSubId = gtb.SsoSubId
 			c.Gtb.UserId = gtb.UserId
 			c.Gtb.UserPermId = gtb.UserPermId
