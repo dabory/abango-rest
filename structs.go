@@ -31,11 +31,11 @@ type Controller struct {
 	Data           map[interface{}]interface{}
 	Access         AbangoAccess
 
-	GateToken string
-	ActList   string
-	Gtb       GateTokenBase
-	Db        *xorm.Engine
-	V         interface{}
+	GateToken       string
+	UpdateFieldList string
+	Gtb             GateTokenBase
+	Db              *xorm.Engine
+	V               interface{}
 }
 
 type Context struct {
