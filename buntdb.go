@@ -18,7 +18,7 @@ func MdbView(key string) (retval string, reterr error) {
 			reterr = nil
 		} else {
 			retval = ""
-			reterr = e.LogErr("ASDFQWERC", "MDB.View Not Fount in Key: "+key, err)
+			reterr = e.LogErr("ASDFQWERCAA", "MDB.View Not Fount in Key: "+key, err)
 		}
 		return nil
 	})
