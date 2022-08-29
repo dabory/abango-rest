@@ -91,4 +91,5 @@ type GateTokenBase struct {
 	StockPrcPoint int
 	StockAmtPoint int
 	AccAmtPoint   int
+	OfcCode       string
 }
