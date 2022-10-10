@@ -83,17 +83,17 @@ func FileToStrSkip(filename string) (string, error) {
 	return str, nil
 }
 
-// func FileToStr(filename string) (string, error) {
+func FileToStr(filename string) (string, error) {
 
-// 	var str string
-// 	if fbytes, err := ioutil.ReadFile(filename); err == nil {
-// 		str = string(fbytes)
-// 	} else {
-// 		MyErr("EPOJMDOKDSF", err, true)
-// 		return "", err
-// 	}
-// 	return str, nil
-// }
+	var str string
+	if fbytes, err := ioutil.ReadFile(filename); err == nil {
+		str = string(fbytes)
+	} else {
+		MyErr("EPOJMDOKDSF", err, true)
+		return "", err
+	}
+	return str, nil
+}
 
 // func (t *lo.EnvConf) FileToStruct(filename string) error {
 
