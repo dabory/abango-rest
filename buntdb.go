@@ -6,6 +6,8 @@
 package abango
 
 import (
+	"errors"
+
 	"github.com/dabory/abango-rest/etc"
 	e "github.com/dabory/abango-rest/etc"
 	"github.com/tidwall/buntdb"
@@ -52,7 +54,7 @@ func QdbView(key string) (retval string, reterr error) {
 			reterr = nil
 		} else {
 			retval = ""
-			reterr = e.LogErr("EHGVOIHLHNLM", "QDB.View Not Fount in Key: "+key, err)
+			reterr = errors.New("QDB.View Not Found in Key: " + key)
 		}
 		return nil
 	})
@@ -71,20 +73,20 @@ func QdbUpdate(key string, value string) (reterr error) {
 	return nil
 }
 
-func MemoryToQryStr(filename string) (string, error) {
+func GetQryStr(filename string) (string, error) {
 
 	var str string
 	var err error
 	if QRYfromQDB {
 		if str, err = QdbView(filename); err == nil {
-			etc.OkLog("Qry from Memory!!")
+			// etc.OkLog("Qry from Memory!!")
 			return str, nil
 		} else {
 			if str, err = e.FileToStrSkip(filename); err == nil {
 				if err := QdbUpdate(filename, str); err != nil {
 					return "", etc.LogErr("OIUJLJOUJLH", "QdbUpdate Failed ", err)
 				}
-				etc.OkLog("Qry from File!!")
+				// etc.OkLog("Qry from File!!")
 				return str, nil
 			} else {
 				return "", etc.LogErr("OKMYFDER", filename+" file does NOT exist.", err)
@@ -92,7 +94,7 @@ func MemoryToQryStr(filename string) (string, error) {
 		}
 	} else {
 		if str, err = e.FileToStrSkip(filename); err == nil {
-			etc.OkLog("QRY FILE")
+			// etc.OkLog("QRY FILE")
 			return str, nil
 		} else {
 			return "", etc.LogErr("PKOJHKJUY", filename+" file does NOT exist.", err)
