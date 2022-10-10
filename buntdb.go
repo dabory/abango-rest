@@ -6,8 +6,6 @@
 package abango
 
 import (
-	"errors"
-
 	"github.com/dabory/abango-rest/etc"
 	e "github.com/dabory/abango-rest/etc"
 	"github.com/tidwall/buntdb"
@@ -89,7 +87,7 @@ func MemoryToQryStr(filename string) (string, error) {
 				etc.OkLog("Qry from File!!")
 				return str, nil
 			} else {
-			   return "", etc.LogErr("OKMYFDER", filename+" file does NOT exist."), err)
+				return "", etc.LogErr("OKMYFDER", filename+" file does NOT exist.", err)
 			}
 		}
 	} else {
@@ -97,7 +95,7 @@ func MemoryToQryStr(filename string) (string, error) {
 			etc.OkLog("QRY FILE")
 			return str, nil
 		} else {
-		   return "", etc.LogErr("PKOJHKJUY", filename+" file does NOT exist."), err)
+			return "", etc.LogErr("PKOJHKJUY", filename+" file does NOT exist.", err)
 		}
 	}
 
