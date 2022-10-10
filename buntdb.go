@@ -89,7 +89,7 @@ func GetQryStr(filename string) (string, error) {
 				// etc.OkLog("Qry from File!!")
 				return str, nil
 			} else {
-				return "", etc.LogErr("OKMYFDER", filename+" file does NOT exist.", err)
+				return "", err
 			}
 		}
 	} else {
@@ -97,7 +97,7 @@ func GetQryStr(filename string) (string, error) {
 			// etc.OkLog("QRY FILE")
 			return str, nil
 		} else {
-			return "", etc.LogErr("PKOJHKJUY", filename+" file does NOT exist.", err)
+			return "", etc.LogErr("PKOJHKJUY", " File", err)
 		}
 	}
 

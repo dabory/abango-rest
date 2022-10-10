@@ -78,7 +78,7 @@ func FileToStrSkip(filename string) (string, error) {
 	if fbytes, err := ioutil.ReadFile(filename); err == nil {
 		str = string(fbytes)
 	} else {
-		return "", err
+		return "", LogErr("ETBUIITF", "", err)
 	}
 	return str, nil
 }
