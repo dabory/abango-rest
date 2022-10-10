@@ -2,16 +2,11 @@ package abango
 
 import (
 	"github.com/go-xorm/xorm"
-	"github.com/tidwall/buntdb"
 )
 
 var (
 	XConfig   map[string]string
 	FrontVars map[string]string //Fronrt End Server Variables
-)
-var (
-	MDB *buntdb.DB
-	QDB *buntdb.DB
 )
 
 // 1. Receivers /////////////////////////////////////////////////////////////////
