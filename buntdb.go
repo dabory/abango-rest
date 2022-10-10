@@ -10,6 +10,11 @@ import (
 	"github.com/tidwall/buntdb"
 )
 
+var (
+	MDB *buntdb.DB
+	QDB *buntdb.DB
+)
+
 func MdbView(key string) (retval string, reterr error) {
 
 	MDB.View(func(tx *buntdb.Tx) error {
@@ -31,6 +36,33 @@ func MdbUpdate(key string, value string) (reterr error) {
 		_, _, err := tx.Set(key, value, nil)
 		if err != nil {
 			reterr = e.MyErr("QWVGAVAEFV-MDB.Update Error in Key: "+key+" Value: "+value, err, false)
+		}
+		return nil
+	})
+	return nil
+}
+
+func QdbView(key string) (retval string, reterr error) {
+
+	QDB.View(func(tx *buntdb.Tx) error {
+		if value, err := tx.Get(key); err == nil {
+			retval = value
+			reterr = nil
+		} else {
+			retval = ""
+			reterr = e.LogErr("EHGVOIHLHNLM", "QDB.View Not Fount in Key: "+key, err)
+		}
+		return nil
+	})
+	return retval, reterr
+}
+
+func QdbUpdate(key string, value string) (reterr error) {
+
+	QDB.Update(func(tx *buntdb.Tx) error {
+		_, _, err := tx.Set(key, value, nil)
+		if err != nil {
+			reterr = e.MyErr("TKBKUYIH-QDB.Update Error in Key: "+key+" Value: "+value, err, false)
 		}
 		return nil
 	})

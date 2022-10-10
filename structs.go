@@ -10,9 +10,8 @@ var (
 	FrontVars map[string]string //Fronrt End Server Variables
 )
 var (
-	// XEnv *EnvConf
-	// XDB *xorm.Engine
 	MDB *buntdb.DB
+	QDB *buntdb.DB
 )
 
 // 1. Receivers /////////////////////////////////////////////////////////////////
