@@ -77,9 +77,11 @@ func MemoryToQryStr(filename string) (string, error) {
 	var str string
 	var err error
 	if str, err = QdbView(filename); err == nil {
+		etc.OkLog("Qry from Memory!!")
 		return str, nil
 	} else {
 		if fbytes, err := ioutil.ReadFile(filename); err == nil {
+			etc.OkLog("Qry from File!!")
 			str = string(fbytes)
 		} else {
 			return "", err
