@@ -6,7 +6,7 @@
 package abango
 
 import (
-	"io/ioutil"
+	"errors"
 
 	"github.com/dabory/abango-rest/etc"
 	e "github.com/dabory/abango-rest/etc"
@@ -14,8 +14,9 @@ import (
 )
 
 var (
-	MDB *buntdb.DB
-	QDB *buntdb.DB
+	MDB        *buntdb.DB
+	QDB        *buntdb.DB
+	QRYfromQDB bool
 )
 
 func MdbView(key string) (retval string, reterr error) {
@@ -76,19 +77,28 @@ func MemoryToQryStr(filename string) (string, error) {
 
 	var str string
 	var err error
-	if str, err = QdbView(filename); err == nil {
-		etc.OkLog("Qry from Memory!!")
-		return str, nil
-	} else {
-		if fbytes, err := ioutil.ReadFile(filename); err == nil {
-			etc.OkLog("Qry from File!!")
-			str = string(fbytes)
+	if QRYfromQDB {
+		if str, err = QdbView(filename); err == nil {
+			etc.OkLog("Qry from Memory!!")
+			return str, nil
 		} else {
-			return "", err
+			if str, err = e.FileToStrSkip(filename); err == nil {
+				if err := QdbUpdate(filename, str); err != nil {
+					return "", etc.LogErr("OIUJLJOUJLH", "QdbUpdate Failed ", err)
+				}
+				etc.OkLog("Qry from File!!")
+				return str, nil
+			} else {
+			   return "", etc.LogErr("OKMYFDER", filename+" file does NOT exist."), err)
+			}
 		}
-		if err := QdbUpdate(filename, str); err != nil {
-			return "", etc.LogErr("OIUJLJOUJLH", "QdbUpdate Failed ", err)
+	} else {
+		if str, err = e.FileToStrSkip(filename); err == nil {
+			etc.OkLog("QRY FILE")
+			return str, nil
+		} else {
+		   return "", etc.LogErr("PKOJHKJUY", filename+" file does NOT exist."), err)
 		}
-		return str, nil
 	}
+
 }
