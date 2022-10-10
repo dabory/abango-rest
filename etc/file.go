@@ -72,16 +72,24 @@ func StrToFile(path string, str string) error {
 	return nil
 }
 
-func FileToStrSkip(filename string) (string, error) {
+// func FileToStrSkip(filename string) (string, error) {
 
-	var str string
-	if fbytes, err := ioutil.ReadFile(filename); err == nil {
-		str = string(fbytes)
-	} else {
-		return "", err
-	}
-	return str, nil
-}
+// 	var str string
+// 	var err error
+// 	if str, err = abango.QdbView(filename); err == nil {
+// 		return str, nil
+// 	} else {
+// 		if fbytes, err := ioutil.ReadFile(filename); err == nil {
+// 			str = string(fbytes)
+// 		} else {
+// 			return "", err
+// 		}
+// 		if err := abango.QdbUpdate(filename, str); err != nil {
+// 			return "", LogErr("OIUJLJOUJLH", "QdbUpdate Failed ", err)
+// 		}
+// 		return str, nil
+// 	}
+// }
 
 func FileToStr(filename string) (string, error) {
 

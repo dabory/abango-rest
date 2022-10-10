@@ -6,6 +6,9 @@
 package abango
 
 import (
+	"io/ioutil"
+
+	"github.com/dabory/abango-rest/etc"
 	e "github.com/dabory/abango-rest/etc"
 	"github.com/tidwall/buntdb"
 )
@@ -67,4 +70,23 @@ func QdbUpdate(key string, value string) (reterr error) {
 		return nil
 	})
 	return nil
+}
+
+func MemoryToQryStr(filename string) (string, error) {
+
+	var str string
+	var err error
+	if str, err = QdbView(filename); err == nil {
+		return str, nil
+	} else {
+		if fbytes, err := ioutil.ReadFile(filename); err == nil {
+			str = string(fbytes)
+		} else {
+			return "", err
+		}
+		if err := QdbUpdate(filename, str); err != nil {
+			return "", etc.LogErr("OIUJLJOUJLH", "QdbUpdate Failed ", err)
+		}
+		return str, nil
+	}
 }
