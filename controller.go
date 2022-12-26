@@ -83,7 +83,7 @@ func (c *Controller) GetYDB() (int, string) {
 	// fmt.Println(c.Gtb.ConnString)
 	// fmt.Println("YDB-qqqq")
 	if c.Db, err = xorm.NewEngine(XConfig["DbType"], c.Gtb.ConnString); err != nil {
-		return 609, e.LogStr("ADASEF", "DBEngine Open Error")
+		return 600, e.LogStr("ADASEF", "DBEngine Open Error")
 	}
 
 	var connHint string
@@ -101,7 +101,7 @@ func (c *Controller) GetYDB() (int, string) {
 	if _, err := c.Db.IsTableExist("aaa"); err == nil {
 		return 200, e.LogStr("ASDFASFQFE", "YDB connection in "+connHint)
 	} else {
-		return 609, e.LogStr("PMUHIUYBUYJM-", "YDB connection Fail in "+connHint)
+		return 600, e.LogStr("PMUHIUYBUYJM-", "YDB connection Fail in "+connHint)
 	}
 }
 
