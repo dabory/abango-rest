@@ -72,8 +72,10 @@ type GateTokenBase struct {
 	UserPermId    int
 	MemberId      int
 	MemberPermId  int
-	StorageId     int
+	SgroupId      int
 	BranchId      int
+	StorageId     int
+	AgroupId      int
 	MemberBuyerId int
 	SalesQtyPoint int
 	SalesPrcPoint int
