@@ -6,7 +6,7 @@ package cryptobox
 import "C"
 import (
 	"errors"
-	// support "github.com/dabory/abango-rest/etc/gosodium/support"
+	support "github.com/dabory/abango-rest/etc/gosodium/support"
 )
 
 func CryptoBoxSeedBytes() int {
