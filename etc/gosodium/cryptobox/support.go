@@ -6,6 +6,13 @@ import (
 	"unsafe"
 )
 
+// 2023.03.13
+// !! Important support.go and error.go file was moved to cryptobox folder
+// because it can NOT be refered by go mod file double times
+// such as weberp-go -> abaango-rest/et/gosodium/cryptobox -> abaango-rest/et/gosodium/support
+// so that these two files should located in same folder without
+// cryto_box.go refering the other folder.
+
 // CheckSize checks if the length of a byte slice is equal to the expected length,
 // and panics when this is not the case.
 func CheckSize(buf []byte, expected int, descrip string) {
