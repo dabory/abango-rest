@@ -4,7 +4,7 @@ package cryptobox
 // #include <stdlib.h>
 // #include <sodium.h>
 import "C"
-import support "weberp-go/locals/gosodium/support"
+import support "github.com/dabory/abango-rest/etc/gosodium/support"
 
 func CryptoBoxDetachedAfterNm(mac []byte, m []byte, n []byte, k []byte) ([]byte, int) {
 	support.CheckSize(mac, CryptoBoxMacBytes(), "mac")
