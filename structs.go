@@ -64,6 +64,7 @@ type AbangoAccess struct {
 type GateTokenBase struct {
 	ConnString    string
 	RemoteIp      string
+	DeviceDesc    string
 	FrontIp       string
 	FrontHost     string
 	Referer       string
