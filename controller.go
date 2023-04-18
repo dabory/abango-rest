@@ -26,7 +26,7 @@ func (c *Controller) GetYDB() (int, string) {
 		c.Gtb.ConnString = XConfig["YDBConnString"] + XConfig["DBOptionString"]
 		c.Gtb.SsoSubId = 0
 		c.Gtb.RemoteIp = "localhost"
-		c.Gtb.RemoteIp = "API-Developer-Device"
+		c.Gtb.DeviceDesc = "API-Developer-Device"
 		c.Gtb.UserId = 5
 		c.Gtb.MemberId = 5
 		c.Gtb.UserPermId = 3
