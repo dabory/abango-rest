@@ -47,6 +47,7 @@ func GetHttpResponse(method string, apiurl string, jsBytes []byte) ([]byte, []by
 	req.Header.Add("FrontendHost", "localhost:normal")
 	req.Header.Add("RemoteIp", "localhost")
 	req.Header.Add("Referer", "http://localhost")
+	req.Header.Add("DeviceDesc", "API-Developer-Device")
 
 	i := len(os.Args)
 	if i != 1 { // 1일 경우는 go function call 의 경우 이므로  memory fault 가 난다.
