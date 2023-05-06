@@ -9,6 +9,10 @@ var (
 	FrontVars map[string]string //Fronrt End Server Variables
 )
 
+var (
+	XDB *xorm.Engine
+)
+
 // 1. Receivers /////////////////////////////////////////////////////////////////
 type Param struct {
 	Key   string

@@ -6,10 +6,12 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	"sync"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/go-xorm/xorm"
 
 	e "github.com/dabory/abango-rest/etc"
 )
@@ -57,8 +59,8 @@ func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
 	e.AokLog("Abango Clustered Framework Started !")
 	if err := GetXConfig(); err == nil {
 		// if XConfig["XDBOn"] == "Yes" {
-		// 	MyLinkXDB()
-		// 	// GetDB()
+		MyLinkXDB()
+		GetDB()
 		// }
 		if XConfig["IsQryFromQDB"] == "Yes" {
 			QRYfromQDB = true
@@ -282,32 +284,32 @@ func RunRequest(MsgHandler func(v *AbangoAsk) (string, string, error), params *s
 // 	return nil
 // }
 
-// func MyLinkXDB() { //   항상 연결될 수 있는 MySQL  DB 사전 연결
+func MyLinkXDB() { //   항상 연결될 수 있는 MySQL  DB 사전 연결
 
-// 	dbtype := XConfig["DbType"]
-// 	connstr := XConfig["XDBConnString"] + XConfig["DBOptionString"]
-// 	// connstr := XConfig["DbUser"] + ":" + XConfig["DbPassword"] + "@tcp(" + XConfig["DbHost"] + ":" + XConfig["DbPort"] + ")/" + XConfig["DbName"] + "?charset=utf8"
+	dbtype := XConfig["DbType"]
+	connstr := XConfig["XDBConnString"] + XConfig["DBOptionString"]
+	// connstr := XConfig["DbUser"] + ":" + XConfig["DbPassword"] + "@tcp(" + XConfig["DbHost"] + ":" + XConfig["DbPort"] + ")/" + XConfig["DbName"] + "?charset=utf8"
 
-// 	// fmt.Println("XDB-aaa")
-// 	// fmt.Println("connstr:", connstr)
-// 	// fmt.Println("XDB-bbb")
-// 	var err error
-// 	XDB, err = xorm.NewEngine(dbtype, connstr)
+	// fmt.Println("XDB-aaa")
+	// fmt.Println("connstr:", connstr)
+	// fmt.Println("XDB-bbb")
+	var err error
+	XDB, err = xorm.NewEngine(dbtype, connstr)
 
-// 	strArr := strings.Split(connstr, "@tcp")
-// 	if len(strArr) != 2 {
-// 		e.MyErr(strArr[1], err, true)
-// 		return
-// 	}
+	strArr := strings.Split(connstr, "@tcp")
+	if len(strArr) != 2 {
+		e.MyErr(strArr[1], err, true)
+		return
+	}
 
-// 	XDB.ShowSQL(false)
-// 	XDB.SetMaxOpenConns(100)
-// 	XDB.SetMaxIdleConns(20)
-// 	XDB.SetConnMaxLifetime(60 * time.Second)
-// 	if _, err := XDB.IsTableExist("aaa"); err != nil { //Connect Check
-// 		e.MyErr("ASDFAERAFE-DATABASE DISCONNECTED", err, true)
-// 	} else {
-// 		e.OkLog("XDB CONNECTED :" + strArr[1])
-// 	}
+	XDB.ShowSQL(false)
+	XDB.SetMaxOpenConns(100)
+	XDB.SetMaxIdleConns(20)
+	XDB.SetConnMaxLifetime(60 * time.Second)
+	if _, err := XDB.IsTableExist("aaa"); err != nil { //Connect Check
+		e.MyErr("ASDFAERAFE-DATABASE DISCONNECTED", err, true)
+	} else {
+		e.OkLog("XDB CONNECTED :" + strArr[1])
+	}
 
-// }
+}
