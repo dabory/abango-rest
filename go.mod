@@ -3,9 +3,9 @@ module github.com/dabory/abango-rest
 go 1.19
 
 require (
-	github.com/go-sql-driver/mysql v1.7.0
+	github.com/go-sql-driver/mysql v1.7.1
 	github.com/go-xorm/xorm v0.7.9
-	github.com/tidwall/buntdb v1.2.10
+	github.com/tidwall/buntdb v1.3.0
 )
 
 require (
