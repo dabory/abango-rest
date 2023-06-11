@@ -105,3 +105,35 @@ func GetQryStr(filename string) (string, error) {
 	}
 
 }
+
+func GetMemoryKeyPair(clientId string) (string, error) {
+
+	var str string
+	var err error
+
+	if MemoryKeyPairOn {
+		if str, err = MdbView(clientId); err == nil {
+			// etc.OkLog("Qry from Memory!!")
+			return str, nil
+		} else {
+			if str, err = e.FileToStrSkip(clientId); err == nil {
+				if err := QdbUpdate(clientId, str); err != nil {
+					return "", etc.LogErr("OIUJLJOUJLH", "QdbUpdate Failed ", err)
+				}
+				// etc.OkLog("Qry from File!!")
+				return str, nil
+			} else {
+				return "", err
+			}
+		}
+	} else {
+		if str, err = e.FileToStrSkip(clientId); err == nil {
+			// etc.OkLog("QRY FILE")
+			return str, nil
+		} else {
+			return "", etc.LogErr("PKOJHKJUY", " File", err)
+		}
+	}
+
+	return ret.KeyPair, nil
+}
