@@ -14,9 +14,11 @@ import (
 )
 
 var (
-	MDB        *buntdb.DB
-	QDB        *buntdb.DB
-	QRYfromQDB bool
+	MDB *buntdb.DB
+	QDB *buntdb.DB
+
+	QRYfromQDB bool // 나중에 지울것
+	QDBOn      bool // QDb에서 쿼리 가져옴
 )
 
 func MdbView(key string) (retval string, reterr error) {
@@ -77,7 +79,7 @@ func GetQryStr(filename string) (string, error) {
 
 	var str string
 	var err error
-	if QRYfromQDB {
+	if QDBOn {
 		if str, err = QdbView(filename); err == nil {
 			// etc.OkLog("Qry from Memory!!")
 			return str, nil
