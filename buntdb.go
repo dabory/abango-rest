@@ -17,9 +17,7 @@ var (
 	MDB *buntdb.DB
 	QDB *buntdb.DB
 
-	QRYfromQDB      bool // 나중에 지울것
-	QDBOn           bool // QDb에서 쿼리 가져옴
-	MemoryKeyPairOn bool // KeyPair를 메모리 캐시에서 가져옴.
+	QDBOn bool // QDb에서 쿼리 가져옴
 )
 
 func MdbView(key string) (retval string, reterr error) {
@@ -104,36 +102,4 @@ func GetQryStr(filename string) (string, error) {
 		}
 	}
 
-}
-
-func GetMemoryKeyPair(clientId string) (string, error) {
-
-	var str string
-	var err error
-
-	if MemoryKeyPairOn {
-		if str, err = MdbView(clientId); err == nil {
-			// etc.OkLog("Qry from Memory!!")
-			return str, nil
-		} else {
-			if str, err = e.FileToStrSkip(clientId); err == nil {
-				if err := QdbUpdate(clientId, str); err != nil {
-					return "", etc.LogErr("OIUJLJOUJLH", "QdbUpdate Failed ", err)
-				}
-				// etc.OkLog("Qry from File!!")
-				return str, nil
-			} else {
-				return "", err
-			}
-		}
-	} else {
-		if str, err = e.FileToStrSkip(clientId); err == nil {
-			// etc.OkLog("QRY FILE")
-			return str, nil
-		} else {
-			return "", etc.LogErr("PKOJHKJUY", " File", err)
-		}
-	}
-
-	return ret.KeyPair, nil
 }

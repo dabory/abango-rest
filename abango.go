@@ -63,7 +63,7 @@ func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
 			// GetDB()
 		}
 		if XConfig["IsQryFromQDB"] == "Yes" {
-			QRYfromQDB = true
+			QDBOn = true
 		}
 
 		if XConfig["KafkaOn"] == "Yes" {
