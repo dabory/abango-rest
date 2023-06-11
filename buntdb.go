@@ -17,9 +17,9 @@ var (
 	MDB *buntdb.DB
 	QDB *buntdb.DB
 
-	QRYfromQDB    bool // 나중에 지울것
-	QDBOn         bool // QDb에서 쿼리 가져옴
-	MemoryKeyPair bool // KeyPair를 메모리 캐시에서 가져옴.
+	QRYfromQDB      bool // 나중에 지울것
+	QDBOn           bool // QDb에서 쿼리 가져옴
+	MemoryKeyPairOn bool // KeyPair를 메모리 캐시에서 가져옴.
 )
 
 func MdbView(key string) (retval string, reterr error) {
