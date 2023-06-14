@@ -58,9 +58,11 @@ func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
 
 	e.AokLog("Abango Clustered Framework Started !")
 	if err := GetXConfig(); err == nil {
-		if XConfig["XDBOn"] == "Yes" {
+		if XConfig["XDBOn"] == "Yes" { // 필요없어진 건 같으니까 2024년에 지울것.
 			MyLinkXDB()
-			// GetDB()
+		}
+		if XConfig["CrystalDBOn"] == "Yes" { // 필요없어진 건 같으니까 2024년에 지울것.
+			MyLinkCrystalDB()
 		}
 		if XConfig["IsQryFromQDB"] == "Yes" {
 			QDBOn = true
@@ -289,10 +291,6 @@ func MyLinkXDB() { //   항상 연결될 수 있는 MySQL  DB 사전 연결
 	dbtype := XConfig["DbType"]
 	connstr := XConfig["XDBConnString"] + XConfig["DBOptionString"]
 	// connstr := XConfig["DbUser"] + ":" + XConfig["DbPassword"] + "@tcp(" + XConfig["DbHost"] + ":" + XConfig["DbPort"] + ")/" + XConfig["DbName"] + "?charset=utf8"
-
-	// fmt.Println("XDB-aaa")
-	// fmt.Println("connstr:", connstr)
-	// fmt.Println("XDB-bbb")
 	var err error
 	XDB, err = xorm.NewEngine(dbtype, connstr)
 
@@ -310,6 +308,32 @@ func MyLinkXDB() { //   항상 연결될 수 있는 MySQL  DB 사전 연결
 		e.MyErr("ASDFAERAFE-DATABASE DISCONNECTED", err, true)
 	} else {
 		e.OkLog("XDB CONNECTED :" + strArr[1])
+	}
+
+}
+
+func MyLinkCrystalDB() { // Crystal Report Server
+
+	dbtype := XConfig["DbType"]
+	connstr := XConfig["CrystalDBConnString"] + XConfig["DBOptionString"]
+	// connstr := XConfig["DbUser"] + ":" + XConfig["DbPassword"] + "@tcp(" + XConfig["DbHost"] + ":" + XConfig["DbPort"] + ")/" + XConfig["DbName"] + "?charset=utf8"
+	var err error
+	CrystalDB, err = xorm.NewEngine(dbtype, connstr)
+
+	strArr := strings.Split(connstr, "@tcp")
+	if len(strArr) != 2 {
+		e.MyErr(strArr[1], err, true)
+		return
+	}
+
+	CrystalDB.ShowSQL(false)
+	CrystalDB.SetMaxOpenConns(100)
+	CrystalDB.SetMaxIdleConns(20)
+	CrystalDB.SetConnMaxLifetime(60 * time.Second)
+	if _, err := CrystalDB.IsTableExist("aaa"); err != nil { //Connect Check
+		e.MyErr("ASDFAERAFE-DATABASE DISCONNECTED", err, true)
+	} else {
+		e.OkLog("CrystalDB CONNECTED :" + strArr[1])
 	}
 
 }

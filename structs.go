@@ -10,7 +10,8 @@ var (
 )
 
 var (
-	XDB *xorm.Engine
+	XDB       *xorm.Engine
+	CrystalDB *xorm.Engine
 )
 
 // 1. Receivers /////////////////////////////////////////////////////////////////
