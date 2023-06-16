@@ -7,6 +7,7 @@ package abango
 
 import (
 	"errors"
+	"time"
 
 	"github.com/dabory/abango-rest/etc"
 	e "github.com/dabory/abango-rest/etc"
@@ -41,6 +42,18 @@ func MdbUpdate(key string, value string) (reterr error) {
 		_, _, err := tx.Set(key, value, nil)
 		if err != nil {
 			reterr = e.MyErr("QWVGAVAEFV-MDB.Update Error in Key: "+key+" Value: "+value, err, false)
+		}
+		return nil
+	})
+	return nil
+}
+
+func MdbDelete(key string, value string) (reterr error) {
+
+	MDB.Update(func(tx *buntdb.Tx) error {
+		_, _, err := tx.Set(key, value, &buntdb.SetOptions{Expires: true, TTL: time.Second})
+		if err != nil {
+			reterr = e.MyErr("LJOOHOHIG-MDB.Delete Error in Key: "+key+" Value: "+value, err, false)
 		}
 		return nil
 	})
