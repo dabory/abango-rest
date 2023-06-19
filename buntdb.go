@@ -50,13 +50,32 @@ func MdbUpdate(key string, value string) (reterr error) {
 
 func MdbDelete(key string, value string) (reterr error) {
 
-	MDB.Update(func(tx *buntdb.Tx) error {
-		_, _, err := tx.Set(key, value, &buntdb.SetOptions{Expires: true, TTL: time.Second})
-		if err != nil {
-			reterr = e.MyErr("LJOOHOHIG-MDB.Delete Error in Key: "+key+" Value: "+value, err, false)
-		}
-		return nil
-	})
+	if value != "" {
+		MDB.Update(func(tx *buntdb.Tx) error {
+			_, _, err := tx.Set(key, value, &buntdb.SetOptions{Expires: true, TTL: time.Second})
+			if err != nil {
+				reterr = e.MyErr("LJOOHOHIG-MDB.Delete Error in Key: "+key+" Value: "+value, err, false)
+			}
+			return nil
+		})
+	} else {
+		MDB.View(func(tx *buntdb.Tx) error {
+			tx.Ascend("names", func(key1, val string) bool {
+				if val == value {
+					MDB.Update(func(tx *buntdb.Tx) error {
+						_, _, err := tx.Set(key1, "", &buntdb.SetOptions{Expires: true, TTL: time.Second})
+						if err != nil {
+							reterr = e.MyErr("LJOOHOHIG-MDB.Delete Error in Key: "+key+" Value: "+value, err, false)
+						}
+						return nil
+					})
+				}
+				return true
+			})
+			return nil
+		})
+
+	}
 	return nil
 }
 

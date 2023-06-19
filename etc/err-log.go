@@ -121,7 +121,7 @@ func LogErr(index string, s string, err error) error { // nㅣl 아님 경우만
 	if err != nil {
 		errStr = err.Error()
 	} else {
-		log.Println("========= Fatal: error is nil ==========")
+		log.Println("========= Fatal: error is nil LogErr ==========")
 	}
 	msg := s + " * " + errStr
 	str := index + " @ " + msg
@@ -145,7 +145,7 @@ func LogCritical(index string, s string, err error) { //에러 ㄱ계를 추적
 	if err != nil {
 		errStr = err.Error()
 	} else {
-		log.Println("========= Fatal: error is nil ==========")
+		log.Println("========= Fatal: error is nil LogCritical==========")
 	}
 	str := index + " @ " + s + " * " + errStr
 	log.Println("[Fatal]: " + str)
@@ -162,7 +162,7 @@ func LogFatal(index string, s string, err error) { //Critical 동일하지만 �
 	if err != nil {
 		errStr = err.Error()
 	} else {
-		log.Println("========= Fatal: error is nil ==========")
+		log.Println("========= Fatal: error is nil LogFatal ==========")
 	}
 	str := index + " @ " + s + " * " + errStr
 	log.Println("[Fatal]: " + str)
@@ -190,7 +190,7 @@ func ErrLog(s string, err error) error { // // nㅣl처리 아주 중요함
 	if err != nil {
 		errStr = err.Error()
 	} else {
-		log.Println("========= Fatal: error is nil ==========")
+		log.Println("========= Fatal: error is nil ErrLog==========")
 	}
 
 	str := "[Error]: " + s + " (Err): " + errStr
