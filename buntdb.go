@@ -50,7 +50,7 @@ func MdbUpdate(key string, value string) (reterr error) {
 
 func MdbDelete(key string, value string) (reterr error) {
 
-	if value != "" {
+	if key != "" {
 		MDB.Update(func(tx *buntdb.Tx) error {
 			_, _, err := tx.Set(key, value, &buntdb.SetOptions{Expires: true, TTL: time.Second})
 			if err != nil {
@@ -58,23 +58,26 @@ func MdbDelete(key string, value string) (reterr error) {
 			}
 			return nil
 		})
-	} else {
+	} else { // value 값을 찾아 key 을 지운다.
+		tmpKey := ""
 		MDB.View(func(tx *buntdb.Tx) error {
-			tx.Ascend("names", func(key1, val string) bool {
+			tx.Ascend("", func(key, val string) bool {
 				if val == value {
-					MDB.Update(func(tx *buntdb.Tx) error {
-						_, _, err := tx.Set(key1, "", &buntdb.SetOptions{Expires: true, TTL: time.Second})
-						if err != nil {
-							reterr = e.MyErr("LJOOHOHIG-MDB.Delete Error in Key: "+key+" Value: "+value, err, false)
-						}
-						return nil
-					})
+					tmpKey = key
 				}
 				return true
 			})
 			return nil
 		})
 
+		MDB.Update(func(tx *buntdb.Tx) error {
+			_, _, err := tx.Set(tmpKey, "", &buntdb.SetOptions{Expires: true, TTL: time.Second})
+			if err != nil {
+				reterr = e.MyErr("LJOOHOHIG-MDB.Delete Error in Key: "+key+" Value: "+value, err, false)
+			}
+			return nil
+		})
+		time.Sleep(1 * time.Second)
 	}
 	return nil
 }
