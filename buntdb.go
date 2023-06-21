@@ -70,14 +70,15 @@ func MdbDelete(key string, value string) (reterr error) {
 			return nil
 		})
 
-		MDB.Update(func(tx *buntdb.Tx) error {
-			_, _, err := tx.Set(tmpKey, "", &buntdb.SetOptions{Expires: true, TTL: time.Second})
-			if err != nil {
-				reterr = e.MyErr("LJOOHOHIG-MDB.Delete Error in Key: "+key+" Value: "+value, err, false)
-			}
-			return nil
-		})
-		time.Sleep(1 * time.Second)
+		if tmpKey != "" {
+			MDB.Update(func(tx *buntdb.Tx) error {
+				_, _, err := tx.Set(tmpKey, "", &buntdb.SetOptions{Expires: true, TTL: time.Second})
+				if err != nil {
+					reterr = e.MyErr("LJOOHOHIG-MDB.Delete Error in Key: "+key+" Value: "+value, err, false)
+				}
+				return nil
+			})
+		}
 	}
 	return nil
 }
