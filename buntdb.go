@@ -7,6 +7,7 @@ package abango
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/dabory/abango-rest/etc"
@@ -70,6 +71,7 @@ func MdbDelete(key string, value string) (reterr error) {
 			return nil
 		})
 
+		fmt.Println("tmpKey:", tmpKey)
 		if tmpKey != "" {
 			MDB.Update(func(tx *buntdb.Tx) error {
 				_, _, err := tx.Set(tmpKey, "", &buntdb.SetOptions{Expires: true, TTL: time.Second})
