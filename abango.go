@@ -330,11 +330,11 @@ func MyLinkCrystalDB() { // Crystal Report Server
 	CrystalDB.SetMaxOpenConns(100)
 	CrystalDB.SetMaxIdleConns(20)
 	CrystalDB.SetConnMaxLifetime(60 * time.Second)
-	if _, err := CrystalDB.IsTableExist("aaa"); err != nil { //Connect Check
-		e.OkLog("JHGKIUGBJ-CrystalDB Unconnected " + strArr[1])
-		// e.MyErr("JHGKIUGBJ-CrystalDB Unconnected ", err, true)
-	} else {
-		e.OkLog("CrystalDB Connected :" + strArr[1])
-	}
+	// if _, err := CrystalDB.IsTableExist("aaa"); err != nil { //Connect Check
+	// 	e.OkLog("JHGKIUGBJ-CrystalDB Unconnected " + strArr[1])
+	// 	// e.MyErr("JHGKIUGBJ-CrystalDB Unconnected ", err, true)
+	// } else {
+	// 	e.OkLog("CrystalDB Connected :" + strArr[1])
+	// }
 
 }
