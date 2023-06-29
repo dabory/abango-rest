@@ -61,7 +61,8 @@ func GetHttpResponse(method string, apiurl string, jsBytes []byte) ([]byte, []by
 
 	// Client객체에서 Request 실행
 	client := &http.Client{
-		Timeout: time.Second * 20, //Otherwirse, it can cause crash without this line. Must Must.
+		Timeout: time.Second * 3600, //Otherwirse, it can cause crash without this line. Must Must.
+		// Timeout: time.Second * 20, //Otherwirse, it can cause crash without this line. Must Must.
 	} // Normal is 10 but extend 20 on 1 Dec 2018
 
 	// fmt.Println(reflect.TypeOf(respo))
@@ -139,7 +140,8 @@ func UploadFileResponse(method string, apiurl string, jsBytes []byte) ([]byte, [
 
 	// Client객체에서 Request 실행
 	client := &http.Client{
-		Timeout: time.Second * 20, //Otherwirse, it can cause crash without this line. Must Must.
+		Timeout: time.Second * 3600, //Otherwirse, it can cause crash without this line. Must Must.
+		// Timeout: time.Second * 20, //Otherwirse, it can cause crash without this line. Must Must.
 	} // Normal is 10 but extend 20 on 1 Dec 2018
 
 	// fmt.Println(reflect.TypeOf(respo))
@@ -179,7 +181,8 @@ func GetHttpResponseOLd(method string, apiurl string, jsBytes []byte) ([]byte, [
 
 	// Client객체에서 Request 실행
 	client := &http.Client{
-		Timeout: time.Second * 20, //Otherwirse, it can cause crash without this line. Must Must.
+		Timeout: time.Second * 3600, //Otherwirse, it can cause crash without this line. Must Must.
+		// Timeout: time.Second * 20, //Otherwirse, it can cause crash without this line. Must Must.
 	} // Normal is 10 but extend 20 on 1 Dec 2018
 
 	// fmt.Println(reflect.TypeOf(respo))
