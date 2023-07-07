@@ -14,6 +14,7 @@ var (
 	KAFKA_TIMEOUT string
 )
 
+// sdfjasldfja
 func KafkaInit() {
 	KAFKA_CONN = XConfig["KafkaConnString"]
 	KAFKA_TOPIC = XConfig["KafkaTopic"]
