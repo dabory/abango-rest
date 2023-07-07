@@ -22,6 +22,7 @@ func KafkaInit() {
 	e.OkLog("== KAFKA_CONN is : " + KAFKA_CONN + " ==")
 	e.OkLog("== KAFKA_TOPIC is : " + KAFKA_TOPIC + " ==")
 	e.OkLog("== KAFKA_TIMEOUT is : " + KAFKA_TIMEOUT + " ==")
+	go abango.KafkaConsumer()
 }
 
 func KafkaProducer(key string, message string, conCurr string) (int32, int64, error) {
