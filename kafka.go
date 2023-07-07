@@ -83,7 +83,7 @@ func KafkaConsumer() {
 	if err != nil {
 		log.Fatalf("Failed to get partitions: %s", err)
 	}
-
+	//lsjdljsdlfjas
 	var wg sync.WaitGroup
 	wg.Add(len(partitions))
 
