@@ -20,6 +20,7 @@ func init() {
 	KAFKA_TIMEOUT = XConfig["KafkaTimeout"]
 }
 
+// sdjlsdajadsl
 func KafkaProducer(key string, message string, conCurr string) (int32, int64, error) {
 
 	kfcf := sarama.NewConfig()
