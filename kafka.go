@@ -38,7 +38,7 @@ func KafkaProducer(key string, message string, conCurr string) (int32, int64, er
 			return 0, 0, e.MyErr("QEJHDRTTRRW-Kafka-NewSyncProducer-End", err, true)
 		}
 	} else if conCurr == "sync" {
-		if prd, err := sarama.NewSyncProducer([]string{conn}, kfcf); err == nil {
+		if prd, err := sarama.NewSyncProducer([]string{KAFKA_CONN}, kfcf); err == nil {
 			msg := &sarama.ProducerMessage{
 				Topic: KAFKA_TOPIC,
 				Key:   sarama.StringEncoder(key),     //[]byte doesn't work.
