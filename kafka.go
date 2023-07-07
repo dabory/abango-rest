@@ -29,7 +29,7 @@ func KafkaProducer(key string, message string, conCurr string) (int32, int64, er
 	if conCurr == "async" {
 		if prd, err := sarama.NewAsyncProducer([]string{KAFKA_CONN}, kfcf); err == nil {
 			prd.Input() <- &sarama.ProducerMessage{
-				Topic: topic,
+				Topic: KAFKA_TOPIC,
 				Key:   sarama.StringEncoder(key),     //[]byte doesn't work.
 				Value: sarama.StringEncoder(message), //[]byte doesn't work.
 			}
@@ -78,8 +78,8 @@ func KafkaConsumer() {
 	}()
 
 	// Create a new consumer for topics
-	topics := KAFKA_TOPIC
-	partitions, err := consumer.Partitions(topics)
+	// topics := KAFKA_TOPIC
+	partitions, err := consumer.Partitions(KAFKA_TOPIC)
 	if err != nil {
 		log.Fatalf("Failed to get partitions: %s", err)
 	}
