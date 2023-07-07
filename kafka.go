@@ -9,8 +9,9 @@ import (
 )
 
 var (
-	KAFKA_CONN  string
-	KAFKA_TOPIC string
+	KAFKA_CONN    string
+	KAFKA_TOPIC   string
+	KAFKA_TIMEOUT string
 )
 
 func init() {
