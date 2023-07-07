@@ -18,7 +18,9 @@ func init() {
 	KAFKA_CONN = XConfig["KafkaConnString"]
 	KAFKA_TOPIC = XConfig["KafkaTopic"]
 	KAFKA_TIMEOUT = XConfig["KafkaTimeout"]
-	fmt.Println("KAFKA_TOPIC:", KAFKA_TOPIC)
+	e.OkLog("== KAFKA_CONN is : " + KAFKA_CONN + " ==")
+	e.OkLog("== KAFKA_TOPIC is : " + KAFKA_TOPIC + " ==")
+	e.OkLog("== KAFKA_TIMEOUT is : " + KAFKA_TIMEOUT + " ==")
 }
 
 func KafkaProducer(key string, message string, conCurr string) (int32, int64, error) {
