@@ -18,6 +18,7 @@ func init() {
 	KAFKA_CONN = XConfig["KafkaConnString"]
 	KAFKA_TOPIC = XConfig["KafkaTopic"]
 	KAFKA_TIMEOUT = XConfig["KafkaTimeout"]
+	fmt.Println("KAFKA_TOPIC:", KAFKA_TOPIC)
 }
 
 func KafkaProducer(key string, message string, conCurr string) (int32, int64, error) {
