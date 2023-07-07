@@ -14,7 +14,7 @@ var (
 	KAFKA_TIMEOUT string
 )
 
-func init() {
+func KafkaInit() {
 	KAFKA_CONN = XConfig["KafkaConnString"]
 	KAFKA_TOPIC = XConfig["KafkaTopic"]
 	KAFKA_TIMEOUT = XConfig["KafkaTimeout"]
