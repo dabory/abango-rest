@@ -21,7 +21,6 @@ func init() {
 
 func KafkaProducer(key string, message string, conCurr string) (int32, int64, error) {
 
-	// conn := "localhost:9092"
 	kfcf := sarama.NewConfig()
 	kfcf.Producer.Retry.Max = 5
 	kfcf.Producer.RequiredAcks = sarama.WaitForAll
