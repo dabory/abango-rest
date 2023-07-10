@@ -22,11 +22,9 @@ func KafkaInit() {
 	e.OkLog("== KAFKA_CONN is : " + KAFKA_CONN + " ==")
 	e.OkLog("== KAFKA_TOPIC is : " + KAFKA_TOPIC + " ==")
 	e.OkLog("== KAFKA_TIMEOUT is : " + KAFKA_TIMEOUT + " ==")
-
-	go KafkaConsumer()
 }
 
-func KafkaProducer(key string, message string, conCurr string) (int32, int64, error) {
+func KafkaProducer(key string, headers []sarama.RecordHeader, message []byte, conCurr string) (int32, int64, error) {
 
 	kfcf := sarama.NewConfig()
 	kfcf.Producer.Retry.Max = 5
@@ -36,9 +34,10 @@ func KafkaProducer(key string, message string, conCurr string) (int32, int64, er
 	if conCurr == "async" {
 		if prd, err := sarama.NewAsyncProducer([]string{KAFKA_CONN}, kfcf); err == nil {
 			prd.Input() <- &sarama.ProducerMessage{
-				Topic: KAFKA_TOPIC,
-				Key:   sarama.StringEncoder(key),     //[]byte doesn't work.
-				Value: sarama.StringEncoder(message), //[]byte doesn't work.
+				Topic:   KAFKA_TOPIC,
+				Key:     sarama.StringEncoder(key),
+				Headers: headers,
+				Value:   sarama.ByteEncoder(message),
 			}
 			return 0, 0, nil
 		} else {
@@ -47,9 +46,10 @@ func KafkaProducer(key string, message string, conCurr string) (int32, int64, er
 	} else if conCurr == "sync" {
 		if prd, err := sarama.NewSyncProducer([]string{KAFKA_CONN}, kfcf); err == nil {
 			msg := &sarama.ProducerMessage{
-				Topic: KAFKA_TOPIC,
-				Key:   sarama.StringEncoder(key),     //[]byte doesn't work.
-				Value: sarama.StringEncoder(message), //[]byte doesn't work.
+				Topic:   KAFKA_TOPIC,
+				Key:     sarama.StringEncoder(key),
+				Headers: headers,
+				Value:   sarama.ByteEncoder(message),
 			}
 			if part, offset, err := prd.SendMessage(msg); err == nil {
 				return part, offset, nil
@@ -64,7 +64,7 @@ func KafkaProducer(key string, message string, conCurr string) (int32, int64, er
 	}
 }
 
-func KafkaConsumer() {
+func KafkaConsumer(ConsumeHandler func(msg *sarama.ConsumerMessage)) {
 
 	// Create a new configuration for the consumer
 	config := sarama.NewConfig()
@@ -112,8 +112,9 @@ func KafkaConsumer() {
 			}()
 
 			// Process messages
-			for message := range partitionConsumer.Messages() {
-				log.Printf("Partition %d | Offset %d | Key: %s | Value: %s", message.Partition, message.Offset, string(message.Key), string(message.Value))
+			for msg := range partitionConsumer.Messages() {
+				ConsumeHandler(msg)
+				// log.Printf("Partition-kk %d | Offset %d | Key: %s | Value: %s", message.Partition, message.Offset, string(message.Key), string(message.Value))
 			}
 		}(partition)
 	}

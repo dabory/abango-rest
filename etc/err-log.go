@@ -175,6 +175,7 @@ func LogFatal(index string, s string, err error) { //Critical 동일하지만 �
 	os.Exit(100)
 }
 
+// ==== 아래건은 모두 옛날 것이라 차츰 Deprecate 할 것 =====
 func OkLog(s string) error {
 	// log.Logger
 	log.Println("[OK]: " + s)
@@ -185,7 +186,7 @@ func AokLog(s string) {
 	log.Println("[Abango-OK]: " + s)
 }
 
-func ErrLog(s string, err error) error { // // nㅣl처리 아주 중요함
+func ErrLog(s string, err error) error { // // nㅣl처리 아주 중요함 ( 이건 이제 더 사용하지 말것)
 	var errStr string
 	if err != nil {
 		errStr = err.Error()
@@ -198,6 +199,8 @@ func ErrLog(s string, err error) error { // // nㅣl처리 아주 중요함
 	return errors.New(str)
 
 }
+
+// === 여기 까지 =====
 
 func ChkLog(point string, x ...interface{}) {
 	log.Println("[CHECK:" + point + "] " + fmt.Sprintf("%v", x))
