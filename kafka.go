@@ -24,19 +24,20 @@ func KafkaInit() {
 	e.OkLog("== KAFKA_TIMEOUT is : " + KAFKA_TIMEOUT + " ==")
 }
 
-func KafkaProducer(key string, headers []sarama.RecordHeader, message []byte, conCurr string) (int32, int64, error) {
+func KafkaProducer(key string, headers []*sarama.RecordHeader, message []byte, conCurr string) (int32, int64, error) {
 
 	kfcf := sarama.NewConfig()
 	kfcf.Producer.Retry.Max = 5
 	kfcf.Producer.RequiredAcks = sarama.WaitForAll
 	kfcf.Producer.Return.Successes = true
+	conHeaders := e.ConvertKafkaHeaders(headers)
 
 	if conCurr == "async" {
 		if prd, err := sarama.NewAsyncProducer([]string{KAFKA_CONN}, kfcf); err == nil {
 			prd.Input() <- &sarama.ProducerMessage{
 				Topic:   KAFKA_TOPIC,
 				Key:     sarama.StringEncoder(key),
-				Headers: headers,
+				Headers: conHeaders,
 				Value:   sarama.ByteEncoder(message),
 			}
 			return 0, 0, nil
@@ -48,7 +49,7 @@ func KafkaProducer(key string, headers []sarama.RecordHeader, message []byte, co
 			msg := &sarama.ProducerMessage{
 				Topic:   KAFKA_TOPIC,
 				Key:     sarama.StringEncoder(key),
-				Headers: headers,
+				Headers: conHeaders,
 				Value:   sarama.ByteEncoder(message),
 			}
 			if part, offset, err := prd.SendMessage(msg); err == nil {
