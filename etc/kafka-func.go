@@ -18,3 +18,11 @@ func KafkaHeaderValue(headers []*sarama.RecordHeader, key []byte) string {
 	}
 	return ""
 }
+
+func ConvertKafkaHeaders(headers []*sarama.RecordHeader) []sarama.RecordHeader {
+	convertedHeaders := make([]sarama.RecordHeader, len(headers))
+	for i, header := range headers {
+		convertedHeaders[i] = *header
+	}
+	return convertedHeaders
+}
