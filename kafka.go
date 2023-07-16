@@ -2,6 +2,7 @@ package abango
 
 import (
 	"log"
+	"strings"
 	"sync"
 
 	"github.com/Shopify/sarama"
@@ -9,22 +10,22 @@ import (
 )
 
 var (
-	KAFKA_CONN    string
-	KAFKA_TOPIC   string
-	KAFKA_TIMEOUT string
+	KAFKA_CONN      string
+	COMSUMER_TOPICS []string
+	KAFKA_TIMEOUT   string
 )
 
 // sdfjasldfja
 func KafkaInit() {
 	KAFKA_CONN = XConfig["KafkaConnString"]
-	KAFKA_TOPIC = XConfig["KafkaTopic"]
+	COMSUMER_TOPICS = strings.Split(strings.Replace(XConfig["ConsumerTopics"], " ", "", -1), ",")
 	KAFKA_TIMEOUT = XConfig["KafkaTimeout"]
 	e.OkLog("== KAFKA_CONN is : " + KAFKA_CONN + " ==")
-	e.OkLog("== KAFKA_TOPIC is : " + KAFKA_TOPIC + " ==")
+	e.OkLog("== COMSUMER_TOPICS is : " + XConfig["ConsumerTopics"] + " ==")
 	e.OkLog("== KAFKA_TIMEOUT is : " + KAFKA_TIMEOUT + " ==")
 }
 
-func KafkaProducer(key string, headers []*sarama.RecordHeader, message []byte, conCurr string) (int32, int64, error) {
+func KafkaProducer(key string, headers []*sarama.RecordHeader, message []byte, conCurr string, topic string) (int32, int64, error) {
 
 	kfcf := sarama.NewConfig()
 	kfcf.Producer.Retry.Max = 5
@@ -35,7 +36,7 @@ func KafkaProducer(key string, headers []*sarama.RecordHeader, message []byte, c
 	if conCurr == "async" {
 		if prd, err := sarama.NewAsyncProducer([]string{KAFKA_CONN}, kfcf); err == nil {
 			prd.Input() <- &sarama.ProducerMessage{
-				Topic:   KAFKA_TOPIC,
+				Topic:   topic,
 				Key:     sarama.StringEncoder(key),
 				Headers: conHeaders,
 				Value:   sarama.ByteEncoder(message),
@@ -47,7 +48,7 @@ func KafkaProducer(key string, headers []*sarama.RecordHeader, message []byte, c
 	} else if conCurr == "sync" {
 		if prd, err := sarama.NewSyncProducer([]string{KAFKA_CONN}, kfcf); err == nil {
 			msg := &sarama.ProducerMessage{
-				Topic:   KAFKA_TOPIC,
+				Topic:   topic,
 				Key:     sarama.StringEncoder(key),
 				Headers: conHeaders,
 				Value:   sarama.ByteEncoder(message),
@@ -86,40 +87,44 @@ func KafkaConsumer(ConsumeHandler func(msg *sarama.ConsumerMessage)) {
 	}()
 
 	// Create a new consumer for topics
-	// topics := KAFKA_TOPIC
-	partitions, err := consumer.Partitions(KAFKA_TOPIC)
-	if err != nil {
-		log.Fatalf("Failed to get partitions: %s", err)
-	}
 
-	var wg sync.WaitGroup
-	wg.Add(len(partitions))
+	// using for loop
+	for i := 0; i < len(COMSUMER_TOPICS); i++ {
 
-	// Consume messages from each partition asynchronously
-	for _, partition := range partitions {
-		go func(partition int32) {
-			defer wg.Done()
+		partitions, err := consumer.Partitions(COMSUMER_TOPICS[i])
+		if err != nil {
+			log.Fatalf("Failed to get partitions: %s", err)
+		}
 
-			// Create a new partition consumer
-			partitionConsumer, err := consumer.ConsumePartition(KAFKA_TOPIC, partition, sarama.OffsetNewest)
-			if err != nil {
-				log.Printf("Failed to create partition consumer for partition %d: %s", partition, err)
-				return
-			}
-			defer func() {
-				if err := partitionConsumer.Close(); err != nil {
-					log.Printf("Error closing partition consumer for partition %d: %s", partition, err)
+		var wg sync.WaitGroup
+		wg.Add(len(partitions))
+
+		// Consume messages from each partition asynchronously
+		for _, partition := range partitions {
+			go func(partition int32) {
+				defer wg.Done()
+
+				// Create a new partition consumer
+				partitionConsumer, err := consumer.ConsumePartition(COMSUMER_TOPICS[i], partition, sarama.OffsetNewest)
+				if err != nil {
+					log.Printf("Failed to create partition consumer for partition %d: %s", partition, err)
+					return
 				}
-			}()
+				defer func() {
+					if err := partitionConsumer.Close(); err != nil {
+						log.Printf("Error closing partition consumer for partition %d: %s", partition, err)
+					}
+				}()
 
-			// Process messages
-			for msg := range partitionConsumer.Messages() {
-				ConsumeHandler(msg)
-				// log.Printf("Partition-kk %d | Offset %d | Key: %s | Value: %s", message.Partition, message.Offset, string(message.Key), string(message.Value))
-			}
-		}(partition)
+				// Process messages
+				for msg := range partitionConsumer.Messages() {
+					ConsumeHandler(msg)
+					// log.Printf("Partition-kk %d | Offset %d | Key: %s | Value: %s", message.Partition, message.Offset, string(message.Key), string(message.Value))
+				}
+			}(partition)
+		}
+
+		// Wait for the consumer to finish
+		wg.Wait()
 	}
-
-	// Wait for the consumer to finish
-	wg.Wait()
 }
