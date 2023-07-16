@@ -1,7 +1,6 @@
 package abango
 
 import (
-	"log"
 	"strings"
 	"sync"
 
@@ -15,7 +14,6 @@ var (
 	KAFKA_TIMEOUT   string
 )
 
-// sdfjasldfja
 func KafkaInit() {
 	KAFKA_CONN = XConfig["KafkaConnString"]
 	COMSUMER_TOPICS = strings.Split(strings.Replace(XConfig["ConsumerTopics"], " ", "", -1), ",")
@@ -66,7 +64,7 @@ func KafkaProducer(key string, headers []*sarama.RecordHeader, message []byte, c
 	}
 }
 
-func KafkaConsumer(ConsumeHandler func(msg *sarama.ConsumerMessage)) {
+func KafkaConsumer(ConsumeHandler func(msg *sarama.ConsumerMessage), topic string) {
 
 	// Create a new configuration for the consumer
 	config := sarama.NewConfig()
@@ -78,53 +76,48 @@ func KafkaConsumer(ConsumeHandler func(msg *sarama.ConsumerMessage)) {
 	// Create a new consumer
 	consumer, err := sarama.NewConsumer(brokers, config)
 	if err != nil {
-		log.Fatalf("Failed to create consumer: %s", err)
+		e.OkLog("Failed to create consumer of topic : " + topic + " == : " + err.Error())
 	}
 	defer func() {
 		if err := consumer.Close(); err != nil {
-			log.Fatalf("Error closing consumer: %s", err)
+			e.OkLog("Error closing consumer: of topic : " + topic + " == : " + err.Error())
 		}
 	}()
 
-	// Create a new consumer for topics
-
-	// using for loop
-	for i := 0; i < len(COMSUMER_TOPICS); i++ {
-
-		partitions, err := consumer.Partitions(COMSUMER_TOPICS[i])
-		if err != nil {
-			log.Fatalf("Failed to get partitions: %s", err)
-		}
-
-		var wg sync.WaitGroup
-		wg.Add(len(partitions))
-
-		// Consume messages from each partition asynchronously
-		for _, partition := range partitions {
-			go func(partition int32) {
-				defer wg.Done()
-
-				// Create a new partition consumer
-				partitionConsumer, err := consumer.ConsumePartition(COMSUMER_TOPICS[i], partition, sarama.OffsetNewest)
-				if err != nil {
-					log.Printf("Failed to create partition consumer for partition %d: %s", partition, err)
-					return
-				}
-				defer func() {
-					if err := partitionConsumer.Close(); err != nil {
-						log.Printf("Error closing partition consumer for partition %d: %s", partition, err)
-					}
-				}()
-
-				// Process messages
-				for msg := range partitionConsumer.Messages() {
-					ConsumeHandler(msg)
-					// log.Printf("Partition-kk %d | Offset %d | Key: %s | Value: %s", message.Partition, message.Offset, string(message.Key), string(message.Value))
-				}
-			}(partition)
-		}
-
-		// Wait for the consumer to finish
-		wg.Wait()
+	// Consume messages from each partition asynchronously
+	partitions, err := consumer.Partitions(topic)
+	if err != nil {
+		e.OkLog("Failed to get partitions: " + topic + " == : " + err.Error())
 	}
+
+	var wg sync.WaitGroup
+	wg.Add(len(partitions))
+
+	for _, partition := range partitions {
+		go func(partition int32) {
+			defer wg.Done()
+
+			// Create a new partition consumer
+			partitionConsumer, err := consumer.ConsumePartition(topic, partition, sarama.OffsetNewest)
+			if err != nil {
+				e.OkLog("Failed to create partition for consumer: " + topic + " partition: " + e.NumToStr(partition) + " " + err.Error())
+				return
+			}
+			defer func() {
+				if err := partitionConsumer.Close(); err != nil {
+					e.OkLog("Error closing partition for consumer: " + topic + " partition: " + e.NumToStr(partition) + " " + err.Error())
+				}
+			}()
+
+			// Process messages
+			for msg := range partitionConsumer.Messages() {
+				ConsumeHandler(msg)
+				e.OkLog("Consuming topic: " + topic + " partition: " + e.NumToStr(partition))
+				// log.Printf("Partition-kk %d | Offset %d | Key: %s | Value: %s", message.Partition, message.Offset, string(message.Key), string(message.Value))
+			}
+		}(partition)
+	}
+	// Wait for the consumer to finish
+	wg.Wait()
+	// }
 }
