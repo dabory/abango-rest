@@ -1,10 +1,11 @@
 package abango
 
 import (
+	"fmt"
 	"strings"
 	"sync"
 
-	"github.com/Shopify/sarama"
+	"github.com/IBM/sarama"
 	e "github.com/dabory/abango-rest/etc"
 )
 
@@ -30,8 +31,10 @@ func KafkaProducer(key string, headers []*sarama.RecordHeader, message []byte, c
 	kfcf.Producer.RequiredAcks = sarama.WaitForAll
 	kfcf.Producer.Return.Successes = true
 	conHeaders := e.ConvertKafkaHeaders(headers)
-	// fmt.Println("KAFKA_CONN:", KAFKA_CONN)
+	fmt.Println("KAFKA_CONN:", KAFKA_CONN)
+	fmt.Println("KAFKA_Topic:", topic)
 	if conCurr == "async" {
+		fmt.Println("conCurr:", conCurr)
 		if prd, err := sarama.NewAsyncProducer([]string{KAFKA_CONN}, kfcf); err == nil {
 			prd.Input() <- &sarama.ProducerMessage{
 				Topic:   topic,
@@ -44,6 +47,7 @@ func KafkaProducer(key string, headers []*sarama.RecordHeader, message []byte, c
 			return 0, 0, e.MyErr("QEJHDRTTRRW-Kafka-NewAsyncProducer-End", err, true)
 		}
 	} else if conCurr == "sync" {
+		fmt.Println("conCurr:", conCurr)
 		if prd, err := sarama.NewSyncProducer([]string{KAFKA_CONN}, kfcf); err == nil {
 			msg := &sarama.ProducerMessage{
 				Topic:   topic,

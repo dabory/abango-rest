@@ -7,7 +7,7 @@ package etc
 import (
 	"bytes"
 
-	"github.com/Shopify/sarama"
+	"github.com/IBM/sarama"
 )
 
 func KafkaHeaderValue(headers []*sarama.RecordHeader, key []byte) string {
