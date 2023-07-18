@@ -31,10 +31,7 @@ func KafkaProducer(key string, headers []*sarama.RecordHeader, message []byte, c
 	kfcf.Producer.RequiredAcks = sarama.WaitForAll
 	kfcf.Producer.Return.Successes = true
 	conHeaders := e.ConvertKafkaHeaders(headers)
-	fmt.Println("KAFKA_CONN:", KAFKA_CONN)
-	fmt.Println("KAFKA_Topic:", topic)
 	if conCurr == "async" {
-		fmt.Println("conCurr:", conCurr)
 		if prd, err := sarama.NewAsyncProducer([]string{KAFKA_CONN}, kfcf); err == nil {
 			prd.Input() <- &sarama.ProducerMessage{
 				Topic:   topic,
