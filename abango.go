@@ -52,49 +52,43 @@ func init() {
 }
 
 func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
-	// func RunServicePoint(KafkaHandler func(ask *AbangoAsk), GrpcHandler func(), RestHandler func(ask *AbangoAsk)) {
 
 	var wg sync.WaitGroup
 
 	e.AokLog("Abango Clustered Framework Started !")
-	if err := GetXConfig(); err == nil {
-		if XConfig["XDBOn"] == "Yes" { // 필요없어진 건 같으니까 2024년에 지울것.
-			MyLinkXDB()
-		}
-		if XConfig["CrystalDBOn"] == "Yes" { // 필요없어진 건 같으니까 2024년에 지울것.
-			MyLinkCrystalDB()
-		}
-		if XConfig["IsQryFromQDB"] == "Yes" {
-			QDBOn = true
-		}
+	if XConfig["XDBOn"] == "Yes" { // 필요없어진 건 같으니까 2024년에 지울것.
+		MyLinkXDB()
+	}
+	if XConfig["CrystalDBOn"] == "Yes" { // 필요없어진 건 같으니까 2024년에 지울것.
+		MyLinkCrystalDB()
+	}
+	if XConfig["IsQryFromQDB"] == "Yes" {
+		QDBOn = true
+	}
 
-		if XConfig["KafkaOn"] == "Yes" {
-			// wg.Add(1)
-			// go func() {
-			// KafkaSvcStandBy(KafkaHandler)
-			// 	wg.Done()
-			// }()
-		}
-		if XConfig["gRpcOn"] == "Yes" {
-			// e.AokLog("gRpc API StandBy !")
-			// wg.Add(1)
-			// go func() {
-			// 	// GrpcSvcStandBy(GrpcHandler)
-			// 	wg.Done()
-			// }()
-		}
-		if XConfig["RestOn"] == "Yes" {
-			// e.AokLog("RESTful API StandBy !")
+	if XConfig["KafkaOn"] == "Yes" {
+		// wg.Add(1)
+		// go func() {
+		// KafkaSvcStandBy(KafkaHandler)
+		// 	wg.Done()
+		// }()
+	}
+	if XConfig["gRpcOn"] == "Yes" {
+		// e.AokLog("gRpc API StandBy !")
+		// wg.Add(1)
+		// go func() {
+		// 	// GrpcSvcStandBy(GrpcHandler)
+		// 	wg.Done()
+		// }()
+	}
+	if XConfig["RestOn"] == "Yes" {
+		// e.AokLog("RESTful API StandBy !")
 
-			wg.Add(1)
-			go func() {
-				RestSvcStandBy(RestHandler)
-				wg.Done()
-			}()
-		}
-
-	} else {
-		e.Atp("Error running RunServicePoint")
+		wg.Add(1)
+		go func() {
+			RestSvcStandBy(RestHandler)
+			wg.Done()
+		}()
 	}
 
 	wg.Wait()
