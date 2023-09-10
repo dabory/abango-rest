@@ -10,8 +10,8 @@ var (
 )
 
 var (
-	XDB       *xorm.Engine
-	CrystalDB *xorm.Engine
+	XDB       *xorm.Engine // 더 이상 쓰지 않음 2024에 없앨것
+	CrystalDB *xorm.Engine // 더 이상 쓰지 않음 2024에 없앨것
 )
 
 // 1. Receivers /////////////////////////////////////////////////////////////////
