@@ -1,3 +1,5 @@
+package search
+
 type ItemInfo struct {
 	PdplinkHash string
 	TopUrl      string
