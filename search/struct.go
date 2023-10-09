@@ -1,6 +1,6 @@
 package search
 
-type ItemInfo struct {
+type Ditem struct {
 	PdplinkHash string
 	TopUrl      string
 	TargetPath  string // URL without scheme info
