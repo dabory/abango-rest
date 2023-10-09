@@ -91,6 +91,11 @@ func TableName(m interface{}) string {
 	return SnakeString(s)
 }
 
+func PageName(m interface{}) string {
+	s := reflect.TypeOf(m).Elem().Name()
+	return SnakeString(s)
+}
+
 // snake string, XxYy to xx_yy , XxYY to xx_yy
 func SnakeString(s string) string {
 	data := make([]byte, 0, len(s)*2)
