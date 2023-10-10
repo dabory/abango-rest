@@ -5,34 +5,27 @@
 
 package search
 
-import (
-	"fmt"
-	"reflect"
+// func StructToMap(in interface{}, tag string) (map[string]interface{}, error) {
+// 	out := make(map[string]interface{})
 
-	e "github.com/dabory/abango-rest/etc"
-)
+// 	v := reflect.ValueOf(in)
+// 	if v.Kind() == reflect.Ptr {
+// 		v = v.Elem()
+// 	}
 
-func StructToMap(in interface{}, tag string) (map[string]interface{}, error) {
-	out := make(map[string]interface{})
+// 	// we only accept structs
+// 	if v.Kind() != reflect.Struct {
+// 		fmt.Errorf("ToMap only accepts structs; got %T", v)
+// 		return nil, e.MyErr("HJKMNHGYUH-only accepts structs:", nil, false)
+// 	}
 
-	v := reflect.ValueOf(in)
-	if v.Kind() == reflect.Ptr {
-		v = v.Elem()
-	}
-
-	// we only accept structs
-	if v.Kind() != reflect.Struct {
-		fmt.Errorf("ToMap only accepts structs; got %T", v)
-		return nil, e.MyErr("HJKMNHGYUH-only accepts structs:", nil, false)
-	}
-
-	typ := v.Type()
-	for i := 0; i < v.NumField(); i++ {
-		// gets us a StructField
-		fi := typ.Field(i)
-		if tagv := fi.Tag.Get(tag); tagv != "" {
-			out[tagv] = v.Field(i).Interface()
-		}
-	}
-	return out, nil
-}
+// 	typ := v.Type()
+// 	for i := 0; i < v.NumField(); i++ {
+// 		// gets us a StructField
+// 		fi := typ.Field(i)
+// 		if tagv := fi.Tag.Get(tag); tagv != "" {
+// 			out[tagv] = v.Field(i).Interface()
+// 		}
+// 	}
+// 	return out, nil
+// }
