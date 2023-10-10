@@ -1,4 +1,4 @@
-package spdier
+package spider
 
 type Ditem struct {
 	PdplinkHash string
