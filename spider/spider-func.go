@@ -3,7 +3,7 @@
 // End-Agent for Passcon Multi OS go binding with Windows, MacOS, iOS, and Android
 // All rights are reserved.
 
-package search
+package spider
 
 // func StructToMap(in interface{}, tag string) (map[string]interface{}, error) {
 // 	out := make(map[string]interface{})

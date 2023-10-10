@@ -1,4 +1,4 @@
-package search
+package spdier
 
 type Ditem struct {
 	PdplinkHash string

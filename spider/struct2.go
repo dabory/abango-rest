@@ -1,4 +1,4 @@
-package models_json
+package spider
 
 type WooTypeJson struct {
 	Url
