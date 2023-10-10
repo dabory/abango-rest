@@ -1,8 +1,8 @@
 package spider
 
 type WooTypeJson struct {
-	Url
-	Css
+	Url Url
+	Css Css
 }
 
 type Url struct {
