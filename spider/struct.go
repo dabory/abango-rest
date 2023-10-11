@@ -6,6 +6,7 @@ type Ditem struct {
 	TargetPath  string // URL without scheme info
 	HtmlHash    string
 	HubUrls     string
+	IgroupCode  string
 	Categories  string
 	Emails      string
 	ItemName    string
