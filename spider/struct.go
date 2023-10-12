@@ -1,6 +1,6 @@
 package spider
 
-type Ditem struct {
+type SchDitem struct {
 	PdplinkHash string
 	TopUrl      string
 	TargetPath  string // URL without scheme info
