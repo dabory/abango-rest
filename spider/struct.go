@@ -1,18 +1,19 @@
 package spider
 
 type SchDitem struct {
-	PdplinkHash string
-	TopUrl      string
-	TargetPath  string // URL without scheme info
-	HtmlHash    string
-	HubUrls     string
-	IgroupCode  string
-	Categories  string
-	Emails      string
-	ItemName    string
-	Tags        string
-	Currency    string
-	SalesPrice  string
+	Id string //PdplinkHash
+	// PdplinkHash string
+	TopUrl     string
+	TargetPath string // URL without scheme info
+	HtmlHash   string
+	HubUrls    string
+	IgroupCode string
+	Categories string
+	Emails     string
+	ItemName   string
+	Tags       string
+	Currency   string
+	SalesPrice string
 
 	Images    string
 	ShortDesc string
