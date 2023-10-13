@@ -268,7 +268,7 @@ func agErr(s string, e error, amsg *string) string {
 
 func whereami(i int) {
 	function, file, line, _ := runtime.Caller(i)
-	fmt.Printf("  %d.File: %s - %d  %s\n   func: %s \n", i, ChopPath(file), line, file, runtime.FuncForPC(function).Name())
+	fmt.Printf("  %d.File: %s - %d  %s\n   func: %s \n", i, chopPath(file), line, file, runtime.FuncForPC(function).Name())
 }
 
 func WhereAmI(depthList ...int) {
@@ -284,7 +284,7 @@ func WhereAmI(depthList ...int) {
 
 		function, file, line, _ := runtime.Caller(i)
 		fmt.Printf("==Level %d==\n", i)
-		fmt.Printf("File: %s - %d  %s\nFunction: %s \n", ChopPath(file), line, file, runtime.FuncForPC(function).Name())
+		fmt.Printf("File: %s - %d  %s\nFunction: %s \n", chopPath(file), line, file, runtime.FuncForPC(function).Name())
 	}
 	fmt.Printf("==End==\n")
 
@@ -292,7 +292,7 @@ func WhereAmI(depthList ...int) {
 }
 
 // return the source filename after the last slash
-func ChopPath(original string) string {
+func chopPath(original string) string {
 	i := strings.LastIndex(original, "/")
 	if i == -1 {
 		return original
