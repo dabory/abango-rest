@@ -1,45 +1,39 @@
 package spider
 
-type SchDitem struct {
-	Id string //PdplinkHash
-	// PdplinkHash string
-	TopUrl     string
-	TargetPath string // URL without scheme info
-	HtmlHash   string
-	HubUrls    string
-	IgroupCode string
-	Categories string
-	Emails     string
+type WooTypeJson struct {
+	Url Url
+	Css Css
+}
+
+type Url struct {
+	IsHtmlMatch  bool // false(defaul): Quick Match with Page Url, true: Page Html (ex:Magento)
+	HtmlMatchStr string
+	PdpRegEx     string //Product Detail Page Regular Expression
+	PlpRegEx     string //Product List Page Regular Expression
+}
+
+type Css struct {
+	//Css-Card1
 	ItemName   string
-	Tags       string
+	Categories string
 	Currency   string
 	SalesPrice string
-
-	Images    string
-	ShortDesc string
-	TextDesc  string
-
-	OgMetas string
-	Options []struct {
-		Name    string
-		Choices []struct {
-			Name  string
-			Price string
-		}
-	}
-
-	OriginDesc    string
-	Manufacturer  string
-	Origin        string
+	Images     string
+	ShortDesc  string
+	TextDesc   string
+	Tags       string
+	Emails     string
+	//Css-Card2
 	Language      string
-	DeliveryPrice string
+	BrandName     string
+	Manufacturer  string
 	Sku           string
-	// ItemNick      string
-	// ModelName     string
-	// ModelNo       string
-	// BrandName     string
-	// MinimumQty    float32
-	// UserCredit    float32
-	// Suggest     []string
-	// Cats        []string
+	Options       string
+	UserCredit    string
+	ModelNo       string
+	ModelName     string
+	Origin        string
+	OriginDesc    string
+	MinimumQty    string
+	DeliveryPrice string
 }
