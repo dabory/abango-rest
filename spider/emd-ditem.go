@@ -16,6 +16,7 @@ type SchDitem struct {
 	HtmlHash   string
 	HubUrls    string
 	IgroupCode string
+	IgroupName string
 	Categories string
 	Emails     string
 	ItemName   string
