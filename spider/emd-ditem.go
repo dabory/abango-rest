@@ -28,20 +28,15 @@ type SchDitem struct {
 	ShortDesc string
 	TextDesc  string
 
-	OgMetas string
-	Options []struct {
-		Name    string
-		Choices []struct {
-			Name  string
-			Price string
-		}
-	}
+	OgMetas     string
+	ItemOptions string
 
 	OriginDesc    string
 	Manufacturer  string
 	Origin        string
 	Language      string
 	DeliveryPrice string
+	ModelNo       string
 	Sku           string
 	// ItemNick      string
 	// ModelName     string
@@ -51,6 +46,13 @@ type SchDitem struct {
 	// UserCredit    float32
 	// Suggest     []string
 	// Cats        []string
+	// Options     []struct {
+	// 	Name    string
+	// 	Choices []struct {
+	// 		Name  string
+	// 		Price string
+	// 	}
+	// }
 }
 
 type SchDitemRow struct {
