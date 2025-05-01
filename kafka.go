@@ -19,9 +19,9 @@ func KafkaInit() {
 	KAFKA_CONN = XConfig["KafkaConnString"]
 	COMSUMER_TOPICS = strings.Split(strings.Replace(XConfig["ConsumerTopics"], " ", "", -1), ",")
 	KAFKA_TIMEOUT = XConfig["KafkaTimeout"]
-	e.OkLog("== KAFKA_CONN is : " + KAFKA_CONN + " ==")
-	e.OkLog("== COMSUMER_TOPICS is : " + XConfig["ConsumerTopics"] + " ==")
-	e.OkLog("== KAFKA_TIMEOUT is : " + KAFKA_TIMEOUT + " ==")
+	e.LogNil("== KAFKA_CONN is : " + KAFKA_CONN + " ==")
+	e.LogNil("== COMSUMER_TOPICS is : " + XConfig["ConsumerTopics"] + " ==")
+	e.LogNil("== KAFKA_TIMEOUT is : " + KAFKA_TIMEOUT + " ==")
 }
 
 func KafkaProducer(key string, headers []*sarama.RecordHeader, message []byte, conCurr string, topic string) (int32, int64, error) {
@@ -77,18 +77,18 @@ func KafkaConsumer(ConsumeHandler func(msg *sarama.ConsumerMessage), topic strin
 	// Create a new consumer
 	consumer, err := sarama.NewConsumer(brokers, config)
 	if err != nil {
-		e.OkLog("Failed to create consumer of topic : " + topic + " == : " + err.Error())
+		e.LogNil("Failed to create consumer of topic : " + topic + " == : " + err.Error())
 	}
 	defer func() {
 		if err := consumer.Close(); err != nil {
-			e.OkLog("Error closing consumer: of topic : " + topic + " == : " + err.Error())
+			e.LogNil("Error closing consumer: of topic : " + topic + " == : " + err.Error())
 		}
 	}()
 
 	// Consume messages from each partition asynchronously
 	partitions, err := consumer.Partitions(topic)
 	if err != nil {
-		e.OkLog("Failed to get partitions: " + topic + " == : " + err.Error())
+		e.LogNil("Failed to get partitions: " + topic + " == : " + err.Error())
 	}
 
 	var wg sync.WaitGroup
@@ -101,19 +101,19 @@ func KafkaConsumer(ConsumeHandler func(msg *sarama.ConsumerMessage), topic strin
 			// Create a new partition consumer
 			partitionConsumer, err := consumer.ConsumePartition(topic, partition, sarama.OffsetNewest)
 			if err != nil {
-				e.OkLog("Failed to create partition for consumer: " + topic + " partition: " + e.NumToStr(partition) + " " + err.Error())
+				e.LogNil("Failed to create partition for consumer: " + topic + " partition: " + e.NumToStr(partition) + " " + err.Error())
 				return
 			}
 			defer func() {
 				if err := partitionConsumer.Close(); err != nil {
-					e.OkLog("Error closing partition for consumer: " + topic + " partition: " + e.NumToStr(partition) + " " + err.Error())
+					e.LogNil("Error closing partition for consumer: " + topic + " partition: " + e.NumToStr(partition) + " " + err.Error())
 				}
 			}()
 
 			// Process messages
 			for msg := range partitionConsumer.Messages() {
 				ConsumeHandler(msg)
-				e.OkLog("Consuming topic: " + topic + " partition: " + e.NumToStr(partition))
+				e.LogNil("Consuming topic: " + topic + " partition: " + e.NumToStr(partition))
 				// log.Printf("Partition-kk %d | Offset %d | Key: %s | Value: %s", message.Partition, message.Offset, string(message.Key), string(message.Value))
 			}
 		}(partition)
