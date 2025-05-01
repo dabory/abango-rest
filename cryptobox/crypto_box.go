@@ -6,7 +6,8 @@ package cryptobox
 import "C"
 import (
 	"errors"
-	support "weberp-go/locals/gosodium/support"
+
+	support "github.com/dabory/abango-rest/gosodium/support"
 )
 
 func CryptoBoxSeedBytes() int {

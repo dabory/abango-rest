@@ -4,7 +4,7 @@ package cryptobox
 // #include <stdlib.h>
 // #include <sodium.h>
 import "C"
-import support "weberp-go/locals/gosodium/support"
+import support "github.com/dabory/abango-rest/gosodium/support"
 
 func CryptoBoxSeal(m []byte, pk []byte) ([]byte, int) {
 	support.CheckSize(pk, CryptoBoxPublicKeyBytes(), "public key")
