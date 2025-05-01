@@ -6,11 +6,29 @@
 package etc
 
 import (
+	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 )
+
+func MkdirIfNotExists(folderPath string) error {
+
+	// Check if the folder already exists
+	_, err := os.Stat(folderPath)
+	if os.IsNotExist(err) {
+		err := os.MkdirAll(folderPath, 0755) // 0755 is the permission mode
+		if err != nil {
+			return LogErr("3ffae3rfe", "Error creating folder:", err)
+		}
+	} else if err != nil {
+		return LogErr("3ffae3rfe", "Unexpected Error :", err)
+	} else {
+		//fmt.Println("Folder already exists.")
+	}
+
+	return nil
+}
 
 // 코드가 엉망이라 전체 정비해야됨
 func StrToFile(path string, str string) error {
@@ -24,7 +42,7 @@ func StrToFile(path string, str string) error {
 
 	var file, err3 = os.OpenFile(path, os.O_RDWR, 0644)
 	if err3 != nil {
-		Tp(err3)
+		fmt.Println(err3)
 		return err3
 	}
 	defer file.Close()
@@ -32,7 +50,7 @@ func StrToFile(path string, str string) error {
 	// Write some text line-by-line to file.
 	_, err3 = file.WriteString(str)
 	if err3 != nil {
-		Tp(err3)
+		fmt.Println(err3)
 		return err3
 	}
 
@@ -42,40 +60,25 @@ func StrToFile(path string, str string) error {
 		return err3
 	}
 
-	// os.RemoveAll(jsonreceive)
-
-	// err := ioutil.WriteFile(path, []byte("oaslljdfljasdfllajlsd"), 0)
-	// if err != nil {
-	// 	MyErr("WRWRQRCF", err, true)
-	// 	return err
-	// }
-	// if file, err := os.Create(path); err != nil {
-	// 	MyErr("FDADFADSFA", err, true)
-	// 	return err
-	// } else {
-	// 	file.Close()
-	// }
-
-	// if file, err := os.OpenFile(path, os.O_RDWR, 0644); err != nil {
-	// 	if _, err := file.WriteString(str); err != nil {
-	// 		MyErr("SDFFAFFDDAF", err, true)
-	// 		return err
-	// 	} else {
-	// 		if err := file.Sync(); err != nil {
-	// 			e.Tp(err)
-	// 		}
-	// 		return err
-	// 		file.Close()
-	// 	}
-	// }
-
 	return nil
+}
+
+func FileToStrWithoutErr(filename string) string {
+
+	var str string
+	if fbytes, err := os.ReadFile(filename); err == nil {
+		str = string(fbytes)
+	} else {
+		LogStr("ETBUYIITF", "Could Not Read a file")
+		return ""
+	}
+	return str
 }
 
 func FileToStrSkip(filename string) (string, error) {
 
 	var str string
-	if fbytes, err := ioutil.ReadFile(filename); err == nil {
+	if fbytes, err := os.ReadFile(filename); err == nil {
 		str = string(fbytes)
 	} else {
 		return "", LogErr("ETBUIITF", "", err)
@@ -86,7 +89,7 @@ func FileToStrSkip(filename string) (string, error) {
 func FileToStr(filename string) (string, error) {
 
 	var str string
-	if fbytes, err := ioutil.ReadFile(filename); err == nil {
+	if fbytes, err := os.ReadFile(filename); err == nil {
 		str = string(fbytes)
 	} else {
 		MyErr("EPOJMDOKDSF", err, true)
@@ -135,7 +138,7 @@ func FileToStr(filename string) (string, error) {
 // 	return nil
 // }
 
-//  정비해야지 쓸수 있슴.
+// 정비해야지 쓸수 있슴.
 func UriToFile(uri string, filepath string) error {
 	// 해당내용 재정비 해야됨.  //보안부분도 강화 해야 됨.
 	// Create the file=

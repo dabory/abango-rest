@@ -158,3 +158,18 @@ func StructToMap(in interface{}, tag string) (map[string]interface{}, error) {
 	}
 	return out, nil
 }
+func FileNameFromPath(input string) string {
+	result := strings.ReplaceAll(input, "\\", "/")
+	parts := strings.Split(result, "/")
+	return parts[len(parts)-1]
+}
+
+// return the source filename after the last slash
+func ChopPath(original string) string {
+	i := strings.LastIndex(original, "/")
+	if i == -1 {
+		return original
+	} else {
+		return original[i+1:]
+	}
+}

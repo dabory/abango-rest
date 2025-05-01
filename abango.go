@@ -3,6 +3,7 @@ package abango
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -47,7 +48,7 @@ type RunConf struct {
 // }
 
 func init() {
-	// e.OkLog("Abango Initialized")
+	// e.LogNil("Abango Initialized")
 
 }
 
@@ -230,8 +231,8 @@ func RunRequest(MsgHandler func(v *AbangoAsk) (string, string, error), params *s
 			e.StrToFile(jsonreceive, retstr)
 		}
 		if XConfig["ShowReceivedJson"] == "Yes" {
-			e.Tp("Status: " + retsta + "  ReturnJsonFile: " + jsonreceive)
-			e.Tp(retstr)
+			fmt.Println("Status: " + retsta + "  ReturnJsonFile: " + jsonreceive)
+			fmt.Println(retstr)
 		}
 
 		return retstr
@@ -301,7 +302,7 @@ func MyLinkXDB() { //   항상 연결될 수 있는 MySQL  DB 사전 연결
 	if _, err := XDB.IsTableExist("aaa"); err != nil { //Connect Check
 		e.MyErr("ASDFAERAFE-DATABASE DISCONNECTED", err, true)
 	} else {
-		e.OkLog("XDB CONNECTED :" + strArr[1])
+		e.LogNil("XDB CONNECTED :" + strArr[1])
 	}
 
 }
@@ -327,10 +328,10 @@ func MyLinkCrystalDB() { // Crystal Report Server
 
 	// Crystal Server가 죽어도 API 스타트에는 이상이 없도록 연결테스트는 아지 않는다.
 	// if _, err := CrystalDB.IsTableExist("aaa"); err != nil { //Connect Check
-	// 	e.OkLog("JHGKIUGBJ-CrystalDB Unconnected " + strArr[1])
+	// 	e.LogNil("JHGKIUGBJ-CrystalDB Unconnected " + strArr[1])
 	// 	// e.MyErr("JHGKIUGBJ-CrystalDB Unconnected ", err, true)
 	// } else {
-	// 	e.OkLog("CrystalDB Connected :" + strArr[1])
+	// 	e.LogNil("CrystalDB Connected :" + strArr[1])
 	// }
 
 }
