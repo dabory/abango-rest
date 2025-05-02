@@ -2,6 +2,7 @@ package abango
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 
 	e "github.com/dabory/abango-rest/etc"
@@ -55,7 +56,7 @@ func GetXConfig(params ...string) error { // Kafka, gRpc, REST 통합 업그레�
 	}
 
 	if XConfig["RestOn"] == "Yes" || XConfig["ApiType"] == "Rest" {
-		e.Tp("==" + "Config file prefix: " + run.ConfSelect + "== REST Connection: " + XConfig["RestConnect"] + "==")
+		fmt.Println("==" + "Config file prefix: " + run.ConfSelect + "== REST Connection: " + XConfig["RestConnect"] + "==")
 	}
 	return nil
 }
