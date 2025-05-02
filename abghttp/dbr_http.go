@@ -1,4 +1,4 @@
-package qry
+package abghttp
 
 import (
 	"errors"
