@@ -15,7 +15,6 @@ import (
 	"strings"
 
 	"github.com/dabory/abango-rest/gosodium/cryptobox"
-	// e "github.com/dabory/abango-rest/etc"
 )
 
 func KeyPairGenerate() (string, error) {
