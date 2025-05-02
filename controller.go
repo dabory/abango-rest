@@ -2,92 +2,92 @@ package abango
 
 import (
 	"encoding/json"
+	"os"
 	"strings"
 	"time"
 
 	e "github.com/dabory/abango-rest/etc"
 	"github.com/go-xorm/xorm"
+	"gopkg.in/yaml.v2"
 )
 
 func (c *Controller) Init() (int, string) {
-	status, msg := c.GetYDB()
-	return status, msg
-}
 
-func (c *Controller) GetYDB() (int, string) {
-
-	gtb := &struct {
-		GateTokenBase
-	}{}
+	var gtb GateTokenBase
 
 	var gtbStr string
 	var err error
 	if XConfig["IsYDBFixed"] == "Yes" {
-		c.Gtb.ConnString = XConfig["YDBConnString"] + XConfig["DBOptionString"]
-		c.Gtb.SsoSubId = 0
-		c.Gtb.RemoteIp = "localhost"
-		c.Gtb.DeviceDesc = "API-Developer-Device"
-		c.Gtb.UserId = 5
-		c.Gtb.MemberId = 5
-		c.Gtb.UserPermId = 3
-		c.Gtb.MemberPermId = 3
-		c.Gtb.SgroupId = 1
-		c.Gtb.BranchId = 1
-		c.Gtb.StorageId = 1
-		c.Gtb.AgroupId = 1
-		c.Gtb.MemberBuyerId = 1
-		c.Gtb.SalesQtyPoint = 0
-		c.Gtb.SalesPrcPoint = 0
-		c.Gtb.SalesAmtPoint = 0
-		c.Gtb.PurchQtyPoint = 0
-		c.Gtb.PurchPrcPoint = 0
-		c.Gtb.PurchAmtPoint = 0
-		c.Gtb.StockQtyPoint = 0
-		c.Gtb.StockPrcPoint = 0
-		c.Gtb.StockAmtPoint = 0
-		c.Gtb.AccAmtPoint = 0
 
-	} else {
-		if gtbStr, err = MdbView(c.GateToken); err != nil {
-			// if c.ConnString, err = MdbView(c.GateToken); err != nil {
-			return 505, e.LogStr("QWFAECAFVD", "GateToken Not Found: "+c.GateToken)
+		data, err := os.ReadFile("models/custom.yml")
+		if err != nil {
+			return 507, e.LogStr("ASDFQEWFA", "Can NOT Read custom.yml")
 		}
 
-		if err := json.Unmarshal([]byte(gtbStr), gtb); err == nil {
-			c.Gtb.ConnString = gtb.ConnString
-			c.Gtb.RemoteIp = gtb.RemoteIp
-			c.Gtb.DeviceDesc = gtb.DeviceDesc
-			c.Gtb.FrontIp = gtb.FrontIp
-			c.Gtb.FrontHost = gtb.FrontHost
-			c.Gtb.Referer = gtb.Referer
-			c.Gtb.SsoSubId = gtb.SsoSubId
-			c.Gtb.UserId = gtb.UserId
-			c.Gtb.UserPermId = gtb.UserPermId
-			c.Gtb.MemberId = gtb.MemberId
-			c.Gtb.MemberPermId = gtb.MemberPermId
-			c.Gtb.SgroupId = gtb.SgroupId
-			c.Gtb.BranchId = gtb.BranchId
-			c.Gtb.StorageId = gtb.StorageId
-			c.Gtb.AgroupId = gtb.AgroupId
-			c.Gtb.MemberBuyerId = gtb.MemberBuyerId
-			c.Gtb.SalesQtyPoint = gtb.SalesQtyPoint
-			c.Gtb.SalesPrcPoint = gtb.SalesPrcPoint
-			c.Gtb.SalesAmtPoint = gtb.SalesAmtPoint
-			c.Gtb.SalesAmtPoint = gtb.SalesAmtPoint
-			c.Gtb.PurchPrcPoint = gtb.PurchPrcPoint
-			c.Gtb.PurchAmtPoint = gtb.PurchAmtPoint
-			c.Gtb.StockQtyPoint = gtb.StockQtyPoint
-			c.Gtb.StockPrcPoint = gtb.StockPrcPoint
-			c.Gtb.StockAmtPoint = gtb.StockAmtPoint
-			c.Gtb.AccAmtPoint = gtb.AccAmtPoint
+		var config Config
+		if err := yaml.Unmarshal(data, &config); err == nil {
+			c.Gtb = config.Source
+			c.Gtb.ConnString = config.Source.ConnStr // custom.yml의 Variable name 이 서로 달라서 복사해줌.
+		} else {
+			return 507, e.LogStr("ASDWEWFA", "connString in custom.yml format mismatch ")
+		}
+
+	} else {
+		if c.GateToken == "" {
+			return 505, e.LogStr("QWCAFVD", "GateToken is Empty: ")
+		}
+		if gtbStr, err = MdbView(c.GateToken); err != nil {
+			return 505, e.LogStr("QWFAECD", "GateToken Not Found in MemoryDB: "+c.GateToken)
+		}
+
+		if err := json.Unmarshal([]byte(gtbStr), &gtb); err == nil {
+			c.Gtb = gtb
 		} else {
 			return 505, e.LogStr("QWFAEC1AFVDS", "AfterBase64Content Format mismatch: "+c.GateToken)
 		}
 	}
 
-	// fmt.Println("YDB-kkkk")
-	// fmt.Println(c.Gtb.ConnString)
-	// fmt.Println("YDB-qqqq")
+	if status, msg := c.AttachDB(); status != 200 { // DB 까지 붙여야 memory error 가 안난다.
+		return status, e.LogStr("PBUYJM-", msg)
+	}
+	return 200, ""
+}
+
+func (c *Controller) CustomAbangoGet(ymlPath string) (int, string) {
+
+	var err error
+	data, err := os.ReadFile(ymlPath)
+	if err != nil {
+		return 507, e.LogStr("ASDFQEWFA", "Can NOT Read custom.yml")
+	}
+
+	var config Config
+	if err := yaml.Unmarshal(data, &config); err == nil {
+		c.Gtb = config.Source
+		c.Gtb.ConnString = config.Source.ConnStr // custom.yml의 Variable name 이 서로 달라서 복사해줌.
+	} else {
+		return 507, e.LogStr("ASDWEWFA", "connString in custom.yml format mismatch ")
+	}
+
+	if status, msg := c.AttachDB(); status != 200 { // DB 까지 붙여야 memory error 가 안난다.
+		return status, e.LogStr("PBUYJM-", msg)
+	}
+	return 200, ""
+}
+
+type Config struct {
+	Source GateTokenBase
+}
+
+type Target struct {
+	Type      string `yaml:"type"`
+	Language  string `yaml:"language"`
+	OutputDir string `yaml:"output_dir"`
+}
+
+func (c *Controller) AttachDB() (int, string) {
+
+	var err error
 	if c.Db, err = xorm.NewEngine(XConfig["DbType"], c.Gtb.ConnString); err != nil {
 		return 600, e.LogStr("ADASEF", "DBEngine Open Error")
 	}
@@ -109,6 +109,8 @@ func (c *Controller) GetYDB() (int, string) {
 	} else {
 		return 600, e.LogStr("PMUHIUYBUYJM-", "YDB connection Fail in "+connHint)
 	}
+
+	return 200, ""
 }
 
 // func (c *Controller) Init(ask AbangoAsk) {
@@ -137,7 +139,7 @@ func (c *Controller) GetYDB() (int, string) {
 // func (c *Controller) KafkaAnswer(body string) {
 
 // 	// c.Ctx.Answer.Body = []byte(body) // 쓸데없는 것 같은데 나중에 지
-// 	// e.Tp("ReturnTopic=" + c.Ctx.ReturnTopic)
+// 	// fmt.Println("ReturnTopic=" + c.Ctx.ReturnTopic)
 // 	if _, _, err := KafkaProducer(body,
 // 		c.Ctx.ReturnTopic, c.ConnString, XConfig["api_method"]); err != nil {
 // 		e.MyErr("WERRWEEWQRFDFHQW", err, false)
@@ -157,7 +159,7 @@ func (c *Controller) AnswerJson() {
 	// } else {
 	// 	ret, _ = json.Marshal(c.Data["json"])
 	// }
-	// // e.Tp(string(ret))
+	// // fmt.Println(string(ret))
 	// if c.Ctx.Ask.ApiType == "Kafka" {
 	// 	c.KafkaAnswer(string(ret))
 	// } else if c.Ctx.Ask.ApiType == "gRpc" {
@@ -177,7 +179,7 @@ func (c *Controller) GetAbangoAccessAndDb() error {
 
 	// 		strArr := strings.Split(c.Access.DbConnStr, "@tcp")
 	// 		if len(strArr) == 2 {
-	// 			e.OkLog(strArr[1])
+	// 			e.LogNil(strArr[1])
 	// 		} else {
 	// 			e.MyErr(strArr[1], err2, true)
 	// 			return err2
@@ -190,7 +192,7 @@ func (c *Controller) GetAbangoAccessAndDb() error {
 	// 		if _, err := c.Db.IsTableExist("admin_menu"); err != nil {
 	// 			e.MyErr("DB DISconnected in "+strArr[1], err, true)
 	// 		} else {
-	// 			e.OkLog("DB connect in " + strArr[1])
+	// 			e.LogNil("DB connect in " + strArr[1])
 	// 		}
 	// 	} else {
 	// 		e.MyErr("xorm.NewEngine", err, true)
