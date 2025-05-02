@@ -2,10 +2,18 @@ package abgqry
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/dabory/abango-rest"
 	e "github.com/dabory/abango-rest/etc"
+	"xorm.io/xorm"
 )
+
+func LastQry(qry xorm.Session) string {
+	ret, _ := qry.LastSQL()
+	fmt.Println("\n" + ret + "\n")
+	return ret
+}
 
 func OneRowQry(y *abango.Controller, sql string) (c1 string, c2 string, c3 string, c4 string, c5 string, err error) {
 	page, err := y.Db.Query(sql)
