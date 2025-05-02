@@ -11,6 +11,22 @@ import (
 	time "time"
 )
 
+func PrevYyyyMm(yyyymm string) (string, error) {
+	if t, err := time.Parse("200601", yyyymm); err == nil {
+		return t.AddDate(0, -1, 0).Format("200601"), nil
+	} else {
+		return "", ErrLog(FuncRun("adsa16fasf : "+yyyymm, FuncNameErr()), err)
+	}
+}
+
+func NextYyyyMm(yyyymm string) (string, error) { // 아직 사용않지만 나중을 위해 추가해둠.
+	if t, err := time.Parse("200601", yyyymm); err == nil {
+		return t.AddDate(0, 1, 0).Format("200601"), nil
+	} else {
+		return "", ErrLog(FuncRun("adsa16fas9f : "+yyyymm, FuncNameErr()), err)
+	}
+}
+
 func getNow() time.Time {
 	loc, _ := time.LoadLocation("UTC")
 	return time.Now().In(loc)

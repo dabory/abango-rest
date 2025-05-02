@@ -13,9 +13,133 @@ import (
 	"os"
 	"reflect"
 	"strings"
+	time "time"
+
+	"github.com/microcosm-cc/bluemonday"
+	// "xorm.io/xorm"
 )
 
+// func LastQry(qry xorm.Session) string {
+// 	ret, _ := qry.LastSQL()
+// 	fmt.Println("\n" + ret + "\n")
+// 	return ret
+// }
+
+func StripHtml(cont string, max int) string {
+	p := bluemonday.StripTagsPolicy()
+	s := p.Sanitize(cont)
+	if len([]rune(s)) > max { // len(s) 로 크기를 한글의 경우 확인하면 안된다.
+		return string([]rune(s)[:max])
+	} else {
+		return s
+	}
+}
+
+func Sanitize(cont string) string {
+	p := bluemonday.UGCPolicy()
+	return p.Sanitize(cont)
+}
+
+func AddStrIfNotExist(s *string, target string) {
+	if !strings.Contains(*s, target) {
+		*s += target
+	}
+}
+
+// 24.8.22 이렇게 수정하고 점진적으로 파라를 수정할 것. 파라수정이 다되면 이 평션은 제거랗 것.
+func QueryNameToTableAndPrefix(tgtTblName string, tgtTblFullName string) (string, string) {
+	if tgtTblFullName == "" {
+		prefix := strings.Replace(tgtTblName, "-", "_", -1)
+		tbl := ""
+		if prefix == "widget_taxo" {
+			tbl = "pro_"
+		} else if prefix == "sso_app" || prefix == "api23_app" {
+			tbl = "main_"
+		} else {
+			tbl = "dbr_"
+		}
+		// fmt.Println("qrytableName:", tbl+prefix)
+		// fmt.Println("tgtPrefix:", prefix)
+		return tbl + prefix, prefix
+	} else {
+		return tgtTblFullName, tgtTblName
+	}
+
+}
+
+func HasPickActPage(uri string, table string) bool {
+	if table == "member" { // member-act로 호출하면 MemberSecuredAct로 처리해줌.
+		if uri == "/"+table+"-pick" || uri == "/"+table+"-act" || uri == "/"+table+"-page" {
+			// if uri == "/"+table+"-pick" || uri == "/"+table+"-act" || uri == "/"+table+"-page" || uri == "/"+table+"-secured-pick" || uri == "/"+table+"-secured-page" || uri == "/"+table+"-secured-act" {
+			return true
+		} else {
+			return false
+		}
+	} else {
+		if uri == "/"+table+"-pick" || uri == "/"+table+"-act" || uri == "/"+table+"-page" {
+			return true
+		} else {
+			return false
+		}
+	}
+}
+
+func HasPickActPageDelPage(uri string, table string) bool {
+	if uri == "/"+table+"-pick" || uri == "/"+table+"-act" || uri == "/"+table+"-page" || uri == "/"+table+"-del-page" {
+		return true
+	} else {
+		return false
+	}
+}
+
+func YesToTrue(yes string, swName string) bool {
+	if yes == "Yes" {
+		LogNil("== config Key: " + swName + " is ON ==")
+		return true
+	} else {
+		return false
+	}
+}
+
+func TimeFormatGet(format string) string {
+	rtn := ""
+	if format == "" {
+		rtn = "060102"
+	} else if format == "YYMMDD" {
+		rtn = "060102"
+	} else if format == "HHMMSS" {
+		rtn = "15:04:05"
+	} else if format == "YYYYMMDD" {
+		rtn = "20060102"
+	} else if format == "YY-MM-DD" {
+		rtn = "06-01-02"
+	} else if format == "YY.MM.DD" {
+		rtn = "06.01.02"
+	} else if format == "YYMM" {
+		rtn = "0601"
+	} else if format == "YY" {
+		rtn = "06"
+	}
+	return rtn
+}
+
+func SlipNoPlusRandom() string {
+	t := time.Now()
+	date := t.Format(TimeFormatGet("YYMMDD"))
+	second := strings.Replace(t.Format(TimeFormatGet("HHMMSS")), ":", "", -1)
+	return date + "-" + second + "-" + RandString(6)
+}
+
+func ToPdpSerial(serial int) string {
+	padSize := "8"
+	if serial > 100000000 {
+		padSize = "9"
+	}
+	return fmt.Sprintf("%0"+padSize+"d", serial)
+}
+
 func RandBytes(i int) []byte {
+
 	return []byte(RandString(i))
 }
 
