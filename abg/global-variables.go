@@ -1,5 +1,7 @@
 package abg
 
+import "github.com/dabory/abango-rest"
+
 const ( // Query
 	// Tpf string = "dbr_" // TablePrefix
 	//QueryComment
@@ -52,7 +54,7 @@ var ( //Env XCongif
 	THEME_QRY_DIR       string
 	MAIN_PRODUCER_TOPIC string
 	COMSUMER_TOPICS     []string
-	// CRY_ABG             abango.Controller
+	CRY_ABG             abango.Controller
 	// REDIS_EXTIME        time.Duration = 12 * time.Hour
 )
 
