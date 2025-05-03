@@ -1,4 +1,4 @@
-package abgqry
+package abg
 
 import (
 	"errors"
