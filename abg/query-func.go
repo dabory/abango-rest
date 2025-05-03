@@ -3,11 +3,35 @@ package abg
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/dabory/abango-rest"
 	e "github.com/dabory/abango-rest/etc"
 	"github.com/go-xorm/xorm"
 )
+
+func QryDirName(y *abango.Controller, qryName string) (string, string) {
+
+	proDir := ""
+	qpName := ""
+	if strings.Contains(qryName, "pro:") { // 나중에 이거 Deprecate 시킬 것.
+		proDir = "/pro"
+		qpName = strings.Replace(qryName, "pro:", "", 1)
+	} else if strings.Contains(qryName, "myapp:") {
+		proDir = "/myapp"
+		qpName = strings.Replace(qryName, "myapp:", "", 1)
+	} else {
+		qpName = qryName
+		proDir = "/erp"
+	}
+
+	if !strings.Contains(qryName, "::") {
+		return QHOME_DIR + proDir, qpName
+	} else {
+		q := strings.Split(qpName, "::")
+		return strings.ReplaceAll(THEME_QRY_DIR, "$$theme", q[0]) + proDir, q[1]
+	}
+}
 
 func LastQry(qry xorm.Session) string {
 	ret, _ := qry.LastSQL()
