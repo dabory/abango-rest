@@ -6,7 +6,7 @@ import (
 
 	"github.com/dabory/abango-rest"
 	e "github.com/dabory/abango-rest/etc"
-	"xorm.io/xorm"
+	"github.com/go-xorm/xorm"
 )
 
 func LastQry(qry xorm.Session) string {
