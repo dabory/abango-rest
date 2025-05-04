@@ -39,7 +39,7 @@ type AppApi struct {
 }
 
 // 0:Sso, 1:Dbu  매우 중요하다.
-var gAppApis [2]AppApi
+var AppApis [2]AppApi
 
 var ( //Env XCongif
 	SQL_DEBUG           bool

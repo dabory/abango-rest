@@ -82,3 +82,78 @@ func OneRowQry10(y *abango.Controller, sql string) (c1 string, c2 string, c3 str
 	}
 	return
 }
+
+func SumToBal(y *abango.Controller, qName string, bdId int) error {
+
+	fmt.Println(e.FuncNameInfo(), qName)
+	sqlFile := QHOME_DIR + "/erp" + COPY_DIR + "/sum-to-bal/" + qName + ".sql" // theme query 허용하지 않음.
+	sqlExec, err := abango.GetQryStr(sqlFile)
+	if err != nil {
+		return err
+	}
+	sqlExec = fmt.Sprintf(sqlExec, bdId, bdId)
+	if _, err := y.Db.Exec(sqlExec); err != nil {
+		return e.LogErr("lskj34r39jsy", e.FuncNameErr()+e.QryPathSql(sqlFile, sqlExec), err)
+	}
+	return nil
+}
+
+func OnDelRestrict(y *abango.Controller, myIdNm, relHdIdNm, relTbl, hdNoNm, hdTbl string, myId int) error {
+	// fmt.Println("JJJJ", myIdNm, relHdIdNm, relTbl, hdNoNm, hdTbl, myId)
+	// 후속 레코드 여부 판별
+	myStr := fmt.Sprintf(`
+			SELECT 
+				IFNULL(COUNT(*), 0) AS c1,
+				IFNULL(MIN(%s), '') AS c2
+			FROM %s
+			WHERE %s = %d;
+	`, relHdIdNm, relTbl, myIdNm, myId)
+	// myStr := fmt.Sprintf(`
+	// 	SELECT
+	// 		COALESCE(c1, 0) AS c1,
+	// 		COALESCE(c2, '') AS c2
+	// 	FROM (
+	// 		SELECT
+	// 			COUNT(*) AS c1,
+	// 			MIN(%s) AS c2
+	// 		FROM %s
+	// 		WHERE %s = %d
+	// 	) AS grouped_data
+	// 	RIGHT JOIN (SELECT 1 AS dummy) AS fallback ON 1 = 1;
+	// `, relHdIdNm, relTbl, myIdNm, myId)
+
+	myPreCnt, hdIdStr, _, _, _, err := OneRowQry(y, myStr)
+	if err != nil {
+		return e.LogErr("sd2asdf", e.FuncNameErr()+myStr, err)
+	}
+
+	// 에러메시지 표현 구성 - 사용자가 메시지를 보고 삭제할 전표를 찾을 수 있어야 한다.
+	if myPreCnt != "0" {
+		hdStr := fmt.Sprintf(`
+			SELECT 
+				IFNULL(%s, '') AS c1
+			FROM %s
+			WHERE id = %d
+			LIMIT 1;
+		`, hdNoNm, hdTbl, e.StrToInt(hdIdStr)) // 위의 LIMIT 1 은 정확히 1 Row 보장.
+		// hdStr := fmt.Sprintf(`
+		// 	SELECT
+		// 		COALESCE(c1, '') AS c1
+		// 	FROM (
+		// 		SELECT
+		// 			%s AS c1
+		// 		FROM %s
+		// 		WHERE id = %d
+		// 	) AS selected_data
+		// 	RIGHT JOIN (SELECT 1 AS dummy) AS fallback ON 1 = 1;
+		// `, hdNoNm, hdTbl, e.StrToInt(hdIdStr))
+		hdNo, _, _, _, _, err := OneRowQry(y, hdStr)
+		if err != nil {
+			return e.LogErr("sd2asdf4", e.FuncNameErr()+myStr, err)
+		} else {
+			return fmt.Errorf("OnDeleteRestrict: " + hdNo + " Exists in " + e.TransTblName(hdTbl))
+		}
+	} else {
+		return nil
+	}
+}
