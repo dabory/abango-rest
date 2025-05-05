@@ -7,6 +7,21 @@ package abg
 
 // 0. Global Variable /////////
 
+type CommonPageReq struct {
+	PageVars PageVars
+}
+type CommonDelPageReq struct {
+	WhereClause string
+}
+
+type SlipId struct {
+	SlipId int
+}
+
+type SlipIdPageReq struct {
+	Page []SlipId
+}
+
 type ListFormBalanceVars struct {
 	IsApplyBalance bool
 	YyyyMm         string

@@ -3,12 +3,48 @@ package abg
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/dabory/abango-rest"
 	e "github.com/dabory/abango-rest/etc"
 	"github.com/go-xorm/xorm"
 )
+
+func QryCount(YDB *xorm.Engine, sql string) int64 { // 이렇게 error 없이 가는 건 아주 특이한 케이스이다.
+
+	arr, err := YDB.Query(sql)
+	if err != nil {
+		e.ErrLog("model.QryCount Failure !\n["+sql+"]\n", err)
+		return 0
+	}
+	if len(arr) == 1 {
+		for _, buf := range arr[0] {
+			cnt, _ := strconv.Atoi(string(buf))
+			return int64(cnt)
+		}
+	} else {
+		e.LogErr("0237ew32", e.FuncNameErr(), errors.New("QryCount Line is more than 1"))
+		return 0
+	}
+	return 0
+}
+
+func SlipIdGet(y *abango.Controller, table, slipPrefix, slipno string) (int, error) {
+	if table == "" || slipno == "" {
+		return 0, e.LogErr("0237hld92", e.FuncNameErr(), fmt.Errorf("table or slipno is EMPTY"))
+	}
+
+	columnName := fmt.Sprintf("%s_no", slipPrefix)
+	query := fmt.Sprintf("SELECT id AS c1 FROM %s WHERE %s = '%s'", table, columnName, slipno)
+
+	id, _, _, _, _, _ := OneRowQry(y, query)
+	if id == "" {
+		return 0, e.LogErr("mclr9uol9", e.FuncNameErr(), fmt.Errorf("Query Error:\n%s", query))
+	}
+
+	return e.StrToInt(id), nil
+}
 
 func QryDirName(y *abango.Controller, qryName string) (string, string) {
 

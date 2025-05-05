@@ -297,3 +297,13 @@ func ChopPath(original string) string {
 		return original[i+1:]
 	}
 }
+
+func TransTblName(word string) string {
+	switch strings.ToLower(word) {
+	case "dbr_sales":
+		return "매출등록"
+	case "dbr_purch":
+		return "매입등록"
+	}
+	return "NoName"
+}

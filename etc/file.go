@@ -8,9 +8,29 @@ package etc
 import (
 	"fmt"
 	"io"
+	"io/fs"
 	"net/http"
 	"os"
 )
+
+func FileListToSlice(path string) ([]fs.FileInfo, error) {
+	entries, err := os.ReadDir(path)
+	if err != nil {
+		return nil, LogErr("3fdgfvaqrf", FuncNameErr(), err)
+	}
+
+	// Convert DirEntry slice to FileInfo slice
+	files := make([]fs.FileInfo, 0, len(entries))
+	for _, entry := range entries {
+		info, err := entry.Info()
+		if err != nil {
+			return nil, LogErr("3fdgfvaq", FuncNameErr(), err)
+		}
+		files = append(files, info)
+	}
+
+	return files, nil
+}
 
 func MkdirIfNotExists(folderPath string) error {
 
