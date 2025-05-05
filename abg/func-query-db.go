@@ -11,6 +11,41 @@ import (
 	"github.com/go-xorm/xorm"
 )
 
+func ComUpdateQry(y *abango.Controller, id int) *xorm.Session {
+
+	qry := y.Db.Id(id)
+	if y.UpdateFieldList != "" {
+		e.LogNil("y.UpdateFieldList:" + y.UpdateFieldList)
+		slc := strings.Split(y.UpdateFieldList, ",")
+		for _, str := range slc {
+			qry = qry.Cols(str)
+		}
+	} else { //UpdateFieldList가 비었으면 전체 컬럼선텍
+		e.LogNil("y.UpdateFieldList Empty: Insert or Update All")
+		qry = qry.AllCols()
+	}
+	return qry
+}
+
+// ComUpdateQry 를 사용하면 Update에서 비효율이 일어나므로 EditaRowSecured에서만 사용한다.
+// // The function `ComUpdateQrySecured` in Go constructs and returns an xorm session for updating a
+// record with specified fields, excluding certain sensitive fields.
+func ComUpdateQrySecured(y *abango.Controller, id int) *xorm.Session {
+
+	qry := y.Db.Id(id)
+	if y.UpdateFieldList != "" {
+		slc := strings.Split(y.UpdateFieldList, ",")
+		for _, str := range slc {
+			if str != "email" && str != "pass_word" && str != "activate_code" && str != "email_hashed" {
+				qry = qry.Cols(str)
+			}
+		}
+	} else { //UpdateFieldList가 비었으면 전체 컬럼선텍
+		qry = qry.AllCols()
+	}
+	return qry
+}
+
 func QryCount(YDB *xorm.Engine, sql string) int64 { // 이렇게 error 없이 가는 건 아주 특이한 케이스이다.
 
 	arr, err := YDB.Query(sql)
