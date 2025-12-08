@@ -6,12 +6,41 @@
 package etc
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"io/fs"
 	"net/http"
 	"os"
+	"path/filepath"
+	"strings"
+	"time"
 )
+
+// MoveFileWithTimestamp 파일을 삭제하지 않고,
+// 파일명 뒤에 _YYMMDD-HHMMSS 를 붙여 같은 디렉토리 내에서 이름 변경합니다.
+func MoveFileWithTimestamp(path string) error {
+	dir := filepath.Dir(path)
+	file := filepath.Base(path)
+
+	// 1. 확장자 분리 (없으면 ext == "")
+	ext := filepath.Ext(file)
+	// 2. 확장자를 제거한 순수 파일명
+	name := strings.TrimSuffix(file, ext)
+
+	// 3. 타임스탬프 생성 (YYMMDD-HHMMSS)
+	timestamp := time.Now().Format("060102-150405")
+
+	// 4. 새 파일명 조합
+	newName := fmt.Sprintf("%s_%s%s", name, timestamp, ext)
+	newPath := filepath.Join(dir, newName)
+
+	// 5. 파일 이름 변경
+	if err := os.Rename(path, newPath); err != nil {
+		return fmt.Errorf("failed to rename file: %w", err)
+	}
+	return nil
+}
 
 func FileListToSlice(path string) ([]fs.FileInfo, error) {
 	entries, err := os.ReadDir(path)
@@ -93,6 +122,20 @@ func FileToStrWithoutErr(filename string) string {
 		return ""
 	}
 	return str
+}
+
+func FileToQryChkStr(filename string) (string, error) {
+
+	var str string
+	if fbytes, err := os.ReadFile(filename); err == nil {
+		str = string(fbytes)
+		if strings.Contains(str, ";") {
+			return "", LogErr("ETBUIITF2", "", errors.New("Query string has ';' Character !"))
+		}
+	} else {
+		return "", LogErr("ETBUIITF", "", err)
+	}
+	return str, nil
 }
 
 func FileToStrSkip(filename string) (string, error) {

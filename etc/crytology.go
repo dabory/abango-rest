@@ -23,6 +23,13 @@ import (
 	"strings"
 )
 
+func VisitorHashGenerate(memberID int, deviceIP, userAgent string) string {
+	// 세 값을 하나의 문자열로 합침
+	metaString := fmt.Sprintf("%d|%s|%s", memberID, deviceIP, userAgent)
+	// MD5 해시 생성 (32자)
+	return Md5Hashed(metaString, 32)
+}
+
 func RsaPrPbPair(keyLeng int) ([]byte, []byte) {
 
 	prKey, _ := rsa.GenerateKey(rand.Reader, keyLeng)

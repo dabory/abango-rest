@@ -52,6 +52,20 @@ func GetNowDate(i int) string {
 	return time.Now().Format(format)
 }
 
+func GetOffsetDate(days int, formatLength int) string {
+	targetDate := time.Now().AddDate(0, 0, days)
+
+	format := "20060102" // 기본 YYYYMMDD
+
+	if formatLength == 6 {
+		format = "060102" // YYMMDD
+	} else if formatLength == 8 {
+		format = "20060102" // YYYYMMDD
+	}
+
+	return targetDate.Format(format)
+}
+
 func YyyyMmToUnixInterval(yyyymm string) (string, string, error) {
 
 	if len(yyyymm) != 6 {

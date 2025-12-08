@@ -174,7 +174,7 @@ func CalcQtyPrc(qryStr string, prcStr string, vatRateStr string, sap int, vatSw 
 	case "2": // 면세
 		supplyAmtStr, vatAmtStr, sumAmtStr = NumToStr(amtF), "0.0000", NumToStr(amtF)
 	default:
-		err = LogErr("ERASRWAFA", FuncNameErr(), fmt.Errorf("invalid VatSw value: %s", vatSw))
+		err = LogErr("ERASRWAF3", FuncNameErr(), fmt.Errorf("VatSw is Empty !!Check vat-rate in setup table %s", vatSw))
 		supplyAmtStr, vatAmtStr, sumAmtStr = "0.0000", "0.0000", "0.0000"
 	}
 	return
@@ -213,7 +213,7 @@ func CalcVatAmts(supplyStr string, sumStr string, vatRateStr string, sap int, va
 	case "2": // 면세
 		supplyAmtStr, vatAmtStr, sumAmtStr = supplyStr, "0.0000", supplyStr
 	default:
-		err = LogErr("ERASRWAFA", FuncNameErr(), fmt.Errorf("invalid VatSw value: %s", vatSw))
+		err = LogErr("ERASRWAS", FuncNameErr(), fmt.Errorf("VatSw is Empty !!Check vat-rate in setup table : %s", vatSw))
 		supplyAmtStr, vatAmtStr, sumAmtStr = "0.00", "0.00", "0.00"
 	}
 	return

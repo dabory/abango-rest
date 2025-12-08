@@ -36,13 +36,19 @@ func ComAddaRowDefault(y *abango.Controller, table interface{}) {
 		case name == "Sort" && value.String() == "":
 			fe.Field(i).SetString("0")
 		case name == "Ip":
-			fe.Field(i).SetString(y.Gtb.RemoteIp)
+			fe.Field(i).SetString(y.Gtb.AccessIp)
 		case name == "UserId" && y.Gtb.UserId != 0:
 			fe.Field(i).SetInt(int64(y.Gtb.UserId))
 		case name == "MemberId" && y.Gtb.MemberId != 0:
 			fe.Field(i).SetInt(int64(y.Gtb.MemberId))
 		case name == "StorageId" && value.Int() == 0:
 			fe.Field(i).SetInt(int64(y.Gtb.StorageId))
+
+		case name == "StoreId" && value.Int() == 0:
+			fe.Field(i).SetInt(int64(y.Gtb.StoreId))
+		case name == "TerminalId" && value.Int() == 0:
+			fe.Field(i).SetInt(int64(y.Gtb.TerminalId))
+
 		case name == "BranchId" && value.Int() == 0:
 			fe.Field(i).SetInt(int64(y.Gtb.BranchId))
 		case name == "SgroupId" && value.Int() == 0:
@@ -90,6 +96,15 @@ func ComEditaRowDefault(y *abango.Controller, table interface{}) {
 			fe.Field(i).SetInt(int64(y.Gtb.UserId))
 		case name == "MemberId" && value.String() == "":
 			fe.Field(i).SetInt(int64(y.Gtb.MemberId))
+
+		case name == "StorageId" && value.Int() == 0:
+			fe.Field(i).SetInt(int64(y.Gtb.StorageId))
+
+		case name == "StoreId" && value.Int() == 0:
+			fe.Field(i).SetInt(int64(y.Gtb.StoreId))
+		case name == "TerminalId" && value.Int() == 0:
+			fe.Field(i).SetInt(int64(y.Gtb.TerminalId))
+
 		case (name == "MemberBuyerId" || name == "MemberCompanyId") && value.String() == "":
 			fe.Field(i).SetInt(int64(y.Gtb.MemberCompanyId))
 		case name == "IsUnused" && value.String() == "":
@@ -99,7 +114,7 @@ func ComEditaRowDefault(y *abango.Controller, table interface{}) {
 		case name == "Sort" && value.String() == "":
 			fe.Field(i).SetString("0")
 		case name == "Ip":
-			fe.Field(i).SetString(y.Gtb.RemoteIp)
+			fe.Field(i).SetString(y.Gtb.AccessIp)
 		case (strings.Contains(name, "MediaId") || name == "MemberId" || name == "UserId" || name == "BuyerId" || name == "SupplierId" || name == "IgroupId" || name == "CgroupId" || name == "BranchId" || name == "StorageId" || name == "AgroupId") && value.Int() == 0:
 			fe.Field(i).SetInt(int64(1))
 		}

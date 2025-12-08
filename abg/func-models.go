@@ -91,6 +91,17 @@ func GetLt1ProcFunc(y *abango.Controller, sql string, lt *ListType1Vars, ltFilte
 	if ltFilter == "" { //Query 에러가 나지 않도록 하기 위해서 임.
 		ltFilter = "0"
 	} // ListTypeFilter 는 예비용 필터이며 and/or 또는 = 같은 SQL keyword가 들어가면 안된다.
+
+	// fmt.Println("lt.ListSimpleFilter:", lt.ListSimpleFilter)
+	var storageIdStr string
+	if !strings.Contains(lt.ListSimpleFilter, "@procedure.storage_id:") {
+		storageIdStr = strconv.Itoa(y.Gtb.StorageId)
+	} else {
+		storageIdStr = strings.TrimPrefix(lt.ListSimpleFilter, "@procedure.storage_id:")
+	}
+	// fmt.Println("storageIdStr:", storageIdStr)
+	// fmt.Println("storageIdStr:", storageIdStr)
+
 	scanner := bufio.NewScanner(strings.NewReader(sql))
 	scanner.Scan() //@procedure skip
 	scanner.Scan()
@@ -102,7 +113,8 @@ func GetLt1ProcFunc(y *abango.Controller, sql string, lt *ListType1Vars, ltFilte
 	fnStr += "', '" + lt.StartFourth + "', '" + lt.EndFourth
 	fnStr += "', '" + lt.Balance + "', '" + lt.OrderBy
 	fnStr += "', " + strconv.Itoa(y.Gtb.BranchId) + ", " +
-		strconv.Itoa(y.Gtb.StorageId) + ", " + strconv.Itoa(y.Gtb.MemberCompanyId) + ", " + ltFilter
+		storageIdStr + ", " + strconv.Itoa(y.Gtb.MemberCompanyId) + ", " + ltFilter
+	// strconv.Itoa(y.Gtb.StorageId) + ", " + strconv.Itoa(y.Gtb.MemberCompanyId) + ", " + ltFilter
 	fnStr += ")"
 	fmt.Println(e.FuncNameInfo() + ":" + fnStr)
 	return fnStr
@@ -294,10 +306,10 @@ func GetExtractStr(y *abango.Controller, sqlStr string) string {
 
 		switch {
 		case strings.Contains(col, "user_id"):
-			builder.WriteString(fmt.Sprintf(" and %s=%s", col, e.NumToStr(y.Gtb.UserId)))
+			builder.WriteString(fmt.Sprintf(" and %s=%d", col, y.Gtb.UserId))
 
 		case strings.Contains(col, "branch_id"):
-			builder.WriteString(fmt.Sprintf(" and %s=%s", col, e.NumToStr(y.Gtb.BranchId)))
+			builder.WriteString(fmt.Sprintf(" and %s=%d", col, y.Gtb.BranchId))
 
 		case strings.Contains(col, "member_id"):
 			builder.WriteString(fmt.Sprintf(" and %s=%d", col, y.Gtb.MemberId))
@@ -309,6 +321,13 @@ func GetExtractStr(y *abango.Controller, sqlStr string) string {
 
 		case strings.Contains(col, "storage_id"):
 			builder.WriteString(fmt.Sprintf(" and %s=%d", col, y.Gtb.StorageId))
+
+		case strings.Contains(col, "store_id"):
+			builder.WriteString(fmt.Sprintf(" and %s=%d", col, y.Gtb.StoreId))
+
+		case strings.Contains(col, "terminal_id"):
+			builder.WriteString(fmt.Sprintf(" and %s=%d", col, y.Gtb.TerminalId))
+
 		}
 	}
 

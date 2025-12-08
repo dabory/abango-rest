@@ -46,23 +46,21 @@ func ComUpdateQrySecured(y *abango.Controller, id int) *xorm.Session {
 	return qry
 }
 
-func QryCount(YDB *xorm.Engine, sql string) int64 { // 이렇게 error 없이 가는 건 아주 특이한 케이스이다.
+func QryCount(YDB *xorm.Engine, sql string) (int64, error) { // 이렇게 error 없이 가는 건 아주 특이한 케이스이다.
 
 	arr, err := YDB.Query(sql)
 	if err != nil {
-		e.ErrLog("model.QryCount Failure !\n["+sql+"]\n", err)
-		return 0
+		return 0, e.ErrLog("NKJHIUYH: model.QryCount Failure !\n["+sql+"]\n", err)
 	}
 	if len(arr) == 1 {
 		for _, buf := range arr[0] {
 			cnt, _ := strconv.Atoi(string(buf))
-			return int64(cnt)
+			return int64(cnt), nil
 		}
 	} else {
-		e.LogErr("0237ew32", e.FuncNameErr(), errors.New("QryCount Line is more than 1"))
-		return 0
+		return 0, e.LogErr("PLKJHTRFD", e.FuncNameErr(), errors.New("QryCount Line is more than 1:["+sql+"]"))
 	}
-	return 0
+	return 0, e.LogErr("KIJUYGF", e.FuncNameErr(), errors.New("No Query Result !"))
 }
 
 func SlipIdGet(y *abango.Controller, table, slipPrefix, slipno string) (int, error) {
@@ -91,6 +89,9 @@ func QryDirName(y *abango.Controller, qryName string) (string, string) {
 	} else if strings.Contains(qryName, "myapp:") {
 		proDir = "/myapp"
 		qpName = strings.Replace(qryName, "myapp:", "", 1)
+	} else if strings.Contains(qryName, "pos:") {
+		proDir = "/pos"
+		qpName = strings.Replace(qryName, "pos:", "", 1)
 	} else {
 		qpName = qryName
 		proDir = "/erp"

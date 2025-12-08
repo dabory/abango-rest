@@ -3,9 +3,23 @@ package abg
 // 여기는 모두 Array 형태로만 사용된다.
 
 // Common Fixed Json
+type GiftcardSettle struct { // Denomination Count - 권종별 갯수
+	Sort  string // redeem:상품권회수, refund:환불
+	Count int    // Sort별 횟수
+	Amt   string // Sort별 금액
+}
+type CardSettle struct { // Denomination Count - 권종별 갯수
+	Sort  string // approve:승인, cancel:취소
+	Count int    // Sort별 횟수
+	Amt   string // Sort별 금액
+}
+type DenomCount struct { // Denomination Count - 권종별 갯수
+	Unit  string // 기타는 1 로 처리, 5000원 10000원 등
+	Count int    // 권종별 갯수
+}
 type EmbededReply struct {
 	CreatedOn  int64
-	QnaSw      string // A:answer, B:question
+	QnaSw      string // A:answer, B:questiongitpp
 	WriterName string
 	Contents   string
 }

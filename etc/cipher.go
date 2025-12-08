@@ -17,6 +17,11 @@ import (
 	"github.com/dabory/abango-rest/gosodium/cryptobox"
 )
 
+const ( //Secutiry
+	SaltyKeyPairPrefix string = "@_@_"
+	BelovedPass        string = "20150721-20200102" //Do NOT Change
+)
+
 func KeyPairGenerate() (string, error) {
 
 	publicKey, secretKey, boxRet := cryptobox.CryptoBoxKeyPair()
@@ -31,6 +36,11 @@ func KeyPairGenerate() (string, error) {
 }
 
 func PkeyDecrypt(encr64 string, keyPair64 string) ([]byte, error) {
+
+	var err error
+	if keyPair64, err = DecryptKeyPair(keyPair64); err != nil {
+		return nil, LogErr("ertjhdssw", FuncNameErr()+"Failure-0 ", err)
+	}
 
 	keyPair, err := base64.StdEncoding.DecodeString(keyPair64)
 	if err != nil {
@@ -54,12 +64,49 @@ func PkeyDecrypt(encr64 string, keyPair64 string) ([]byte, error) {
 	return decryptedBytes, nil
 }
 
+func DecryptKeyPair(keyPair64 string) (string, error) {
+	// 1) prefix 없는 경우 방어
+	if !strings.HasPrefix(keyPair64, SaltyKeyPairPrefix) {
+		return keyPair64, nil
+	}
+
+	// 2) prefix 정확히 한 번만 제거
+	deSalted := strings.TrimPrefix(keyPair64, SaltyKeyPairPrefix)
+	fmt.Println("deSalted: ", deSalted)
+	fmt.Println("len-deSalted: ", len(deSalted))
+	aesKey := DeriveAesKey(BelovedPass)
+	decrKeyPair, err := AesGcmDecrypt(aesKey, []byte(deSalted))
+	if err != nil {
+		return "", LogErr("salty-dec", FuncNameErr()+"AesGcmDecrypt failed", err)
+	}
+
+	return string(decrKeyPair), nil
+}
+
+func EncryptKeyPair(keyPair64 string) (string, error) {
+	aesKey := DeriveAesKey(BelovedPass)
+	encrKeyPair, err := AesGcmEncrypt(aesKey, []byte(keyPair64))
+	if err != nil {
+		return "", LogErr("salty-enc", FuncNameErr()+"AesGcmEncrypt failed", err)
+	}
+
+	return SaltyKeyPairPrefix + string(encrKeyPair), nil
+}
+
 func PkeyEncrypt(msg string, keyPair64 string) (string, error) {
+
+	var err error
+	if keyPair64, err = DecryptKeyPair(keyPair64); err != nil {
+		return "", LogErr("ertjhds6w", FuncNameErr()+"Failure-0 ", err)
+	}
+
+	fmt.Println("keyPair64:", keyPair64)
 
 	keyPair, err := base64.StdEncoding.DecodeString(keyPair64)
 	if err != nil {
 		return "", LogErr("2903uljslw", FuncNameErr()+"Failure-1 ", err)
 	}
+	// fmt.Println("keyPair:", string(keyPair))
 
 	_, pKey, err := cryptobox.CryptoBoxGetSecretPublicKeyFrom(keyPair)
 	if err != nil {
@@ -107,9 +154,83 @@ func DbrSaltBase(salt string, saltSize int) []byte { //어떤 사이즈라도 16
 	return []byte(salt64[4 : saltSize+4])
 }
 
+// AesGcmEncrypt : AES-GCM 기반 암호화
+// key: 32byte (sha256 결과)
+// plainText: 암호화할 원문
+// 리턴: base64(nonce||ciphertext||tag)
+func AesGcmEncrypt(key []byte, plainText []byte) ([]byte, error) {
+
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, errors.New("AesGcmEncrypt NewCipher: " + err.Error())
+	}
+
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, errors.New("AesGcmEncrypt NewGCM: " + err.Error())
+	}
+
+	nonce := make([]byte, gcm.NonceSize())
+	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
+		return nil, errors.New("AesGcmEncrypt nonce: " + err.Error())
+	}
+
+	// gcm.Seal: nonce + encrypted + tag (AEAD)
+	cipherText := gcm.Seal(nonce, nonce, plainText, nil)
+
+	encBase64 := base64.StdEncoding.EncodeToString(cipherText)
+	return []byte(encBase64), nil
+}
+
+// AesGcmDecrypt : AES-GCM 기반 복호화
+// encBase64: base64(nonce||ciphertext||tag)
+// AesGcmDecrypt : AES-GCM 기반 복호화
+// encBase64: base64(nonce||ciphertext||tag)
+func AesGcmDecrypt(key []byte, encBase64 []byte) ([]byte, error) {
+
+	// base64 decode -> []byte blob
+	cipherBlob, err := base64.StdEncoding.DecodeString(string(encBase64))
+	if err != nil {
+		return nil, errors.New("AesGcmDecrypt base64 decode: " + err.Error())
+	}
+
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, errors.New("AesGcmDecrypt NewCipher: " + err.Error())
+	}
+
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, errors.New("AesGcmDecrypt NewGCM: " + err.Error())
+	}
+
+	nonceSize := gcm.NonceSize()
+	if len(cipherBlob) < nonceSize {
+		return nil, errors.New("AesGcmDecrypt cipher too short")
+	}
+
+	nonce := cipherBlob[:nonceSize]
+	cipherText := cipherBlob[nonceSize:]
+
+	byteMsg, err := gcm.Open(nil, nonce, cipherText, nil)
+	if err != nil {
+		return nil, errors.New("AesGcmDecrypt open: " + err.Error())
+	}
+
+	// plainText 는 []byte 그대로 반환
+	return byteMsg, nil
+}
+
+// DeriveAesKey : passphrase 로부터 32byte AES 키 생성
+func DeriveAesKey(passphrase string) []byte {
+	hash := sha256.Sum256([]byte(passphrase)) // 32bytes fixed
+	return hash[:]                            // slice 로 변환
+}
+
 // if keysize is 16bytes * 8bits -> 128
 // if keysize is 32bytes * 8bits -> 256
 // Encrypt-Decrypt는 plaintext가 16bytes 밖에는 지원하지 않는다 따라서 MyAesEncrypt를 사용한다.
+// 엿날 버번이고 CachekeyPair 만들때 사용중이라서 지우면한된다.
 func MyAesEncrypt(key []byte, text []byte) ([]byte, error) {
 
 	block, err := aes.NewCipher(key)
@@ -186,3 +307,47 @@ func addBase64Padding(value string) string {
 func removeBase64Padding(value string) string {
 	return strings.Replace(value, "=", "", -1)
 }
+
+// func PkeyDecrypt(encr64 string, keyPair64 string, cliendId string) ([]byte, error) {
+
+// 	keyPair, err := base64.StdEncoding.DecodeString(keyPair64)
+// 	if err != nil {
+// 		return nil, LogErr("ertjhdssw", FuncNameErr()+"Failure-1 ", err)
+// 	}
+
+// 	sKey, pKey, err := cryptobox.CryptoBoxGetSecretPublicKeyFrom(keyPair)
+// 	if err != nil {
+// 		return nil, LogErr("034hjalrse", FuncNameErr()+"Failure-2 ", err)
+// 	}
+
+// 	decodedBytes, err := base64.StdEncoding.DecodeString(encr64)
+// 	if err != nil {
+// 		return nil, LogErr("32rfww3", FuncNameErr()+"Failure-3 ", err)
+// 	}
+
+// 	decryptedBytes, boxRet := cryptobox.CryptoBoxSealOpen(decodedBytes, pKey, sKey)
+// 	if boxRet != 0 {
+// 		return nil, LogErr("mcnbxkajhr3eih", FuncNameErr()+"boxRet:"+strconv.Itoa(boxRet), nil)
+// 	}
+// 	return decryptedBytes, nil
+// }
+
+// func PkeyEncrypt(msg string, keyPair64 string, cliendId string) (string, error) {
+
+// 	keyPair, err := base64.StdEncoding.DecodeString(keyPair64)
+// 	if err != nil {
+// 		return "", LogErr("2903uljslw", FuncNameErr()+"Failure-1 ", err)
+// 	}
+
+// 	_, pKey, err := cryptobox.CryptoBoxGetSecretPublicKeyFrom(keyPair)
+// 	if err != nil {
+// 		return "", LogErr("mcnoiaoc", FuncNameErr()+"Failure-2 ", err)
+// 	}
+
+// 	EncryptedBytes, boxRet := cryptobox.CryptoBoxSeal([]byte(msg), pKey)
+// 	if boxRet != 0 {
+// 		return "", LogErr("8u3h82f0", FuncNameErr()+"boxRet:"+strconv.Itoa(boxRet), nil)
+// 	}
+// 	EncryptedBase64 := base64.StdEncoding.EncodeToString(EncryptedBytes)
+// 	return EncryptedBase64, nil
+// }

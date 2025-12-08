@@ -10,6 +10,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"html"
 	"os"
 	"reflect"
 	"strings"
@@ -19,20 +20,78 @@ import (
 	// "xorm.io/xorm"
 )
 
-// func LastQry(qry xorm.Session) string {
-// 	ret, _ := qry.LastSQL()
-// 	fmt.Println("\n" + ret + "\n")
-// 	return ret
-// }
+func ExtractWithoutHttp(raw string) string {
+	raw = strings.TrimPrefix(raw, "http://")
+	raw = strings.TrimPrefix(raw, "https://")
+	return raw
+}
+
+func ExtractDomainSimple(uri string) string {
+	// Remove scheme if present
+	uri = strings.TrimPrefix(uri, "http://")
+	uri = strings.TrimPrefix(uri, "https://")
+	uri = strings.TrimPrefix(uri, "//")
+
+	// Remove path and query parameters
+	if idx := strings.Index(uri, "/"); idx != -1 {
+		uri = uri[:idx]
+	}
+	if idx := strings.Index(uri, "?"); idx != -1 {
+		uri = uri[:idx]
+	}
+
+	return uri
+}
+
+func SafeTrimUTF8(s string, start, size int) string {
+	if start < 0 || size < 0 {
+		return ""
+	}
+
+	runes := []rune(s)
+	length := len(runes)
+
+	if start >= length {
+		return ""
+	}
+
+	end := start + size
+	if end > length {
+		end = length
+	}
+
+	return string(runes[start:end])
+}
+
+func SafeTrim(s string, start, size int) string {
+	if start < 0 || size < 0 {
+		return ""
+	}
+	length := len(s)
+	if start >= length {
+		return ""
+	}
+	end := start + size
+	if end > length {
+		end = length
+	}
+	return s[start:end]
+}
 
 func StripHtml(cont string, max int) string {
+	// 1. HTML 엔티티 디코딩
+	unescaped := html.UnescapeString(cont)
+
+	// 2. HTML 태그 제거
 	p := bluemonday.StripTagsPolicy()
-	s := p.Sanitize(cont)
-	if len([]rune(s)) > max { // len(s) 로 크기를 한글의 경우 확인하면 안된다.
-		return string([]rune(s)[:max])
-	} else {
-		return s
+	sanitized := p.Sanitize(unescaped)
+
+	// 3. 최대 길이 제한 (유니코드 고려)
+	runes := []rune(sanitized)
+	if len(runes) > max {
+		return string(runes[:max])
 	}
+	return sanitized
 }
 
 func Sanitize(cont string) string {

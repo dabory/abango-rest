@@ -253,7 +253,8 @@ type BodyCopyBase struct {
 }
 
 type IdBase struct {
-	Id int
+	Id     int
+	SlipNo string
 }
 
 type SimpleQryBase struct {
@@ -330,6 +331,11 @@ type IsMymenuSetReq struct {
 	MenuId    int
 	IsMymenu  string
 }
+type PosAuthCom struct {
+	CashierNo     string
+	CashierPassNo string
+	MemberAuthCom
+}
 type MemberAuthCom struct {
 	// member
 	Email        string
@@ -390,9 +396,6 @@ type MemberAuthCom struct {
 	BizType           string `xorm:"comment('업태') VARCHAR(191)"`
 	DealItem          string `xorm:"comment('종목') VARCHAR(191)"`
 	IsDealEnd         string `xorm:"not null default '0' comment('거래중지') CHAR(1)"`
-	IsOkText          string `xorm:"not null default '0' comment('문자접수승인') CHAR(1)"`
-	IsOkEmail         string `xorm:"not null default '0' comment('이메일접수승인') CHAR(1)"`
-	IsOkDm            string `xorm:"default '0' comment('DM접수승인') CHAR(1)"`
 	CurrCreditBal     string `xorm:"not null default 0.0000 comment('지울것') DECIMAL(20,4)"`
 	CourierCode       string `xorm:"not null default '' comment('지정 택배사코드(etc에 있슴)') VARCHAR(8)"`
 	Remarks           string `xorm:"MEDIUMTEXT"`
@@ -430,6 +433,17 @@ type MemberAuthCom struct {
 	// ProMemberDevice
 	// DeviceIp   string
 	// DeviceDesc string
+	//2025.06.25 개인정보  보호법 개정으로 추가 됨.
+	IsOkText       string `xorm:"not null default '0' comment('문자접수승인') CHAR(1)"`
+	IsOkEmail      string `xorm:"not null default '0' comment('이메일접수승인') CHAR(1)"`
+	IsOkDm         string `xorm:"default '0' comment('DM접수승인') CHAR(1)"`
+	IsOkPinfo      string `xorm:"not null default '0' comment('개인정보수집동의여부') CHAR(1)"`
+	IsOkLifetime   string `xorm:"not null default '0' comment('평생회원동의여부') CHAR(1)"`
+	TextOkDate     string `xorm:"not null default '00000000' comment('문자발송동의일자') CHAR(8)"`
+	EmailOkDate    string `xorm:"not null default '00000000' comment('뉴스메일발송동의일자') CHAR(8)"`
+	DmOkDate       string `xorm:"not null default '00000000' comment('DM발송동의일자') CHAR(8)"`
+	PinfoOkDate    string `xorm:"not null default '00000000' comment('개인정보수집동의일자') CHAR(8)"`
+	LifetimeOkDate string `xorm:"not null default '00000000' comment('평생회원동의일자') CHAR(8)"`
 }
 type UserAuthCom struct {
 	ActivateCode string

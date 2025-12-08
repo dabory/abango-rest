@@ -170,7 +170,7 @@ func CallerFuncName() string {
 	frames := runtime.CallersFrames(pc[:n])
 	frame, _ := frames.Next()
 	s := frame.Function
-	return s[strings.LastIndex(s, "/")+1:] + " : "
+	return s[strings.LastIndex(s, "/")+1:]
 }
 
 func LogCritical(index string, s string, err error) { //에러 ㄱ계를 추적

@@ -42,21 +42,31 @@ type AppApi struct {
 var AppApis [2]AppApi
 
 var ( //Env XCongif
-	SQL_DEBUG           bool
-	NORMAL_DEBUG        bool
-	DEVICE_AUTH         bool
-	DBU_BY_FORCE        bool
-	IS_CACHE_KEY_PAIR   bool
-	KAFKA_CONSUMER      bool
-	LOCAL_KEY_PAIR      string
-	CACHE_KEY_PAIR_DIR  string
-	QHOME_DIR           string
-	THEME_QRY_DIR       string
+	SQL_DEBUG          bool
+	NORMAL_DEBUG       bool
+	DEVICE_AUTH        bool
+	DBU_BY_FORCE       bool
+	IS_CACHE_KEY_PAIR  bool
+	KAFKA_CONSUMER     bool
+	LOCAL_KEY_PAIR     string
+	CACHE_KEY_PAIR_DIR string
+	QHOME_DIR          string
+	THEME_QRY_DIR      string
+
+	WEB_LOG_SW       string
+	IS_LOG_DEBOUNCED string
+
 	MAIN_PRODUCER_TOPIC string
 	COMSUMER_TOPICS     []string
 	CRY_ABG             abango.Controller
+	Last                QryName
 	// REDIS_EXTIME        time.Duration = 12 * time.Hour
 )
+
+type QryName struct {
+	ListType1Page string
+	ListType1Book string
+}
 
 var ( //queries dir
 	COPY_DIR   string = "/copy"
