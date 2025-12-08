@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package grp1;
+
+option go_package = "github.com/dabory/abango-rest/protos;grp1";
+
+message StdAsk {
+    string AskName = 1;
+    string AskStr = 2;
+}
+
+message StdRet {
+    string RetSta = 1;
+    string RetStr = 2;
+}
+
+message ExampleReq {
+    string ReqStr = 1;
+}
+
+message ExampleResp {
+    string RespStr = 1;
+}
+
+service Grp1 {
+    rpc StdRpc (StdAsk) returns (StdRet) {}
+    rpc ExampleRpc (ExampleReq) returns (ExampleResp) {}
+}
