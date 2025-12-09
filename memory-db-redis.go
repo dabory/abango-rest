@@ -7,6 +7,7 @@ package abango
 
 import (
 	"context"
+	"time"
 
 	"github.com/dabory/abango-rest/etc"
 	e "github.com/dabory/abango-rest/etc"
@@ -15,12 +16,11 @@ import (
 )
 
 var (
-	// MDB *buntdb.DB
-	// QDB *buntdb.DB
+	// ADB *buntdb.DB //AegisCache
 
 	RedisCtx = context.Background()
-	MDB      *redis.Client
-	//QDB은 Redis를 도입하면서 통합함.
+	MDB      *redis.Client //QDB은 Redis를 도입하면서 통합함.
+	// QDB *buntdb.DB
 	QDBOn bool // QDb에서 쿼리 가져옴
 )
 
@@ -28,7 +28,7 @@ func MdbView(key string) (retval string, reterr error) {
 
 	value, err := MDB.Get(RedisCtx, key).Result()
 	if err == redis.Nil {
-		reterr = e.LogErr("ASDFQWERCAA", "MDB.View Not Fount in Key: "+key, err)
+		reterr = e.LogErr("ASDF1QWERCAA", "MDB.View Not Found in Key: "+key, err)
 	} else if err != nil {
 		reterr = e.LogErr("ASDFQWERA", "MDB.View Error reading data: "+key, err)
 	}
@@ -37,20 +37,20 @@ func MdbView(key string) (retval string, reterr error) {
 
 func MdbUpdate(key string, value string) (reterr error) {
 
-	err := MDB.Set(RedisCtx, key, value, 0).Err()
+	REDIS_EXTIME := 12 * time.Hour
+	err := MDB.Set(RedisCtx, key, value, REDIS_EXTIME).Err()
 	if err != nil {
 		reterr = e.MyErr("QWVGAVAEFV-MDB.Update Error in Key: "+key+" Value: "+value, err, false)
 	}
 	return nil
 }
 
-func MdbDelete(key string, value string) (reterr error) {
-
-	_, err := MDB.Del(RedisCtx, "mykey").Result()
+func MdbDelete(key string) error {
+	err := MDB.Del(RedisCtx, key).Err()
 	if err != nil {
-		reterr = e.MyErr("LJOOHOHIG-MDB.Delete Error in Key: "+key+" Value: "+value, err, false)
+		return e.MyErr("QWVGAVAEFV-MDB.Delete Error in Key: "+key, err, false)
 	}
-	return
+	return nil
 }
 
 // func QdbView(key string) (retval string, reterr error) {
@@ -81,31 +81,55 @@ func MdbDelete(key string, value string) (reterr error) {
 // }
 
 func GetQryStr(filename string) (string, error) {
-
 	var str string
 	var err error
+
 	if QDBOn {
 		if str, err = MdbView(filename); err == nil {
-			// etc.OkLog("Qry from Memory!!")
 			return str, nil
-		} else {
-			if str, err = e.FileToStrSkip(filename); err == nil {
-				if err := MdbUpdate(filename, str); err != nil {
-					return "", etc.LogErr("OIUJLJOUJLH", "QdbUpdate Failed ", err)
-				}
-				// etc.OkLog("Qry from File!!")
-				return str, nil
-			} else {
-				return "", err
-			}
-		}
-	} else {
-		if str, err = e.FileToStrSkip(filename); err == nil {
-			// etc.OkLog("QRY FILE")
-			return str, nil
-		} else {
-			return "", etc.LogErr("PKOJHKJUY", " File", err)
 		}
 	}
 
+	// 공통 경로: 파일에서 로딩
+	if str, err = e.FileToQryChkStr(filename); err != nil {
+		return "", etc.LogErr("PKOJHKJUY", "File", err)
+	}
+
+	// QDBOn인 경우에만 메모리에 저장
+	if QDBOn {
+		if err := MdbUpdate(filename, str); err != nil {
+			return "", etc.LogErr("OIUJLJOUJLH", "QdbUpdate Failed", err)
+		}
+	}
+
+	return str, nil
 }
+
+// func GetQryStr(filename string) (string, error) {
+
+// 	var str string
+// 	var err error
+// 	if QDBOn {
+// 		if str, err = MdbView(filename); err == nil {
+// 			// etc.LogNil("Qry from Memory!!")
+// 			return str, nil
+// 		} else {
+// 			if str, err = e.FileToQryChkStr(filename); err == nil {
+// 				if err := MdbUpdate(filename, str); err != nil {
+// 					return "", etc.LogErr("OIUJLJOUJLH", "QdbUpdate Failed ", err)
+// 				}
+// 				// etc.LogNil("Qry from File!!")
+// 				return str, nil
+// 			} else {
+// 				return "", err
+// 			}
+// 		}
+// 	} else {
+// 		if str, err = e.FileToQryChkStr(filename); err == nil {
+// 			// etc.LogNil("QRY FILE")
+// 			return str, nil
+// 		} else {
+// 			return "", etc.LogErr("PKOJHKJUY", " File", err)
+// 		}
+// 	}
+// }
