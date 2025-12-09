@@ -24,10 +24,11 @@ func (c *Controller) Init() (int, string) {
 			return 507, e.LogStr("ASDFQEWFA", "Can NOT Read custom.yml")
 		}
 
+		// fmt.Println("aaa:"), string(data))
+
 		var config Config
 		if err := yaml.Unmarshal(data, &config); err == nil {
-			c.Gtb = config.Source
-			c.Gtb.ConnString = config.Source.ConnStr // custom.yml의 Variable name 이 서로 달라서 복사해줌.
+			c.Gtb = config.Source // 여기서 custom.yml 값이 할당이 안되면 'yaml: "????"  갑이 제대로 할당이 안된거다.
 		} else {
 			return 507, e.LogStr("ASDWEWFA", "connString in custom.yml format mismatch ")
 		}
@@ -45,28 +46,6 @@ func (c *Controller) Init() (int, string) {
 		} else {
 			return 505, e.LogStr("QWFAEC1AFVDS", "AfterBase64Content Format mismatch: "+c.GateToken)
 		}
-	}
-
-	if status, msg := c.AttachDB(); status != 200 { // DB 까지 붙여야 memory error 가 안난다.
-		return status, e.LogStr("PBUYJM-", msg)
-	}
-	return 200, ""
-}
-
-func (c *Controller) CustomAbangoGet(ymlPath string) (int, string) {
-
-	var err error
-	data, err := os.ReadFile(ymlPath)
-	if err != nil {
-		return 507, e.LogStr("ASDFQEWFA", "Can NOT Read custom.yml")
-	}
-
-	var config Config
-	if err := yaml.Unmarshal(data, &config); err == nil {
-		c.Gtb = config.Source
-		c.Gtb.ConnString = config.Source.ConnStr // custom.yml의 Variable name 이 서로 달라서 복사해줌.
-	} else {
-		return 507, e.LogStr("ASDWEWFA", "connString in custom.yml format mismatch ")
 	}
 
 	if status, msg := c.AttachDB(); status != 200 { // DB 까지 붙여야 memory error 가 안난다.
