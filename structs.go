@@ -29,7 +29,7 @@ type Controller struct {
 	ServerVars     map[string]string //Fronrt End Server Variables
 	GlobalVars     map[string]string //Fronrt End Global Variables
 	Data           map[interface{}]interface{}
-	Access         AbangoAccess
+	// Access         AbangoAccess
 
 	GateToken       string
 	DeviceHash      string
@@ -37,6 +37,8 @@ type Controller struct {
 	Gtb             GateTokenBase
 	Db              *xorm.Engine
 	V               interface{}
+	ErrorFuncName   string
+	AccessIp        string
 }
 
 type Context struct {
@@ -68,7 +70,7 @@ type AbangoAccess struct {
 	DbConnStr string
 }
 
-// !!!여기를 수정할 경우 (1)UpdateGtb (2)MemberLoginSub (3)MemberSsoLogin (4)POSLogin 을 수정해야 한다.
+// 변경ㅅ (1)UpdateGtb (2)MemberLoginSub (3)UserLoginSub (4)GtbDefaultChangeHandler 을 수정해야 한다.
 type GateTokenBase struct {
 	Password            string `yaml:"password"`
 	ConnString          string `yaml:"conn_string"`
@@ -88,32 +90,43 @@ type GateTokenBase struct {
 	FirstName string `yaml:"first_name"`
 	SurName   string `yaml:"sur_name"`
 
-	MemberPermId          int    `yaml:"member_perm_id"`
-	MemberFixedSortMenuId int    `yaml:"member_fixed_sort_menu_id"`
-	SgroupId              int    `yaml:"sgroup_id"`
-	BranchId              int    `yaml:"branch_id"`
-	StorageId             int    `yaml:"storage_id"`
-	AgroupId              int    `yaml:"agroup_id"`
-	MemberCompanyId       int    `yaml:"member_company_id"`
-	CompanySort           string `yaml:"company_sort"`
-	SalesQtyPoint         int    `yaml:"sales_qty_point"`
-	SalesPrcPoint         int    `yaml:"sales_prc_point"`
-	SalesAmtPoint         int    `yaml:"sales_amt_point"`
-	RetailQtyPoint        int    `yaml:"retail_qty_point"`
-	RetailPrcPoint        int    `yaml:"retail_prc_point"`
-	RetailAmtPoint        int    `yaml:"retail_amt_point"`
-	PurchQtyPoint         int    `yaml:"purch_qty_point"`
-	PurchPrcPoint         int    `yaml:"purch_prc_point"`
-	PurchAmtPoint         int    `yaml:"purch_amt_point"`
-	StockQtyPoint         int    `yaml:"stock_qty_point"`
-	StockPrcPoint         int    `yaml:"stock_prc_point"`
-	StockAmtPoint         int    `yaml:"stock_amt_point"`
-	AccAmtPoint           int    `yaml:"acc_amt_point"`
-	OfcCode               string `yaml:"ofc_code"`
-	SalesVatSw            string `yaml:"sales_vat_sw"`
-	RetailVatSw           string `yaml:"retail_vat_sw"`
-	PurchVatSw            string `yaml:"purch_vat_sw"`
-	StdVatRate            string `yaml:"std_vat_rate"`
+	MemberPermId          int `yaml:"member_perm_id"`
+	MemberFixedSortMenuId int `yaml:"member_fixed_sort_menu_id"`
+
+	SgroupId    int    `yaml:"sgroup_id"`
+	BranchId    int    `yaml:"branch_id"`
+	StorageId   int    `yaml:"storage_id"`
+	AgroupId    int    `yaml:"agroup_id"`
+	CountryCode string `yaml:"country_code"`
+	MenuLangSw  int    `yaml:"menu_lang_sw"`
+
+	OrgSgroupId    int    `yaml:"org_sgroup_id"`
+	OrgBranchId    int    `yaml:"org_branch_id"`
+	OrgStorageId   int    `yaml:"org_storage_id"`
+	OrgAgroupId    int    `yaml:"org_agroup_id"`
+	OrgCountryCode string `yaml:"org_country_code"`
+	OrgMenuLangSw  int    `yaml:"org_menu_lang_sw"`
+
+	MemberCompanyId int    `yaml:"member_company_id"`
+	CompanySort     string `yaml:"company_sort"`
+	SalesQtyPoint   int    `yaml:"sales_qty_point"`
+	SalesPrcPoint   int    `yaml:"sales_prc_point"`
+	SalesAmtPoint   int    `yaml:"sales_amt_point"`
+	RetailQtyPoint  int    `yaml:"retail_qty_point"`
+	RetailPrcPoint  int    `yaml:"retail_prc_point"`
+	RetailAmtPoint  int    `yaml:"retail_amt_point"`
+	PurchQtyPoint   int    `yaml:"purch_qty_point"`
+	PurchPrcPoint   int    `yaml:"purch_prc_point"`
+	PurchAmtPoint   int    `yaml:"purch_amt_point"`
+	StockQtyPoint   int    `yaml:"stock_qty_point"`
+	StockPrcPoint   int    `yaml:"stock_prc_point"`
+	StockAmtPoint   int    `yaml:"stock_amt_point"`
+	AccAmtPoint     int    `yaml:"acc_amt_point"`
+	OfcCode         string `yaml:"ofc_code"`
+	SalesVatSw      string `yaml:"sales_vat_sw"`
+	RetailVatSw     string `yaml:"retail_vat_sw"`
+	PurchVatSw      string `yaml:"purch_vat_sw"`
+	StdVatRate      string `yaml:"std_vat_rate"`
 
 	// POS 판매원 설정 //StorageId와 BranchId 는 이미 있슴
 	TerminalId int `yaml:"terminal_id"`
@@ -125,3 +138,18 @@ type GateTokenBase struct {
 type AgentTokenBase struct {
 	ApiKey string
 }
+
+type AskNameController struct {
+	Function string
+	KeyType  string
+	Key      string
+	CurrOtp  string
+	AccessIp string
+}
+
+// type AegisController struct {
+// 	CurrOtp      string
+// 	AccessIp     string
+// 	GateToken    string
+// 	TokenBaseStr string
+// }
