@@ -9,8 +9,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/EricKim65/abango"
-	"github.com/dabory/abango-rest/etc"
+	"github.com/dabory/abango-rest"
 	e "github.com/dabory/abango-rest/etc"
 	"github.com/go-redis/redis/v8"
 	// "github.com/tidwall/buntdb"
@@ -37,13 +36,13 @@ func GetQryStr(y *abango.Controller, filename string) (string, error) {
 
 	// 공통 경로: 파일에서 로딩
 	if str, err = e.FileToQryChkStr(filename); err != nil {
-		return "", etc.LogErr("PKOJHKJUY", "File", err)
+		return "", e.LogErr("PKOJHKJUY", "File", err)
 	}
 
 	// QDBOn인 경우에만 메모리에 저장
 	if QDBOn {
 		if err := QdbUpdate(filename, str); err != nil {
-			return "", etc.LogErr("OIUJLJOUJLH", "QdbUpdate Failed", err)
+			return "", e.LogErr("OIUJLJOUJLH", "QdbUpdate Failed", err)
 		}
 	}
 
