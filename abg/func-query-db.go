@@ -24,7 +24,9 @@ func LogError(y *abango.Controller, index string, s string, err error) error {
 	str := index + " @ " + msg
 	log.Println("[Err]: " + str)
 
-	y.ErrorFuncName = e.CallerFuncName() // go func는 상위 function 명을 찾지 못함.
+	if y.ErrorFuncName == "" { //이 넣어놓을 것이 없다면.
+		y.ErrorFuncName = e.CallerFuncName() // go func는 상위 function 명을 찾지 못함.
+	}
 	go func(y *abango.Controller) {
 		sql := ` INSERT INTO dbt_log_error 
 			(	created_on, linked_md5, err_date, sort, func_name, 
@@ -40,6 +42,33 @@ func LogError(y *abango.Controller, index string, s string, err error) error {
 	}(y)
 
 	return errors.New(msg)
+}
+
+func GetQryStr(y *abango.Controller, filename string) (string, error) {
+	var str string
+	var err error
+
+	if abango.QDBOn {
+		if str, err = abango.QdbView(filename); err == nil {
+			return str, nil
+		}
+	}
+
+	y.ErrorFuncName = e.CallerFuncName() // go func는 상위 function 명을 찾지 못함.
+	// 공통 경로: 파일에서 로딩
+	if str, err = e.FileToQryChkStr(filename); err != nil {
+		return "", LogError(y, "PKOJHKJUY", "File", err)
+	}
+
+	// QDBOn인 경우에만 메모리에 저장
+	if abango.QDBOn {
+		if err := abango.QdbUpdate(filename, str); err != nil {
+			return "", LogError(y, "OIUJLJOUJLH", "QdbUpdate Failed", err)
+		}
+	}
+	y.ErrorFuncName = "" // Clear 해줌
+
+	return str, nil
 }
 
 func ComUpdateQry(y *abango.Controller, id int) *xorm.Session {
@@ -190,7 +219,7 @@ func SumToBal(y *abango.Controller, qName string, bdId int) error {
 
 	fmt.Println(e.FuncNameInfo(), qName)
 	sqlFile := QHOME_DIR + "/erp" + COPY_DIR + "/sum-to-bal/" + qName + ".sql" // theme query 허용하지 않음.
-	sqlExec, err := abango.GetQryStr(y, sqlFile)
+	sqlExec, err := GetQryStr(y, sqlFile)
 	if err != nil {
 		return err
 	}

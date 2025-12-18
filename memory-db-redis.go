@@ -23,31 +23,6 @@ var (
 	QDBOn bool // QDb에서 쿼리 가져옴
 )
 
-func GetQryStr(y Controller, filename string) (string, error) {
-	var str string
-	var err error
-
-	if QDBOn {
-		if str, err = QdbView(filename); err == nil {
-			return str, nil
-		}
-	}
-
-	// 공통 경로: 파일에서 로딩
-	if str, err = e.FileToQryChkStr(filename); err != nil {
-		return "", e.LogErr("PKOJHKJUY", "File", err)
-	}
-
-	// QDBOn인 경우에만 메모리에 저장
-	if QDBOn {
-		if err := QdbUpdate(filename, str); err != nil {
-			return "", e.LogErr("OIUJLJOUJLH", "QdbUpdate Failed", err)
-		}
-	}
-
-	return str, nil
-}
-
 func QdbView(key string) (retval string, reterr error) {
 
 	value, err := QDB.Get(RedisCtx, key).Result()
