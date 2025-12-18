@@ -3,6 +3,7 @@ package abg
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 
@@ -10,6 +11,36 @@ import (
 	e "github.com/dabory/abango-rest/etc"
 	"github.com/go-xorm/xorm"
 )
+
+func LogError(y *abango.Controller, index string, s string, err error) error {
+	var errStr string
+	if err != nil {
+		errStr = err.Error()
+	} else {
+		log.Println("========= Fatal: error is nil LogErr ==========")
+	}
+
+	msg := s + " * " + errStr
+	str := index + " @ " + msg
+	log.Println("[Err]: " + str)
+
+	y.ErrorFuncName = e.CallerFuncName() // go func는 상위 function 명을 찾지 못함.
+	go func(y *abango.Controller) {
+		sql := ` INSERT INTO dbt_log_error 
+			(	created_on, linked_md5, err_date, sort, func_name, 
+			status, err_desc, ip ) 
+		VALUES (%d, '%s', '%s', '%s', '%s', 
+						%d, '%s', '%s' )`
+		sql = fmt.Sprintf(sql, e.GetNowUnix(), e.RandString(32), e.GetNowDate(8), "backend", y.ErrorFuncName,
+			0, msg, "")
+
+		if _, err := y.Db.Exec(fmt.Sprintf(sql)); err != nil {
+			log.Println("[Adding a LogError has error!]]:", err.Error())
+		}
+	}(y)
+
+	return errors.New(msg)
+}
 
 func ComUpdateQry(y *abango.Controller, id int) *xorm.Session {
 
@@ -159,7 +190,7 @@ func SumToBal(y *abango.Controller, qName string, bdId int) error {
 
 	fmt.Println(e.FuncNameInfo(), qName)
 	sqlFile := QHOME_DIR + "/erp" + COPY_DIR + "/sum-to-bal/" + qName + ".sql" // theme query 허용하지 않음.
-	sqlExec, err := abango.GetQryStr(sqlFile)
+	sqlExec, err := abango.GetQryStr(y, sqlFile)
 	if err != nil {
 		return err
 	}

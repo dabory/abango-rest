@@ -9,6 +9,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/EricKim65/abango"
 	"github.com/dabory/abango-rest/etc"
 	e "github.com/dabory/abango-rest/etc"
 	"github.com/go-redis/redis/v8"
@@ -19,73 +20,17 @@ var (
 	// ADB *buntdb.DB //AegisCache
 
 	RedisCtx = context.Background()
-	MDB      *redis.Client //QDB은 Redis를 도입하면서 통합함.
+	QDB      *redis.Client //QDB은 Redis를 도입하면서 통합함.
 	// QDB *buntdb.DB
 	QDBOn bool // QDb에서 쿼리 가져옴
 )
 
-func MdbView(key string) (retval string, reterr error) {
-
-	value, err := MDB.Get(RedisCtx, key).Result()
-	if err == redis.Nil {
-		reterr = e.LogErr("ASDF1QWERCAA", "MDB.View Not Found in Key: "+key, err)
-	} else if err != nil {
-		reterr = e.LogErr("ASDFQWERA", "MDB.View Error reading data: "+key, err)
-	}
-	return value, reterr
-}
-
-func MdbUpdate(key string, value string) (reterr error) {
-
-	REDIS_EXTIME := 12 * time.Hour
-	err := MDB.Set(RedisCtx, key, value, REDIS_EXTIME).Err()
-	if err != nil {
-		reterr = e.MyErr("QWVGAVAEFV-MDB.Update Error in Key: "+key+" Value: "+value, err, false)
-	}
-	return nil
-}
-
-func MdbDelete(key string) error {
-	err := MDB.Del(RedisCtx, key).Err()
-	if err != nil {
-		return e.MyErr("QWVGAVAEFV-MDB.Delete Error in Key: "+key, err, false)
-	}
-	return nil
-}
-
-// func QdbView(key string) (retval string, reterr error) {
-
-// 	QDB.View(func(tx *buntdb.Tx) error {
-// 		if value, err := tx.Get(key); err == nil {
-// 			retval = value
-// 			reterr = nil
-// 		} else {
-// 			retval = ""
-// 			reterr = errors.New("QDB.View Not Found in Key: " + key)
-// 		}
-// 		return nil
-// 	})
-// 	return retval, reterr
-// }
-
-// func QdbUpdate(key string, value string) (reterr error) {
-
-// 	QDB.Update(func(tx *buntdb.Tx) error {
-// 		_, _, err := tx.Set(key, value, nil)
-// 		if err != nil {
-// 			reterr = e.MyErr("TKBKUYIH-QDB.Update Error in Key: "+key+" Value: "+value, err, false)
-// 		}
-// 		return nil
-// 	})
-// 	return nil
-// }
-
-func GetQryStr(filename string) (string, error) {
+func GetQryStr(y *abango.Controller, filename string) (string, error) {
 	var str string
 	var err error
 
 	if QDBOn {
-		if str, err = MdbView(filename); err == nil {
+		if str, err = QdbView(filename); err == nil {
 			return str, nil
 		}
 	}
@@ -97,7 +42,7 @@ func GetQryStr(filename string) (string, error) {
 
 	// QDBOn인 경우에만 메모리에 저장
 	if QDBOn {
-		if err := MdbUpdate(filename, str); err != nil {
+		if err := QdbUpdate(filename, str); err != nil {
 			return "", etc.LogErr("OIUJLJOUJLH", "QdbUpdate Failed", err)
 		}
 	}
@@ -105,31 +50,31 @@ func GetQryStr(filename string) (string, error) {
 	return str, nil
 }
 
-// func GetQryStr(filename string) (string, error) {
+func QdbView(key string) (retval string, reterr error) {
 
-// 	var str string
-// 	var err error
-// 	if QDBOn {
-// 		if str, err = MdbView(filename); err == nil {
-// 			// etc.LogNil("Qry from Memory!!")
-// 			return str, nil
-// 		} else {
-// 			if str, err = e.FileToQryChkStr(filename); err == nil {
-// 				if err := MdbUpdate(filename, str); err != nil {
-// 					return "", etc.LogErr("OIUJLJOUJLH", "QdbUpdate Failed ", err)
-// 				}
-// 				// etc.LogNil("Qry from File!!")
-// 				return str, nil
-// 			} else {
-// 				return "", err
-// 			}
-// 		}
-// 	} else {
-// 		if str, err = e.FileToQryChkStr(filename); err == nil {
-// 			// etc.LogNil("QRY FILE")
-// 			return str, nil
-// 		} else {
-// 			return "", etc.LogErr("PKOJHKJUY", " File", err)
-// 		}
-// 	}
-// }
+	value, err := QDB.Get(RedisCtx, key).Result()
+	if err == redis.Nil {
+		reterr = e.LogErr("ASDF1QWERCAA", "QDB.View Not Found in Key: "+key, err)
+	} else if err != nil {
+		reterr = e.LogErr("ASDFQWERA", "QDB.View Error reading data: "+key, err)
+	}
+	return value, reterr
+}
+
+func QdbUpdate(key string, value string) (reterr error) {
+
+	REDIS_EXTIME := 12 * time.Hour
+	err := QDB.Set(RedisCtx, key, value, REDIS_EXTIME).Err()
+	if err != nil {
+		reterr = e.MyErr("QWVGAVAEFV-QDB.Update Error in Key: "+key+" Value: "+value, err, false)
+	}
+	return nil
+}
+
+func QdbDelete(key string) error {
+	err := QDB.Del(RedisCtx, key).Err()
+	if err != nil {
+		return e.MyErr("QWVGAVAEFV-QDB.Delete Error in Key: "+key, err, false)
+	}
+	return nil
+}
