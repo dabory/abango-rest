@@ -9,7 +9,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/dabory/abango-rest"
 	e "github.com/dabory/abango-rest/etc"
 	"github.com/go-redis/redis/v8"
 	// "github.com/tidwall/buntdb"
@@ -24,7 +23,7 @@ var (
 	QDBOn bool // QDb에서 쿼리 가져옴
 )
 
-func GetQryStr(y *abango.Controller, filename string) (string, error) {
+func GetQryStr(y Controller, filename string) (string, error) {
 	var str string
 	var err error
 
