@@ -8,6 +8,7 @@ package abango
 import (
 	"context"
 	"encoding/json"
+	"net/http"
 	"time"
 
 	e "github.com/dabory/abango-rest/etc"
@@ -18,9 +19,11 @@ import (
 	"google.golang.org/grpc/keepalive"
 )
 
-func AegisView(key string) (string, error) {
+// View -> abango.Init() DB 접속시에만 Request 정보를 받는다.
+// Update -> GateTokenGenerate 에서만 Request 정보를 받는다.
+func AegisView(r *http.Request, key string) (string, error) {
 	req := AskNameController{
-		CurrOtp:  "sdfsdfas",
+		CurrOtp:  OtpManager.CurrOTP,
 		AccessIp: "20.23.324.314",
 		Key:      key,
 		Function: "view",
@@ -35,9 +38,9 @@ func AegisView(key string) (string, error) {
 	return retstr, nil
 }
 
-func AegisUpdate(key string, value string) error {
+func AegisUpdate(r *http.Request, key string, value string) error {
 	req := AskNameController{
-		CurrOtp:  "sdfsdfas",
+		CurrOtp:  OtpManager.CurrOTP,
 		AccessIp: "20.23.324.314",
 		Key:      key,
 		Function: "update",
@@ -55,7 +58,7 @@ func AegisUpdate(key string, value string) error {
 func AegisDelete(key string) error {
 
 	req := AskNameController{
-		CurrOtp:  "sdfsdfas",
+		CurrOtp:  OtpManager.CurrOTP,
 		AccessIp: "20.23.324.314",
 		Key:      key,
 		Function: "delete",
@@ -73,7 +76,7 @@ func AegisDelete(key string) error {
 func AegisStatus() (string, error) {
 
 	req := AskNameController{
-		CurrOtp:  "sdfsdfas",
+		CurrOtp:  OtpManager.CurrOTP,
 		AccessIp: "20.23.324.314",
 		Key:      "",
 		Function: "status",

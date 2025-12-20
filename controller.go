@@ -2,6 +2,7 @@ package abango
 
 import (
 	"encoding/json"
+	"net/http"
 	"os"
 	"strings"
 	"time"
@@ -11,7 +12,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func (c *Controller) Init() (int, string) {
+func (c *Controller) Init(r *http.Request) (int, string) {
 
 	var gtb GateTokenBase
 
@@ -37,7 +38,7 @@ func (c *Controller) Init() (int, string) {
 		if c.GateToken == "" {
 			return 505, e.LogStr("QWCAFVD", "GateToken is Empty: ")
 		}
-		if gtbStr, err = AegisView(c.GateToken); err != nil {
+		if gtbStr, err = AegisView(r, c.GateToken); err != nil { // 여기의 DB접속시 r의 웹로그정보를 AegisCache에 전달.
 			return 505, e.LogStr("QWFAECD", "GateToken Not Found in AegisDB: "+c.GateToken)
 		}
 

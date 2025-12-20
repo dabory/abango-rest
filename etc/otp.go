@@ -21,8 +21,9 @@ import (
 )
 
 const (
-	OtpDigits = 10          // OTP 자릿수
-	OtpPeriod = time.Minute // 1분 주기
+	OtpDigits = 10               // OTP 자릿수
+	OtpPeriod = time.Second * 10 // 1분 주기
+	// OtpPeriod = time.Minute // 1분 주기
 )
 
 func MacSecretGet() (string, error) {
@@ -141,7 +142,7 @@ func (m *OTPManager) rotateOnce(now time.Time) error {
 	m.LastOTP = m.CurrOTP
 	m.CurrOTP = newOTP
 
-	log.Printf("[OTP ROTATE] LAST=%s, CURR=%s\n", m.LastOTP, m.CurrOTP)
+	// log.Printf("[OTP ROTATE] LAST=%s, CURR=%s\n", m.LastOTP, m.CurrOTP)
 	return nil
 }
 

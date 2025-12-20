@@ -173,6 +173,15 @@ func CallerFuncName() string {
 	return s[strings.LastIndex(s, "/")+1:]
 }
 
+func CcallerFuncName() string {
+	pc := make([]uintptr, 15)
+	n := runtime.Callers(4, pc)
+	frames := runtime.CallersFrames(pc[:n])
+	frame, _ := frames.Next()
+	s := frame.Function
+	return s[strings.LastIndex(s, "/")+1:]
+}
+
 func LogCritical(index string, s string, err error) { //에러 ㄱ계를 추적
 	var errStr string
 	if err != nil {
