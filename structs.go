@@ -1,6 +1,8 @@
 package abango
 
 import (
+	e "github.com/dabory/abango-rest/etc"
+
 	"github.com/go-xorm/xorm"
 )
 
@@ -12,6 +14,10 @@ var (
 var (
 	XDB       *xorm.Engine // 더 이상 쓰지 않음 2024에 없앨것
 	CrystalDB *xorm.Engine // 더 이상 쓰지 않음 2024에 없앨것
+)
+
+var (
+	OtpManager *e.OTPManager
 )
 
 // 1. Receivers /////////////////////////////////////////////////////////////////
