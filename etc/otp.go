@@ -16,6 +16,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"strings"
 	"sync"
 	"time"
 )
@@ -26,38 +27,91 @@ const (
 	// OtpPeriod = time.Minute // 1분 주기
 )
 
+// 만약 OTP 연결이 간헐적으로 되다안되하 하면 NIC 선택을 의심하여야 한다.
+// 항상 같은 NIC(en0 우선) 을 선택하게 하여야 한다.
 func MacSecretGet() (string, error) {
 	ifaces, err := net.Interfaces()
 	if err != nil {
 		return "", err
 	}
 
+	// 1) en0 우선 (macOS에서 가장 안정적)
 	var mac string
-
 	for _, iface := range ifaces {
-		// 루프백 제외 + MAC 존재하는 인터페이스만 사용
-		if iface.Flags&net.FlagLoopback != 0 {
-			continue
+		if iface.Name == "en0" && iface.Flags&net.FlagLoopback == 0 && len(iface.HardwareAddr) > 0 {
+			mac = iface.HardwareAddr.String()
+			break
 		}
-		if len(iface.HardwareAddr) == 0 {
-			continue
-		}
+	}
 
-		mac = iface.HardwareAddr.String()
-		break
+	// 2) en0이 없으면: loopback 제외 + up 상태 + MAC 존재 + 가상/터널류 제외
+	if mac == "" {
+		for _, iface := range ifaces {
+			if iface.Flags&net.FlagLoopback != 0 {
+				continue
+			}
+			if iface.Flags&net.FlagUp == 0 {
+				continue
+			}
+			if len(iface.HardwareAddr) == 0 {
+				continue
+			}
+
+			// macOS 가상/터널 인터페이스 흔한 것들 제외
+			if strings.HasPrefix(iface.Name, "utun") ||
+				strings.HasPrefix(iface.Name, "awdl") ||
+				strings.HasPrefix(iface.Name, "llw") ||
+				strings.HasPrefix(iface.Name, "bridge") {
+				continue
+			}
+
+			mac = iface.HardwareAddr.String()
+			break
+		}
 	}
 
 	if mac == "" {
 		return "", errors.New("no valid MAC address found")
 	}
 
-	// ★ MAC + BelovedPass 기반 HMAC-SHA256 Secret 생성
 	h := hmac.New(sha256.New, []byte(BelovedPass))
 	h.Write([]byte(mac))
 	secret := hex.EncodeToString(h.Sum(nil))
-
 	return secret, nil
 }
+
+// func MacSecretGet() (string, error) {
+// 	ifaces, err := net.Interfaces()
+// 	if err != nil {
+// 		return "", err
+// 	}
+
+// 	var mac string
+
+// 	for _, iface := range ifaces {
+// 		// 루프백 제외 + MAC 존재하는 인터페이스만 사용
+// 		if iface.Flags&net.FlagLoopback != 0 {
+// 			continue
+// 		}
+// 		if len(iface.HardwareAddr) == 0 {
+// 			continue
+// 		}
+
+// 		mac = iface.HardwareAddr.String()
+// 		break
+// 	}
+
+// 	if mac == "" {
+// 		return "", errors.New("no valid MAC address found")
+// 	}
+
+// 	// ★ MAC + BelovedPass 기반 HMAC-SHA256 Secret 생성
+// 	h := hmac.New(sha256.New, []byte(BelovedPass))
+// 	h.Write([]byte(mac))
+// 	secret := hex.EncodeToString(h.Sum(nil))
+
+// 	return secret, nil
+// }
 
 // ============================
 // 2. TOTP 생성 로직 (60초 주기)
