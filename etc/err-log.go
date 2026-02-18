@@ -13,9 +13,65 @@ import (
 	"os"
 	"runtime"
 	"strings"
+	// "github.com/dabory/abango-rest"
+	// "cloud.google.com/go/translate"
+	// "cloud.google.com/go/translate"
 )
 
+// var client *translate.Client
+
 // var InfoLog *log.Logger
+
+// func LangStr(y *abango.Controller, index string, engMsg string, args ...interface{}) string {
+// 	// langMsg := TransGetText(y, engMsg)
+// 	str := index + " @ " + fmt.Sprintf(engMsg, args...)
+// 	return str
+// }
+
+// func TransGetText(y *abango.Controller, engMsg string) string {
+
+// 	// 영어면 그대로
+// 	if y.Gtb.LangCode == "en" {
+// 		return engMsg
+// 	}
+
+// 	// Google API Key
+// 	const myApiKey = "AIzaSyCk-Bjl6poLINWRQ60HHZ0T2hS8S6VzvGY"
+
+// 	// context
+// 	ctx := context.Background()
+
+// 	// 클라이언트 생성
+// 	client, err := translate.NewClient(ctx, option.WithAPIKey(myApiKey))
+// 	if err != nil {
+// 		return engMsg
+// 	}
+// 	defer client.Close()
+
+// 	// 언어 설정
+// 	target, err := language.Parse(y.Gtb.LangCode)
+// 	if err != nil {
+// 		return engMsg
+// 	}
+
+// 	// 번역 옵션
+// 	opts := &translate.Options{
+// 		Format: translate.Text,
+// 	}
+
+// 	// 번역 실행
+// 	resp, err := client.Translate(ctx, []string{engMsg}, target, opts)
+// 	if err != nil {
+// 		return engMsg
+// 	}
+
+// 	// 결과 반환
+// 	if len(resp) > 0 && resp[0].Text != "" {
+// 		return resp[0].Text
+// 	}
+
+// 	return engMsg
+// }
 
 func InitLog(path string, showstdout string) error {
 
@@ -37,15 +93,15 @@ func InitLog(path string, showstdout string) error {
 }
 
 func PageCntErr(index string, tablename string) string {
-	return ErrStr(index, " Count Query Error "+tablename+" ")
+	return LogStr(index, " Count Query Error "+tablename+" ")
 }
 
 func PageRead(index string, tablename string) string {
-	return ErrStr(index, " Page Read from "+tablename+" ")
+	return LogStr(index, " Page Read from "+tablename+" ")
 }
 
 func PageQryErr(index string, tablename string) string {
-	return ErrStr(index, " Page Query Error "+tablename+" ")
+	return LogStr(index, " Page Query Error "+tablename+" ")
 }
 
 func RecRead(index string, msgString string) string {
@@ -57,7 +113,7 @@ func RecNotFound(index string, msgString string) string {
 }
 
 func RecReadErr(index string, msgString string) string {
-	return ErrStr(index, " B error in Reading "+msgString+" ")
+	return LogStr(index, " DB error in Reading "+msgString+" ")
 }
 
 func RecAdded(index string, msgString string) string {
@@ -69,7 +125,7 @@ func RecNotAdded(index string, msgString string) string {
 }
 
 func RecAddErr(index string, msgString string) string {
-	return ErrStr(index, " DB error in Adding "+msgString+" ")
+	return LogStr(index, " DB error in Adding "+msgString+" ")
 }
 
 func RecEdited(index string, msgString string) string {
@@ -81,7 +137,7 @@ func RecNotEdited(index string, msgString string) string {
 }
 
 func RecEditErr(index string, msgString string) string {
-	return ErrStr(index, " DB error in Editing "+msgString+" ")
+	return LogStr(index, " DB error in Editing "+msgString+" ")
 }
 
 func RecDeleted(index string, msgString string) string {
@@ -101,26 +157,54 @@ func FuncRun(index string, funcname string) string {
 }
 
 func FuncRunErr(index string, funcname string) string {
-	return ErrStr(index, "-> "+funcname+" ")
+	return LogStr(index, "-> "+funcname+" ")
 }
 
 func JsonFormatErr(index string, structname string) string {
-	return ErrStr(index, " Json Format mismatches in "+structname+" ")
+	return LogStr(index, " Json Format mismatches in "+structname+" ")
 }
 
-func ErrStr(index string, s string) string { // nㅣl 아님 경우만 처리(!!중요)
-	msg := s
-	str := index + " @ " + msg
-	log.Println("[Err]: " + str)
+// func TransGetText(y *abango.Controller, engMsg string) string {
 
-	return msg
-}
+// 	// 1. 영어이면 그대로
+// 	if y.Gtb.LangCode == "en" {
+// 		return engMsg
+// 	}
+
+// 	// 2. 클라이언트 없으면 그대로
+// 	if client == nil {
+// 		return engMsg
+// 	}
+
+// 	// 3. 언어 파싱 실패 시 그대로
+// 	target, err := language.Parse(y.Gtb.LangCode)
+// 	if err != nil {
+// 		return engMsg
+// 	}
+
+// 	// 4. 번역 옵션
+// 	opts := &translate.Options{
+// 		Format: translate.Text,
+// 	}
+
+// 	// 5. 번역 실행
+// 	resp, err := client.Translate(context.Background(), []string{engMsg}, target, opts)
+// 	if err != nil {
+// 		return engMsg
+// 	}
+
+// 	// 6. 결과 반환
+// 	if len(resp) > 0 && resp[0].Text != "" {
+// 		return resp[0].Text
+// 	}
+
+// 	return engMsg
+// }
 
 func LogStr(index string, s string) string { // nㅣl 아님 경우만 처리(!!중요)
 	msg := s
 	str := index + " @ " + msg
 	log.Println("[Log]: " + str)
-
 	return msg
 }
 
@@ -217,16 +301,14 @@ func LogFatal(index string, s string, err error) { //Critical 동일하지만 �
 	os.Exit(100)
 }
 
-// ==== 아래건은 모두 옛날 것이라 차츰 Deprecate 할 것 =====
 func LogNil(s string) error {
-	// log.Logger
 	log.Println("[OK]: " + s)
 	return nil
 }
 
-func AokLog(s string) {
-	log.Println("[Abango-OK]: " + s)
-}
+// func AokLog(s string) {
+// 	log.Println("[Abango-OK]: " + s)
+// }
 
 func ErrLog(s string, err error) error { // // nㅣl처리 아주 중요함 ( 이건 이제 더 사용하지 말것)
 	var errStr string
@@ -241,9 +323,9 @@ func ErrLog(s string, err error) error { // // nㅣl처리 아주 중요함 ( �
 	return errors.New(str)
 }
 
-func ChkLog(point string, x ...interface{}) {
-	log.Println("[CHECK:" + point + "] " + fmt.Sprintf("%v", x))
-}
+// func ChkLog(point string, x ...interface{}) {
+// 	log.Println("[CHECK:" + point + "] " + fmt.Sprintf("%v", x))
+// }
 
 func MyErr(s string, e error, eout bool) error {
 	fmt.Println("[MyErr] Position -> ", s, strings.Repeat("=", 40))
@@ -267,30 +349,30 @@ func MyErr(s string, e error, eout bool) error {
 	return errors.New(emsg)
 }
 
-func agErr(s string, e error, amsg *string) string {
-	fmt.Println("== agErr ", strings.Repeat("=", 90))
-	// fpcs := make([]uintptr, 1)
-	// n := runtime.Callers(2, fpcs)
-	// if n == 0 {
-	// 	fmt.Println("MSG: NO CALLER")
-	// }
-	// // caller := runtime.FuncForPC(fpcs[0] - 1)
-	// caller := runtime.FuncForPC(fpcs[0])
-	// // fmt.Println(caller.FileLine(fpcs[0] - 1))
-	// fmt.Println(caller.FileLine(fpcs[0]))
-	// fmt.Println(caller.Name())
-	emsg := ""
-	if e != nil {
-		emsg = "Error: " + e.Error() + " in " + s
-	} else {
-		emsg = "Error: error is nil" + " in " + s // e 가 nil 인 상태에서 Error() 인용시 runtime error
-	}
-	fmt.Println(emsg, "\n")
-	whereami(2)
-	whereami(3)
-	fmt.Println(strings.Repeat("=", 100))
-	return emsg
-}
+// func agErr(s string, e error, amsg *string) string {
+// 	fmt.Println("== agErr ", strings.Repeat("=", 90))
+// 	// fpcs := make([]uintptr, 1)
+// 	// n := runtime.Callers(2, fpcs)
+// 	// if n == 0 {
+// 	// 	fmt.Println("MSG: NO CALLER")
+// 	// }
+// 	// // caller := runtime.FuncForPC(fpcs[0] - 1)
+// 	// caller := runtime.FuncForPC(fpcs[0])
+// 	// // fmt.Println(caller.FileLine(fpcs[0] - 1))
+// 	// fmt.Println(caller.FileLine(fpcs[0]))
+// 	// fmt.Println(caller.Name())
+// 	emsg := ""
+// 	if e != nil {
+// 		emsg = "Error: " + e.Error() + " in " + s
+// 	} else {
+// 		emsg = "Error: error is nil" + " in " + s // e 가 nil 인 상태에서 Error() 인용시 runtime error
+// 	}
+// 	fmt.Println(emsg, "\n")
+// 	whereami(2)
+// 	whereami(3)
+// 	fmt.Println(strings.Repeat("=", 100))
+// 	return emsg
+// }
 
 func whereami(i int) {
 	function, file, line, _ := runtime.Caller(i)

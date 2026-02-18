@@ -19,9 +19,54 @@ import (
 	"google.golang.org/grpc/keepalive"
 )
 
-// View -> abango.Init() DB 접속시에만 Request 정보를 받는다.
-// Update -> GateTokenGenerate 에서만 Request 정보를 받는다.
+const (
+	aegisConnErrStatus = "909"
+	aegisRpcErrStatus  = "907"
+)
+
+var (
+	AEGIS_MEMBER_ON  bool
+	AEGIS_CACHE_CONN string
+)
+
+func AegisEncrypt(r *http.Request, plainText string) (encrypted string, err error) {
+
+	req := AskNameController{
+		CurrOtp:  OtpManager.CurrOTP,
+		AccessIp: "20.23.324.314",
+		Key:      "",
+		Function: "encrypt",
+	}
+
+	aegBytes, _ := json.Marshal(req)
+	retsta, retstr, err := ageisRequest(string(aegBytes), plainText)
+	if err != nil {
+		return "", e.LogErr("QWVGAEFV", e.FuncNameErr()+": "+retsta, err)
+	}
+
+	return retstr, nil // e
+}
+
+func AegisDecrypt(r *http.Request, encrypted string) (decrypted string, err error) {
+
+	req := AskNameController{
+		CurrOtp:  OtpManager.CurrOTP,
+		AccessIp: "20.23.324.314",
+		Key:      "",
+		Function: "decrypt",
+	}
+
+	aegBytes, _ := json.Marshal(req)
+	retsta, retstr, err := ageisRequest(string(aegBytes), encrypted)
+	if err != nil {
+		return "", e.LogErr("QWVGAEFV5", e.FuncNameErr()+": "+retsta, err)
+	}
+
+	return retstr, nil
+}
+
 func AegisView(r *http.Request, key string) (string, error) {
+
 	req := AskNameController{
 		CurrOtp:  OtpManager.CurrOTP,
 		AccessIp: "20.23.324.314",
@@ -32,13 +77,14 @@ func AegisView(r *http.Request, key string) (string, error) {
 	aegBytes, _ := json.Marshal(req)
 	retsta, retstr, err := ageisRequest(string(aegBytes), "")
 	if err != nil {
-		return "", e.LogErr("QWVGAVAEFV-AegisView", "ageisRequest failed, status: "+retsta, err)
+		return "", e.LogErr("QWVGAE8V", e.FuncNameErr()+": "+retsta, err)
 	}
 
 	return retstr, nil
 }
 
 func AegisUpdate(r *http.Request, key string, value string) error {
+
 	req := AskNameController{
 		CurrOtp:  OtpManager.CurrOTP,
 		AccessIp: "20.23.324.314",
@@ -49,7 +95,7 @@ func AegisUpdate(r *http.Request, key string, value string) error {
 	aegBytes, _ := json.Marshal(req)
 	retsta, _, err := ageisRequest(string(aegBytes), value)
 	if err != nil {
-		return e.LogErr("QWVGAVAEFV-MDB.Update Error in Status: "+retsta, "", err)
+		return e.LogErr("QWV2GAEFV", e.FuncNameErr()+": "+retsta, err)
 	}
 
 	return nil
@@ -67,7 +113,7 @@ func AegisDelete(key string) error {
 	aegBytes, _ := json.Marshal(req)
 	retsta, _, err := ageisRequest(string(aegBytes), "")
 	if err != nil {
-		return e.LogErr("QWVGAVAEFV-MDB.Delete Error in Status: "+retsta, "", err)
+		return e.LogErr("QWVGAEF7V", e.FuncNameErr()+": "+retsta, err)
 	}
 
 	return nil
@@ -85,23 +131,18 @@ func AegisStatus() (string, error) {
 	aegBytes, _ := json.Marshal(req)
 	retsta, retstr, err := ageisRequest(string(aegBytes), "")
 	if err != nil {
-		return "", e.LogErr("QWVGAVAEFV-MDB.Delete Error in Status: "+retsta, "", err)
+		return "", e.LogErr("QWVGAEF4V", e.FuncNameErr()+": "+retsta, err)
 	}
 
 	return retstr, nil
 }
 
-const (
-	aegisConnErrStatus = "909"
-	aegisRpcErrStatus  = "907"
-)
-
 func ageisRequest(askname string, askstr string) (string, string, error) {
 
-	addr := XConfig["AegisCacheConn"]
+	// addr := XConfig["AegisCacheConn"]
 
 	conn, err := grpc.NewClient(
-		addr,
+		AEGIS_CACHE_CONN,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithKeepaliveParams(keepalive.ClientParameters{
 			Time:                20 * time.Second,
@@ -110,7 +151,7 @@ func ageisRequest(askname string, askstr string) (string, string, error) {
 		}),
 	)
 	if err != nil {
-		return "", "", e.LogErr("QWVGAOYFV", "Aegis Connection Error in Status: "+aegisConnErrStatus, err)
+		return "", "", e.LogErr("QWVGAOYF3V", e.FuncNameErr()+": Aegis Connection Error", err)
 	}
 	defer conn.Close()
 
@@ -124,8 +165,25 @@ func ageisRequest(askname string, askstr string) (string, string, error) {
 		AskStr:  askstr,
 	})
 	if err != nil {
-		return "", "", e.LogErr("QWVGAOYFV", "gClient.StdRpc gRpc Error in Status: "+aegisRpcErrStatus, err)
+		return "", "", e.LogErr("QWVGPOYF2", e.FuncNameErr()+": gClient.StdRpc gRpc Error", err)
 	}
 
 	return r.RetSta, r.RetStr, nil
+}
+
+func InitializeOTP() error {
+	sec, err := e.MacSecretGet()
+	if err != nil {
+		return e.LogErr("LOOUJGYT1", e.FuncNameErr()+": initializeOTP Error", err)
+	}
+	ServerSecret = sec
+
+	manager := e.NewOTPManager(ServerSecret, e.OtpDigits, e.OtpPeriod)
+
+	ctx, _ := context.WithCancel(context.Background())
+	manager.Start(ctx)
+
+	OtpManager = manager
+
+	return nil
 }

@@ -14,7 +14,6 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"log"
 	"net"
 	"strings"
 	"sync"
@@ -27,59 +26,57 @@ const (
 	// OtpPeriod = time.Minute // 1분 주기
 )
 
-// 만약 OTP 연결이 간헐적으로 되다안되하 하면 NIC 선택을 의심하여야 한다.
-// 항상 같은 NIC(en0 우선) 을 선택하게 하여야 한다.
 func MacSecretGet() (string, error) {
 	ifaces, err := net.Interfaces()
 	if err != nil {
 		return "", err
 	}
 
-	// 1) en0 우선 (macOS에서 가장 안정적)
-	var mac string
 	for _, iface := range ifaces {
-		if iface.Name == "en0" && iface.Flags&net.FlagLoopback == 0 && len(iface.HardwareAddr) > 0 {
-			mac = iface.HardwareAddr.String()
-			break
+		name := strings.ToLower(iface.Name)
+
+		// loopback 제외
+		if iface.Flags&net.FlagLoopback != 0 {
+			continue
 		}
-	}
-
-	// 2) en0이 없으면: loopback 제외 + up 상태 + MAC 존재 + 가상/터널류 제외
-	if mac == "" {
-		for _, iface := range ifaces {
-			if iface.Flags&net.FlagLoopback != 0 {
-				continue
-			}
-			if iface.Flags&net.FlagUp == 0 {
-				continue
-			}
-			if len(iface.HardwareAddr) == 0 {
-				continue
-			}
-
-			// macOS 가상/터널 인터페이스 흔한 것들 제외
-			if strings.HasPrefix(iface.Name, "utun") ||
-				strings.HasPrefix(iface.Name, "awdl") ||
-				strings.HasPrefix(iface.Name, "llw") ||
-				strings.HasPrefix(iface.Name, "bridge") {
-				continue
-			}
-
-			mac = iface.HardwareAddr.String()
-			break
+		// MAC 없는 인터페이스 제외
+		if len(iface.HardwareAddr) == 0 {
+			continue
 		}
-	}
 
-	if mac == "" {
-		return "", errors.New("no valid MAC address found")
-	}
+		// Wi-Fi / 무선 제외 (macOS + Linux)
+		if name == "en0" || // macOS Wi-Fi
+			strings.HasPrefix(name, "wl") || // wlan, wlp...
+			strings.Contains(name, "wifi") {
+			continue
+		}
 
-	h := hmac.New(sha256.New, []byte(BelovedPass))
-	h.Write([]byte(mac))
-	secret := hex.EncodeToString(h.Sum(nil))
-	return secret, nil
+		// VPN / 터널 / 가상 NIC 제외
+		if strings.HasPrefix(name, "utun") ||
+			strings.HasPrefix(name, "tun") ||
+			strings.HasPrefix(name, "tap") ||
+			strings.HasPrefix(name, "wg") ||
+			strings.HasPrefix(name, "docker") ||
+			strings.HasPrefix(name, "veth") ||
+			strings.HasPrefix(name, "br-") {
+			continue
+		}
+
+		// ★ 여기 도달하면 "안정적인 유선 NIC"
+		mac := strings.ToLower(iface.HardwareAddr.String())
+
+		h := hmac.New(sha256.New, []byte(BelovedPass))
+		h.Write([]byte(mac))
+
+		fmt.Println("mac:", hex.EncodeToString(h.Sum(nil)))
+		return hex.EncodeToString(h.Sum(nil)), nil
+	}
+	fmt.Println("mac:", "")
+
+	return "", errors.New("no stable wired MAC found")
 }
 
+// return "65:03:05:65:03:05", nil
 // func MacSecretGet() (string, error) {
 // 	ifaces, err := net.Interfaces()
 // 	if err != nil {
@@ -200,34 +197,29 @@ func (m *OTPManager) rotateOnce(now time.Time) error {
 	return nil
 }
 
-// Start: goroutine으로 1분 간격 반복
 func (m *OTPManager) Start(ctx context.Context) {
-	// 최초 한 번 현재 시각 기준으로 생성
-	_ = m.rotateOnce(time.Now())
-
-	// 분 경계에 맞추고 싶으면 아래처럼 조정 가능 (옵션)
-	// next := time.Now().Truncate(m.Period).Add(m.Period)
-	// time.Sleep(time.Until(next))
-
-	ticker := time.NewTicker(m.Period)
-
 	go func() {
-		defer ticker.Stop()
+		// 최초 1회
+		_ = m.rotateOnce(time.Now())
+
 		for {
+			// 다음 경계(10초 경계)까지 정확히 대기
+			now := time.Now()
+			next := now.Truncate(m.Period).Add(m.Period)
+
+			timer := time.NewTimer(time.Until(next))
 			select {
 			case <-ctx.Done():
-				log.Println("OTPManager stopped")
+				timer.Stop()
 				return
-			case now := <-ticker.C:
-				if err := m.rotateOnce(now); err != nil {
-					log.Println("OTPManager rotate error:", err)
-				}
+			case <-timer.C:
 			}
+
+			_ = m.rotateOnce(next)
 		}
 	}()
 }
 
-// Validate: CurrOTP 또는 LastOTP와 비교
 func (m *OTPManager) Validate(code string) bool {
 	if code == "" {
 		return false

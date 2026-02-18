@@ -20,23 +20,24 @@ func LogError(y *abango.Controller, index string, s string, err error) error {
 		log.Println("========= Fatal: error is nil LogErr ==========")
 	}
 
-	msg := s + " * " + errStr
-	str := index + " @ " + msg
-	log.Println("[Err]: " + str)
+	msg := strings.ReplaceAll(s+" * "+errStr, "'", "^")
+	// str := index + " @ " + msg
+	// log.Println("[Err]: " + str)
 
 	if y.ErrorFuncName == "" { //이 넣어놓을 것이 없다면.
 		y.ErrorFuncName = e.CallerFuncName() // go func는 상위 function 명을 찾지 못함.
 	}
+
 	go func(y *abango.Controller) {
-		sql := ` INSERT INTO dbt_log_error 
+		sql := `INSERT INTO dbt_log_error 
 			(	created_on, linked_md5, err_date, sort, func_name, 
-			status, err_desc, ip ) 
+				status, err_desc, ip ) 
 		VALUES (%d, '%s', '%s', '%s', '%s', 
 						%d, '%s', '%s' )`
 		sql = fmt.Sprintf(sql, e.GetNowUnix(), e.RandString(32), e.GetNowDate(8), "backend", y.ErrorFuncName,
 			0, msg, "")
-
-		if _, err := y.Db.Exec(fmt.Sprintf(sql)); err != nil {
+		// fmt.Println("kkkkk:", sql)
+		if _, err := y.Db.Exec(sql); err != nil {
 			log.Println("[Adding a LogError has error!]]:", err.Error())
 		}
 	}(y)
@@ -75,13 +76,13 @@ func ComUpdateQry(y *abango.Controller, id int) *xorm.Session {
 
 	qry := y.Db.Id(id)
 	if y.UpdateFieldList != "" {
-		e.LogNil("y.UpdateFieldList:" + y.UpdateFieldList)
+		fmt.Println("y.UpdateFieldList:" + y.UpdateFieldList)
 		slc := strings.Split(y.UpdateFieldList, ",")
 		for _, str := range slc {
 			qry = qry.Cols(str)
 		}
 	} else { //UpdateFieldList가 비었으면 전체 컬럼선텍
-		e.LogNil("y.UpdateFieldList Empty: Insert or Update All")
+		fmt.Println("y.UpdateFieldList Empty: Insert or Update All")
 		qry = qry.AllCols()
 	}
 	return qry

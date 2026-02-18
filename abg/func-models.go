@@ -92,15 +92,14 @@ func GetLt1ProcFunc(y *abango.Controller, sql string, lt *ListType1Vars, ltFilte
 		ltFilter = "0"
 	} // ListTypeFilter 는 예비용 필터이며 and/or 또는 = 같은 SQL keyword가 들어가면 안된다.
 
-	// fmt.Println("lt.ListSimpleFilter:", lt.ListSimpleFilter)
-	var storageIdStr string
+	// 특수한 경우의 커스텀 파라메터-시작
+	var storageIdStr string // 다중창고 관리시 특정 샃고 지정헤서 수불장 보기
 	if !strings.Contains(lt.ListSimpleFilter, "@procedure.storage_id:") {
 		storageIdStr = strconv.Itoa(y.Gtb.StorageId)
 	} else {
 		storageIdStr = strings.TrimPrefix(lt.ListSimpleFilter, "@procedure.storage_id:")
 	}
-	// fmt.Println("storageIdStr:", storageIdStr)
-	// fmt.Println("storageIdStr:", storageIdStr)
+	// 특수한 경우의 커스텀 파라메터-시작
 
 	scanner := bufio.NewScanner(strings.NewReader(sql))
 	scanner.Scan() //@procedure skip
@@ -327,6 +326,9 @@ func GetExtractStr(y *abango.Controller, sqlStr string) string {
 
 		case strings.Contains(col, "terminal_id"):
 			builder.WriteString(fmt.Sprintf(" and %s=%d", col, y.Gtb.TerminalId))
+
+		case strings.Contains(col, "store_buyer_id"):
+			builder.WriteString(fmt.Sprintf(" and %s=%d", col, y.Gtb.StoreBuyerId))
 
 		}
 	}

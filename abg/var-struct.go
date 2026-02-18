@@ -384,7 +384,6 @@ type MemberAuthCom struct {
 	CompanyClass      string `xorm:"default '' comment('업체등급:AA(개인고객), AB(기업고객), BB(기업공급처)') index VARCHAR(2)"`
 	FullName          string `xorm:"not null default '' comment('고객성명(전체이름)') VARCHAR(96)"`
 	IsLunar           string `xorm:"comment('0:양력, 1:음력') CHAR(1)"`
-	CardChar4         string `xorm:"comment('지울것') VARCHAR(4)"`
 	MainContact       string `xorm:"comment('주담당자: POS의 경우 고객이름(동명이인 사용가능)으로 사용') VARCHAR(21)"`
 	TelNo             string `xorm:"index VARCHAR(21)"`
 	FaxNo             string `xorm:"VARCHAR(21)"`
@@ -430,20 +429,38 @@ type MemberAuthCom struct {
 	CompanyJson       string `xorm:"comment('커스터마이징 내용') TEXT"`
 	Ip                string `xorm:"VARCHAR(21)"`
 
+	//AegisMemberOn 시에 작동됨
+	// Member
+	EmailHashed  string `xorm:"comment('휴면계정여부 확인용') unique CHAR(44)"`
+	EmailEnc     string `xorm:"not null default '' comment('이메일-암호화') VARCHAR(128)"`
+	FirstNameEnc string `xorm:"not null comment('이름-암호화') VARCHAR(128)"`
+	SurNameEnc   string `xorm:"not null comment('성-암호화') VARCHAR(128)"`
+	// MemberExt
+	Ssn1Enc      string `xorm:"not null default '' comment('주민번호앞자리-암호화') index VARCHAR(64)"`
+	Ssn2Enc      string `xorm:"not null default '' comment('주민번호뒷자리-암호화') VARCHAR(64)"`
+	BirthDateEnc string `xorm:"not null comment('생년월일-암호화') index VARCHAR(64)"`
+	MobileNoEnc  string `xorm:"not null comment('모바일번호-암호화') index VARCHAR(64)"`
+	PhoneNoEnc   string `xorm:"not null comment('전화번호-암호화') index VARCHAR(64)"`
+	// Company
+	CompanyNameEnc string `xorm:"not null default '' comment('고객(업체명)-암호화') VARCHAR(128)"`
+
+	//별도로 만드는 CompanyName
+	ComanyName string // 회원 로그인 생성된 Comanpy
+
 	// ProMemberDevice
 	// DeviceIp   string
 	// DeviceDesc string
-	//2025.06.25 개인정보  보호법 개정으로 추가 됨.
-	IsOkText       string `xorm:"not null default '0' comment('문자접수승인') CHAR(1)"`
-	IsOkEmail      string `xorm:"not null default '0' comment('이메일접수승인') CHAR(1)"`
-	IsOkDm         string `xorm:"default '0' comment('DM접수승인') CHAR(1)"`
-	IsOkPinfo      string `xorm:"not null default '0' comment('개인정보수집동의여부') CHAR(1)"`
-	IsOkLifetime   string `xorm:"not null default '0' comment('평생회원동의여부') CHAR(1)"`
-	TextOkDate     string `xorm:"not null default '00000000' comment('문자발송동의일자') CHAR(8)"`
-	EmailOkDate    string `xorm:"not null default '00000000' comment('뉴스메일발송동의일자') CHAR(8)"`
-	DmOkDate       string `xorm:"not null default '00000000' comment('DM발송동의일자') CHAR(8)"`
-	PinfoOkDate    string `xorm:"not null default '00000000' comment('개인정보수집동의일자') CHAR(8)"`
-	LifetimeOkDate string `xorm:"not null default '00000000' comment('평생회원동의일자') CHAR(8)"`
+	// 2025.06.25 개인정보  보호법 개정으로 추가 됨.
+	// IsOkText       string `xorm:"not null default '0' comment('문자접수승인') CHAR(1)"`
+	// IsOkEmail      string `xorm:"not null default '0' comment('이메일접수승인') CHAR(1)"`
+	// IsOkDm         string `xorm:"default '0' comment('DM접수승인') CHAR(1)"`
+	// IsOkPinfo      string `xorm:"not null default '0' comment('개인정보수집동의여부') CHAR(1)"`
+	// IsOkLifetime   string `xorm:"not null default '0' comment('평생회원동의여부') CHAR(1)"`
+	// TextOkDate     string `xorm:"not null default '00000000' comment('문자발송동의일자') CHAR(8)"`
+	// EmailOkDate    string `xorm:"not null default '00000000' comment('뉴스메일발송동의일자') CHAR(8)"`
+	// DmOkDate       string `xorm:"not null default '00000000' comment('DM발송동의일자') CHAR(8)"`
+	// PinfoOkDate    string `xorm:"not null default '00000000' comment('개인정보수집동의일자') CHAR(8)"`
+	// LifetimeOkDate string `xorm:"not null default '00000000' comment('평생회원동의일자') CHAR(8)"`
 }
 type UserAuthCom struct {
 	ActivateCode string

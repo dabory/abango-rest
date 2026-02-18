@@ -14,6 +14,8 @@ import (
 
 func (c *Controller) Init(r *http.Request) (int, string) {
 
+	// fmt.Println("Heare is abango.Controller.Init") // Just make it Comment line. DONOT Delete.
+
 	var gtb GateTokenBase
 
 	var gtbStr string

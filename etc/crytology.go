@@ -244,42 +244,42 @@ func Sha256Hash(data []byte, leng int) []byte {
 	return []byte(rtn)
 }
 
-func Aes256Encrypt(key []byte, nonce []byte, plaintext []byte) ([]byte, error) {
-	// The key argument should be the AES key, either 16 or 32 bytes
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		return nil, MyErr("YBBAERFRYY-NewCipher", err, false)
-	}
+// func AesGcmEncrypt(key []byte, nonce []byte, plaintext []byte) ([]byte, error) {
+// 	// The key argument should be the AES key, either 16 or 32 bytes
+// 	block, err := aes.NewCipher(key)
+// 	if err != nil {
+// 		return nil, MyErr("YBBAERFRYY-NewCipher", err, false)
+// 	}
 
-	// Never use more than 2^32 random nonces with a given key because of the risk of a repeat.
-	// nonce := make([]byte, 12) // Do not change 12
-	// if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
-	// 	return nil,  myErr("io.ReadFull", err)
-	// }
+// 	// Never use more than 2^32 random nonces with a given key because of the risk of a repeat.
+// 	// nonce := make([]byte, 12) // Do not change 12
+// 	// if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
+// 	// 	return nil,  myErr("io.ReadFull", err)
+// 	// }
 
-	aesgcm, err := cipher.NewGCM(block)
-	if err != nil {
-		return nil, MyErr("ERGVSER-cipher.NewGCM", err, false)
-	}
+// 	aesgcm, err := cipher.NewGCM(block)
+// 	if err != nil {
+// 		return nil, MyErr("ERGVSER-cipher.NewGCM", err, false)
+// 	}
 
-	text := aesgcm.Seal(nil, nonce, plaintext, nil)
-	return text, nil
-}
+// 	text := aesgcm.Seal(nil, nonce, plaintext, nil)
+// 	return text, nil
+// }
 
-func Aes256Decrypt(key []byte, nonce []byte, text []byte) ([]byte, error) {
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		return nil, MyErr("NSTRFGBSAF-NewCipher", err, false)
-	}
+// func AesGcmDecrypt(key []byte, nonce []byte, text []byte) ([]byte, error) {
+// 	block, err := aes.NewCipher(key)
+// 	if err != nil {
+// 		return nil, MyErr("NSTRFGBSAF-NewCipher", err, false)
+// 	}
 
-	aesgcm, err := cipher.NewGCM(block)
-	if err != nil {
-		return nil, MyErr("PQWKKLVASD-cipher.NewGCM", err, false)
-	}
+// 	aesgcm, err := cipher.NewGCM(block)
+// 	if err != nil {
+// 		return nil, MyErr("PQWKKLVASD-cipher.NewGCM", err, false)
+// 	}
 
-	plaintext, err := aesgcm.Open(nil, nonce, text, nil)
-	if err != nil {
-		return nil, MyErr("POQWEIRUNVAIK-aesgcm.Open", err, false)
-	}
-	return plaintext, nil
-}
+// 	plaintext, err := aesgcm.Open(nil, nonce, text, nil)
+// 	if err != nil {
+// 		return nil, MyErr("POQWEIRUNVAIK-aesgcm.Open", err, false)
+// 	}
+// 	return plaintext, nil
+// }

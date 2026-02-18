@@ -17,25 +17,6 @@ import (
 	e "github.com/dabory/abango-rest/etc"
 )
 
-// type EnvConf struct { //Kangan only
-// 	AppName      string
-// 	HttpProtocol string
-// 	HttpAddr     string
-// 	HttpPort     string
-// 	SiteName     string
-
-// 	DbType     string
-// 	DbHost     string
-// 	DbUser     string
-// 	DbPassword string
-// 	DbPort     string
-// 	DbName     string
-// 	DbPrefix   string
-// 	DbTimezone string
-
-// 	DbStr string
-// }
-
 type RunConf struct {
 	RunMode     string
 	DevPrefix   string
@@ -43,20 +24,12 @@ type RunConf struct {
 	ConfPostFix string
 }
 
-// type BaseReceiver struct {
-// 	GateToken string
-// }
-
 func init() {
-	// e.LogNil("Abango Initialized")
-
 }
 
 func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
 
 	var wg sync.WaitGroup
-
-	e.AokLog("Abango Clustered Framework Started !")
 	if XConfig["XDBOn"] == "Yes" { // 필요없어진 건 같으니까 2024년에 지울것.
 		MyLinkXDB()
 	}
@@ -75,7 +48,6 @@ func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
 		// }()
 	}
 	if XConfig["gRpcOn"] == "Yes" {
-		// e.AokLog("gRpc API StandBy !")
 		// wg.Add(1)
 		// go func() {
 		// 	// GrpcSvcStandBy(GrpcHandler)
@@ -83,8 +55,6 @@ func RunServicePoint(RestHandler func(ask *AbangoAsk)) {
 		// }()
 	}
 	if XConfig["RestOn"] == "Yes" {
-		// e.AokLog("RESTful API StandBy !")
-
 		wg.Add(1)
 		go func() {
 			RestSvcStandBy(RestHandler)
@@ -302,7 +272,7 @@ func MyLinkXDB() { //   항상 연결될 수 있는 MySQL  DB 사전 연결
 	if _, err := XDB.IsTableExist("aaa"); err != nil { //Connect Check
 		e.MyErr("ASDFAERAFE-DATABASE DISCONNECTED", err, true)
 	} else {
-		e.LogNil("XDB CONNECTED :" + strArr[1])
+		fmt.Println("XDB CONNECTED :" + strArr[1])
 	}
 
 }
@@ -325,13 +295,5 @@ func MyLinkCrystalDB() { // Crystal Report Server
 	CrystalDB.SetMaxOpenConns(100)
 	CrystalDB.SetMaxIdleConns(20)
 	CrystalDB.SetConnMaxLifetime(60 * time.Second)
-
-	// Crystal Server가 죽어도 API 스타트에는 이상이 없도록 연결테스트는 아지 않는다.
-	// if _, err := CrystalDB.IsTableExist("aaa"); err != nil { //Connect Check
-	// 	e.LogNil("JHGKIUGBJ-CrystalDB Unconnected " + strArr[1])
-	// 	// e.MyErr("JHGKIUGBJ-CrystalDB Unconnected ", err, true)
-	// } else {
-	// 	e.LogNil("CrystalDB Connected :" + strArr[1])
-	// }
 
 }

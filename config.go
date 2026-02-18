@@ -12,7 +12,6 @@ import (
 
 func GetXConfig(params ...string) error { // Kafka, gRpc, REST 통합 업그레이드
 
-	e.AokLog("Abango Gets XConfig !")
 	conf := "conf/"
 	if len(params) != 0 {
 		conf = params[0] + conf

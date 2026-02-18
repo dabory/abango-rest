@@ -13,12 +13,38 @@ import (
 	"html"
 	"os"
 	"reflect"
+	"regexp"
 	"strings"
 	time "time"
 
 	"github.com/microcosm-cc/bluemonday"
 	// "xorm.io/xorm"
 )
+
+var EmailRegex = regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
+
+func TwoArrayFromStrings(tableNames, dateFields string) ([]string, []string, error) {
+	tableList := strings.Split(tableNames, ",")
+	dateList := strings.Split(dateFields, ",")
+
+	if len(tableList) != len(dateList) {
+		// 영문 에러 메시지로 변경
+		return nil, nil, fmt.Errorf(
+			"configuration mismatch: count of tables (%d) does not match count of date fields (%d)",
+			len(tableList), len(dateList),
+		)
+	}
+
+	return tableList, dateList, nil
+}
+
+// IsValidEmail은 문자열이 유효한 이메일 형식인지 확인합니다.
+func IsValidEmail(email string) bool {
+	if len(email) < 3 || len(email) > 254 {
+		return false
+	}
+	return EmailRegex.MatchString(email)
+}
 
 func ExtractWithoutHttp(raw string) string {
 	raw = strings.TrimPrefix(raw, "http://")
@@ -153,7 +179,7 @@ func HasPickActPageDelPage(uri string, table string) bool {
 
 func YesToTrue(yes string, swName string) bool {
 	if yes == "Yes" {
-		LogNil("== config Key: " + swName + " is ON ==")
+		fmt.Println("== config Key: " + swName + " is ON ==")
 		return true
 	} else {
 		return false
