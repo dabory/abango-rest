@@ -9,6 +9,7 @@ import (
 
 	"github.com/dabory/abango-rest"
 	e "github.com/dabory/abango-rest/etc"
+	"github.com/dabory/abango-rest/fnd"
 )
 
 const ( // Query
@@ -57,11 +58,11 @@ var ( //Env XCongif
 	DBU_BY_FORCE       bool
 	IS_CACHE_KEY_PAIR  bool
 	KAFKA_CONSUMER     bool
+	AEGIS_REDIS_CHECK  bool
 	LOCAL_KEY_PAIR     string
 	CACHE_KEY_PAIR_DIR string
 	QHOME_DIR          string
 	THEME_QRY_DIR      string
-	LANG_DIR           string
 
 	WEB_LOG_SW       string
 	IS_LOG_DEBOUNCED string
@@ -70,7 +71,6 @@ var ( //Env XCongif
 	COMSUMER_TOPICS     []string
 	CRY_ABG             abango.Controller
 	Last                QryName
-	// REDIS_EXTIME        time.Duration = 12 * time.Hour
 )
 
 var ( //InfluxDB
@@ -105,6 +105,13 @@ var ( //Prefix
 // abango 는 주요 번수 설정을 위한 기반을 제공하고 그외에 abg 가 상세 설정을 하는 구조이다.수정하려고 하지 말것.
 func GlobalVarsInit() error { // MainApi, AegisCache, StrongApi 모두 이걸 사용한다.
 
+	if abango.XConfig["LangDir"] != "" || abango.XConfig["LangApiKey"] != "" {
+		fnd.LANG_DIR = abango.XConfig["LangDir"]
+	} else {
+		e.LogStr("LANG_INIT", "failed to initialize OTP manager")
+		panic("")
+	}
+
 	abango.CpuCores = runtime.NumCPU()
 
 	if err := abango.InitializeOTP(); err != nil {
@@ -129,6 +136,8 @@ func GlobalVarsInit() error { // MainApi, AegisCache, StrongApi 모두 이걸 �
 	IS_CACHE_KEY_PAIR = e.YesToTrue(abango.XConfig["IsCacheKeyPair"], "IsCacheKeyPair")
 	KAFKA_CONSUMER = e.YesToTrue(abango.XConfig["IsKafkaConsumer"], "IsKafkaConsumer")
 
+	AEGIS_REDIS_CHECK = e.YesToTrue(abango.XConfig["AegisRedisCheck"], "AegisRedisCheck")
+
 	// 회원 민감정보 암호화 스위치
 	abango.AEGIS_MEMBER_ON = e.YesToTrue(abango.XConfig["AegisMemberOn"], "AegisMemberOn")
 
@@ -137,7 +146,6 @@ func GlobalVarsInit() error { // MainApi, AegisCache, StrongApi 모두 이걸 �
 	LOCAL_KEY_PAIR = abango.XConfig["LocalKeyPair"]
 	CACHE_KEY_PAIR_DIR = abango.XConfig["CacheKeyPairDir"]
 	QHOME_DIR = abango.XConfig["QueryDir"]
-	LANG_DIR = abango.XConfig["LangDir"]
 
 	INFLUX_CONN = abango.XConfig["InfluxConn"]
 	INFLUX_DB_NAME = abango.XConfig["InfluxDbName"]

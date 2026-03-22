@@ -22,12 +22,34 @@ import (
 const (
 	aegisConnErrStatus = "909"
 	aegisRpcErrStatus  = "907"
+
+	SetupPrefix      = "::setup::"
+	FriendlistPrefix = "::friendlist::"
+	AgentlistPrefix  = "::agentlist::"
 )
 
 var (
 	AEGIS_MEMBER_ON  bool
 	AEGIS_CACHE_CONN string
 )
+
+func AegisConfClean(user string) error {
+
+	req := AskNameController{
+		CurrOtp:  OtpManager.CurrOTP,
+		AccessIp: "20.23.324.314",
+		Key:      user,
+		Function: "conf-clean",
+	}
+
+	aegBytes, _ := json.Marshal(req)
+	retsta, _, err := ageisRequest(string(aegBytes), "")
+	if err != nil {
+		return e.LogErr("QWVGAEF7V", e.FuncNameErr()+": "+retsta, err)
+	}
+
+	return nil
+}
 
 func AegisEncrypt(r *http.Request, plainText string) (encrypted string, err error) {
 
@@ -77,7 +99,7 @@ func AegisView(r *http.Request, key string) (string, error) {
 	aegBytes, _ := json.Marshal(req)
 	retsta, retstr, err := ageisRequest(string(aegBytes), "")
 	if err != nil {
-		return "", e.LogErr("QWVGAE8V", e.FuncNameErr()+": "+retsta, err)
+		return "", e.LogErr("QWVGAE8V", e.FuncNameInfo()+": "+retsta, err)
 	}
 
 	return retstr, nil
@@ -164,8 +186,9 @@ func ageisRequest(askname string, askstr string) (string, string, error) {
 		AskName: askname,
 		AskStr:  askstr,
 	})
+
 	if err != nil {
-		return "", "", e.LogErr("QWVGPOYF2", e.FuncNameErr()+": gClient.StdRpc gRpc Error", err)
+		return "", "", e.LogErr("QWVGPOYF2", e.FuncNameInfo()+" : "+askname+": "+askstr, err)
 	}
 
 	return r.RetSta, r.RetStr, nil

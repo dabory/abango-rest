@@ -15,12 +15,10 @@ import (
 )
 
 var (
-	// ADB *buntdb.DB //AegisCache
-
-	RedisCtx = context.Background()
-	QDB      *redis.Client //QDB은 Redis를 도입하면서 통합함.
-	// QDB *buntdb.DB
-	QDBOn bool // QDb에서 쿼리 가져옴
+	RedisCtx     = context.Background()
+	QDB          *redis.Client //QDB은 Redis를 도입하면서 통합함.
+	QDBOn        bool          // QDb에서 쿼리 가져옴
+	REDIS_EXTIME = 24 * time.Hour
 )
 
 func QdbView(key string) (retval string, reterr error) {
@@ -34,15 +32,25 @@ func QdbView(key string) (retval string, reterr error) {
 	return value, reterr
 }
 
-func QdbUpdate(key string, value string) (reterr error) {
-
-	REDIS_EXTIME := 12 * time.Hour
+func QdbUpdate(key string, value string) error {
 	err := QDB.Set(RedisCtx, key, value, REDIS_EXTIME).Err()
 	if err != nil {
-		reterr = e.MyErr("QWVGAVAEFV-QDB.Update Error in Key: "+key+" Value: "+value, err, false)
+		return e.LogErr("ASDFQWERA", e.FuncNameErr()+": QDB.Update Error : "+key, err)
 	}
 	return nil
 }
+
+// func QdbUpdate(key string, value string) (reterr error) {
+
+// 	fmt.Println("key:", key)
+// 	fmt.Println("key:", value)
+
+// 	err := QDB.Set(RedisCtx, key, value, REDIS_EXTIME).Err()
+// 	if err != nil {
+// 		reterr = e.LogErr("ASDFQWERA", e.FuncNameErr()+": QDB.Update Error : "+key, err)
+// 	}
+// 	return nil
+// }
 
 func QdbDelete(key string) error {
 	err := QDB.Del(RedisCtx, key).Err()

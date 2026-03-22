@@ -19,7 +19,7 @@ import (
 	"golang.org/x/text/language"
 )
 
-var ( //Env XCongif
+var (
 	LANG_DIR string
 )
 
@@ -32,30 +32,49 @@ func LangStr(y *abango.Controller, index string, engMsg string, args ...interfac
 	return str
 }
 
-// SelfLangHandler: Redis -> File -> GoogleTranslate -> Save(File+Redis)
+// SelfLangHandler: Redis(L1) -> File(L2) -> GoogleTranslate(L3) -> Save(File+Redis)
+// func SelfLangHandler(y *abango.Controller, engMsg string, isTheme bool) string { //니중에 Theme별로도 가능함.
 func SelfLangHandler(y *abango.Controller, engMsg string) string {
-	y.Gtb.LangCode = "ko"
-	langCode := y.Gtb.LangCode
 
-	if langCode == "en" {
-		return engMsg
+	if y.Gtb.CountryCode == "" {
+		y.Gtb.CountryCode = "ko-KR"
 	}
+
+	fmt.Println("y.Gtb.CountryCode:", y.Gtb.CountryCode)
+	fmt.Println("y.Gtb.CountryCode:", y.Gtb.CountryCode)
+	fmt.Println("y.Gtb.CountryCode:", y.Gtb.CountryCode)
+	fmt.Println("y.Gtb.CountryCode:", y.Gtb.CountryCode)
+	// if countryCode == "en-US" {
+	// 	return engMsg // 모든 메지지는 미국식 영어로 되어 있나는 전제
+	// }
+
+	countryCode := strings.Replace(y.Gtb.CountryCode, "_", "-", -1)
 
 	md5hash := e.Md5Hashed(engMsg, 32)
-
+	// md5hash := e.Md5Hashed(y.Gtb.HostUser+"::"+engMsg, 32) -- 나준에 theme(HostUser별오도 가능함)
 	// 3) redis key: {lang}::{md5}
-	redisKey := langCode + "::" + md5hash
+	redisKey := countryCode + "::" + md5hash
 
 	// 3) Redis 먼저 조회
-	if abango.QDB != nil {
-		if v, err := abango.QDB.Get(context.Background(), redisKey).Result(); err == nil && v != "" {
-			return v
-		}
+
+	fmt.Println("KKK", y.Gtb.CountryCode)
+	fmt.Println("KKK", y.Gtb.CountryCode)
+	fmt.Println("KKK", y.Gtb.CountryCode)
+	fmt.Println("KKK", y.Gtb.CountryCode)
+
+	if v, err := abango.QdbView(redisKey); err == nil {
+		return v
 	}
+
+	// if abango.QDB != nil {
+	// 	if v, err := abango.QDB.Get(context.Background(), redisKey).Result(); err == nil && v != "" {
+	// 		return v
+	// 	}
+	// }
 
 	// 4) 파일 경로: {LANG_DIR}/{lang}/{md5앞2}/{md5}
 	prefix2 := md5hash[:2]
-	dirPath := filepath.Join(LANG_DIR, langCode, prefix2)
+	dirPath := filepath.Join(LANG_DIR, countryCode, prefix2)
 	filePath := filepath.Join(dirPath, md5hash)
 	// fmt.Println("filePath:", filePath)
 
@@ -63,17 +82,16 @@ func SelfLangHandler(y *abango.Controller, engMsg string) string {
 	if b, err := os.ReadFile(filePath); err == nil {
 		txt := strings.TrimSpace(string(b))
 		if txt != "" {
-			if abango.QDB != nil {
-				_ = abango.QDB.Set(context.Background(), redisKey, txt, 0).Err()
+			if err := abango.QdbUpdate(redisKey, txt); err != nil {
+				return e.LogStr("OIUOIGUYE", engMsg+" was NOT Updated")
 			}
 			return txt
 		}
 	}
 
-	// 5) 파일 없으면 Google Translate fallback
-	// (최소 비용 구조: 여기서만 외부 호출)
+	fmt.Println("여기", y.Gtb.CountryCode)
 
-	target, err := language.Parse(langCode)
+	target, err := language.Parse(countryCode)
 	if err != nil {
 		return engMsg
 	}
@@ -81,23 +99,19 @@ func SelfLangHandler(y *abango.Controller, engMsg string) string {
 	opts := &translate.Options{Format: translate.Text}
 	resp, err := GtransClient.Translate(GtransCtx, []string{engMsg}, target, opts)
 	if err != nil || len(resp) == 0 || strings.TrimSpace(resp[0].Text) == "" { // 이거 이헣게 복잡할 필요가 있나 ?
-		return e.LogStr("2398ujwdl", engMsg+" was NOT translated")
+		return e.LogStr("OIUOIJHGUYTG", engMsg+" was NOT Translated")
 	}
 	translated := strings.TrimSpace(resp[0].Text)
 
 	if err := e.StrToFile(filePath, translated); err != nil {
-		e.LogErr("lskj3sㅂ3s", e.FuncNameErr()+": File was NOT saved!", err)
+		e.LogErr("OIUOIJHGUYD", e.FuncNameErr()+": File was NOT saved!", err)
 		return engMsg
 	}
-	// // 6) 파일 저장 (디렉토리 없으면 생성)
-	// _ = os.MkdirAll(dirPath, 0755)
-	// _ = os.WriteFile(filePath, []byte(translated), 0644)
 
-	// 7) Redis 저장
-	if abango.QDB != nil {
-		_ = abango.QDB.Set(GtransCtx, redisKey, translated, 0).Err()
+	if err := abango.QdbUpdate(redisKey, translated); err != nil {
+		return e.LogStr("OIUOIGUYE", engMsg+" was NOT Updated")
 	}
 
-	// 8) 반환
+	fmt.Println("저기", y.Gtb.CountryCode)
 	return translated
 }

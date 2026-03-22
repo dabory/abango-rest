@@ -80,14 +80,19 @@ func MkdirIfNotExists(folderPath string) error {
 }
 
 func StrToFile(path string, str string) error {
-	// 디렉토리 생성 에러 체크
-	if err := os.MkdirAll(path, 0755); err != nil {
-		return LogErr("ETBUITITF", "Fail to Create Folder: ", err)
+	// 1. 전체 경로에서 디렉토리 부분만 추출 (예: "a/b/c.txt" -> "a/b")
+	dir := filepath.Dir(path)
+
+	// 2. 추출된 디렉토리 생성
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return LogErr("ETBUITITF", FuncNameInfo()+": Fail to Create Folder: ", err)
 	}
-	// 파일 쓰기 에러 체크
+
+	// 3. 파일 쓰기 (원래의 전체 path 사용)
 	if err := os.WriteFile(path, []byte(str), 0644); err != nil {
-		return LogErr("TBUITITF", "Fail to Create Folder: ", err)
+		return LogErr("TBUITITF", FuncNameInfo()+"Fail to Write File: ", err) // 에러 메시지도 수정했습니다.
 	}
+
 	return nil
 }
 

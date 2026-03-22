@@ -153,19 +153,19 @@ func QueryNameToTableAndPrefix(tgtTblName string, tgtTblFullName string) (string
 }
 
 func HasPickActPage(uri string, table string) bool {
-	if table == "member" { // member-act로 호출하면 MemberSecuredAct로 처리해줌.
-		if uri == "/"+table+"-pick" || uri == "/"+table+"-act" || uri == "/"+table+"-page" {
-			// if uri == "/"+table+"-pick" || uri == "/"+table+"-act" || uri == "/"+table+"-page" || uri == "/"+table+"-secured-pick" || uri == "/"+table+"-secured-page" || uri == "/"+table+"-secured-act" {
-			return true
-		} else {
-			return false
-		}
+	if uri == "/"+table+"-pick" || uri == "/"+table+"-act" || uri == "/"+table+"-page" {
+		return true
 	} else {
-		if uri == "/"+table+"-pick" || uri == "/"+table+"-act" || uri == "/"+table+"-page" {
-			return true
-		} else {
-			return false
-		}
+		return false
+	}
+}
+
+func HasPickActPageAegis(uri string, table string) bool {
+	if uri == "/"+table+"-pick" || uri == "/"+table+"-act" || uri == "/"+table+"-page" ||
+		uri == "/"+table+"-pick-aegis" || uri == "/"+table+"-page-aegis" {
+		return true
+	} else {
+		return false
 	}
 }
 

@@ -2,6 +2,7 @@ package abango
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -27,21 +28,21 @@ func (c *Controller) Init(r *http.Request) (int, string) {
 			return 507, e.LogStr("ASDFQEWFA", "Can NOT Read custom.yml")
 		}
 
-		// fmt.Println("aaa:"), string(data))
+		fmt.Println("!!!!!!!!!!!Caution:: This is YDB!!!!!!!!!!!!!!!!")
 
 		var config Config
 		if err := yaml.Unmarshal(data, &config); err == nil {
 			c.Gtb = config.Source // 여기서 custom.yml 값이 할당이 안되면 'yaml: "????"  갑이 제대로 할당이 안된거다.
 		} else {
-			return 507, e.LogStr("ASDWEWFA", "connString in custom.yml format mismatch ")
+			return 507, e.LogStr("ASDWEWFA", "!!Fatal: connString in custom.yml format mismatch ")
 		}
 
 	} else {
 		if c.GateToken == "" {
-			return 505, e.LogStr("QWCAFVD", "GateToken is Empty: ")
+			return 505, e.LogStr("QWCAFVD", "!!Fatal: Empty GateToken or 'dabory-strong' in setup record NOT Fount !! ")
 		}
 		if gtbStr, err = AegisView(r, c.GateToken); err != nil { // 여기의 DB접속시 r의 웹로그정보를 AegisCache에 전달.
-			return 505, e.LogStr("QWFAECD", "GateToken Not Found in AegisDB: "+c.GateToken)
+			return 505, e.LogStr("QWFAECD", "!!Fatal: GateToken Not Found in AegisDB: "+c.GateToken)
 		}
 
 		if err := json.Unmarshal([]byte(gtbStr), &gtb); err == nil {

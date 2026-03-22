@@ -13,65 +13,7 @@ import (
 	"os"
 	"runtime"
 	"strings"
-	// "github.com/dabory/abango-rest"
-	// "cloud.google.com/go/translate"
-	// "cloud.google.com/go/translate"
 )
-
-// var client *translate.Client
-
-// var InfoLog *log.Logger
-
-// func LangStr(y *abango.Controller, index string, engMsg string, args ...interface{}) string {
-// 	// langMsg := TransGetText(y, engMsg)
-// 	str := index + " @ " + fmt.Sprintf(engMsg, args...)
-// 	return str
-// }
-
-// func TransGetText(y *abango.Controller, engMsg string) string {
-
-// 	// 영어면 그대로
-// 	if y.Gtb.LangCode == "en" {
-// 		return engMsg
-// 	}
-
-// 	// Google API Key
-// 	const myApiKey = "AIzaSyCk-Bjl6poLINWRQ60HHZ0T2hS8S6VzvGY"
-
-// 	// context
-// 	ctx := context.Background()
-
-// 	// 클라이언트 생성
-// 	client, err := translate.NewClient(ctx, option.WithAPIKey(myApiKey))
-// 	if err != nil {
-// 		return engMsg
-// 	}
-// 	defer client.Close()
-
-// 	// 언어 설정
-// 	target, err := language.Parse(y.Gtb.LangCode)
-// 	if err != nil {
-// 		return engMsg
-// 	}
-
-// 	// 번역 옵션
-// 	opts := &translate.Options{
-// 		Format: translate.Text,
-// 	}
-
-// 	// 번역 실행
-// 	resp, err := client.Translate(ctx, []string{engMsg}, target, opts)
-// 	if err != nil {
-// 		return engMsg
-// 	}
-
-// 	// 결과 반환
-// 	if len(resp) > 0 && resp[0].Text != "" {
-// 		return resp[0].Text
-// 	}
-
-// 	return engMsg
-// }
 
 func InitLog(path string, showstdout string) error {
 
@@ -163,43 +105,6 @@ func FuncRunErr(index string, funcname string) string {
 func JsonFormatErr(index string, structname string) string {
 	return LogStr(index, " Json Format mismatches in "+structname+" ")
 }
-
-// func TransGetText(y *abango.Controller, engMsg string) string {
-
-// 	// 1. 영어이면 그대로
-// 	if y.Gtb.LangCode == "en" {
-// 		return engMsg
-// 	}
-
-// 	// 2. 클라이언트 없으면 그대로
-// 	if client == nil {
-// 		return engMsg
-// 	}
-
-// 	// 3. 언어 파싱 실패 시 그대로
-// 	target, err := language.Parse(y.Gtb.LangCode)
-// 	if err != nil {
-// 		return engMsg
-// 	}
-
-// 	// 4. 번역 옵션
-// 	opts := &translate.Options{
-// 		Format: translate.Text,
-// 	}
-
-// 	// 5. 번역 실행
-// 	resp, err := client.Translate(context.Background(), []string{engMsg}, target, opts)
-// 	if err != nil {
-// 		return engMsg
-// 	}
-
-// 	// 6. 결과 반환
-// 	if len(resp) > 0 && resp[0].Text != "" {
-// 		return resp[0].Text
-// 	}
-
-// 	return engMsg
-// }
 
 func LogStr(index string, s string) string { // nㅣl 아님 경우만 처리(!!중요)
 	msg := s

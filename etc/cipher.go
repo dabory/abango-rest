@@ -39,27 +39,27 @@ func PkeyDecrypt(encr64 string, keyPair64 string) ([]byte, error) {
 
 	var err error
 	if keyPair64, err = DecryptKeyPair(keyPair64); err != nil {
-		return nil, LogErr("ertjhdssw", FuncNameErr()+"Failure-0 ", err)
+		return nil, LogErr("KJHLHLJL", FuncNameErr()+"Failure-0 ", err)
 	}
 
 	keyPair, err := base64.StdEncoding.DecodeString(keyPair64)
 	if err != nil {
-		return nil, LogErr("ertjhdssw", FuncNameErr()+"Failure-1 ", err)
+		return nil, LogErr("KJHKJHL", FuncNameErr()+"Failure-1 ", err)
 	}
 
 	sKey, pKey, err := cryptobox.CryptoBoxGetSecretPublicKeyFrom(keyPair)
 	if err != nil {
-		return nil, LogErr("034hjalrse", FuncNameErr()+"Failure-2 ", err)
+		return nil, LogErr("KJHLKJJKJ", FuncNameErr()+"Failure-2 ", err)
 	}
 
 	decodedBytes, err := base64.StdEncoding.DecodeString(encr64)
 	if err != nil {
-		return nil, LogErr("32rfww3", FuncNameErr()+"Failure-3 ", err)
+		return nil, LogErr("LKHLKJLKJL", FuncNameErr()+"Failure-3 ", err)
 	}
 
 	decryptedBytes, boxRet := cryptobox.CryptoBoxSealOpen(decodedBytes, pKey, sKey)
 	if boxRet != 0 {
-		return nil, LogErr("mcnbxkajhr3eih", FuncNameErr()+"boxRet:"+strconv.Itoa(boxRet), nil)
+		return nil, LogErr("KJHLHLKJL", FuncNameErr()+"boxRet:"+strconv.Itoa(boxRet), nil)
 	}
 	return decryptedBytes, nil
 }
