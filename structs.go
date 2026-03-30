@@ -17,10 +17,11 @@ var (
 )
 
 var (
-	OtpManager *e.OTPManager
+	CpuCores     int
+	OtpManager   *e.OTPManager
+	ServerSecret string
 )
 
-// 1. Receivers /////////////////////////////////////////////////////////////////
 // 1. Receivers /////////////////////////////////////////////////////////////////
 type Param struct {
 	Key   string
@@ -28,23 +29,24 @@ type Param struct {
 }
 
 type Controller struct {
-	// Ctx            *context.Context
-	Ctx            Context
-	actionName     string
-	controllerName string
-	ServerVars     map[string]string //Fronrt End Server Variables
-	GlobalVars     map[string]string //Fronrt End Global Variables
-	Data           map[interface{}]interface{}
-	// Access         AbangoAccess
+	Ctx       Context
+	GateToken string
+	Gtb       GateTokenBase
+	Db        *xorm.Engine
 
-	GateToken       string
 	DeviceHash      string
 	UpdateFieldList string
-	Gtb             GateTokenBase
-	Db              *xorm.Engine
-	V               interface{}
+	Password        string // Member/User Login시의 Password 를 가지고 다님기 위해서
 	ErrorFuncName   string
-	AccessIp        string
+	// V             interface{}
+	// AccessIp      string
+
+	// actionName     string
+	// controllerName string
+	// ServerVars     map[string]string //Fronrt End Server Variables
+	// GlobalVars     map[string]string //Fronrt End Global Variables
+	// Data           map[interface{}]interface{}
+	// // Access         AbangoAccess
 }
 
 type Context struct {
@@ -76,20 +78,25 @@ type AbangoAccess struct {
 	DbConnStr string
 }
 
-// 변경ㅅ (1)UpdateGtb (2)MemberLoginSub (3)UserLoginSub (4)GtbDefaultChangeHandler 을 수정해야 한다.
+// 변경시 (1)UpdateGtb (2)MemberLoginSub (3)UserLoginSub
+// (4)GtbDefaultChangeHandler (5)PosLoginAuthAndSub 을 수정해야 한다.
 type GateTokenBase struct {
-	Password            string `yaml:"password"`
-	ConnString          string `yaml:"conn_string"`
-	AccessIp            string `yaml:"remote_ip"`
-	UserAgent           string `yaml:"user_agent"`
-	FrontIp             string `yaml:"front_ip"`
-	FrontHost           string `yaml:"front_host"`
-	Referer             string `yaml:"referer"`
-	SsoSubId            int    `yaml:"sso_sub_id"`
-	UserId              int    `yaml:"user_id"`
-	UserPermId          int    `yaml:"user_perm_id"`
-	UserFixedSortMenuId int    `yaml:"user_fixed_sort_menu_id"`
-	UserSortMenuId      int    `yaml:"user_sort_menu_id"`
+	// Password            string `yaml:"password"`
+	HostUser   string `yaml:"host_user"` // 서버 계정명
+	ConnString string `yaml:"conn_string"`
+
+	// 한번 GateTokenBase 에 기록된 정보를 사용하는 것이 c.Request().Header.Get 보다 빠르다.
+	AccessIp  string `yaml:"remote_ip"`
+	UserAgent string `yaml:"user_agent"`
+	FrontIp   string `yaml:"front_ip"`
+	FrontHost string `yaml:"front_host"`
+	Referer   string `yaml:"referer"`
+
+	SsoSubId            int `yaml:"sso_sub_id"`
+	UserId              int `yaml:"user_id"`
+	UserPermId          int `yaml:"user_perm_id"`
+	UserFixedSortMenuId int `yaml:"user_fixed_sort_menu_id"`
+	UserSortMenuId      int `yaml:"user_sort_menu_id"`
 
 	MemberId  int    `yaml:"member_id"`
 	NickName  string `yaml:"nick_name"`
@@ -135,8 +142,9 @@ type GateTokenBase struct {
 	StdVatRate      string `yaml:"std_vat_rate"`
 
 	// POS 판매원 설정 //StorageId와 BranchId 는 이미 있슴
-	TerminalId int `yaml:"terminal_id"`
-	StoreId    int `yaml:"store_id"`
+	TerminalId   int `yaml:"terminal_id"`
+	StoreId      int `yaml:"store_id"`
+	StoreBuyerId int `yaml:"store_buyer_id"`
 
 	//추가 할 경우 custom.yml 변수와 'yaml: "????" 과 일치가 필수입 !!!
 }
